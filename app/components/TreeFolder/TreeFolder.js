@@ -38,12 +38,10 @@ class TreeFolder extends Component {
       let i = 0;
       children = map(this.props.children, (entry, key) => {
         if (!entry.meta) {
-          let firstChildPath = entry[Object.keys(entry)[0]].meta.path;
-          let childPathSplit = firstChildPath.split('/');
           entry.meta = {
             entityType: 'folder',
             name: key,
-            path: childPathSplit.slice(0, -1).join('/')
+            path: `${this.props.data.path}/${key}`
           }
         }
         if(entry.meta && (entry.meta.entityType === 'folder')){

@@ -192,9 +192,9 @@ class Workspace extends Component {
   readAndSaveFolderEntry = (entry) => {
     this.addFolder(entry.fullPath);
     let reader = entry.createReader();
-    reader.readEntries(folder => {
-      if (folder.length > 1) {
-        this.handleEntries(folder);
+    reader.readEntries(folderContents => {
+      if (folderContents.length > 0) {
+        this.handleEntries(folderContents);
       }
     });
   };

@@ -30,12 +30,10 @@ class TreeView extends Component {
 
     let structure = this.props.fileStructure ? this.props.fileStructure.map((entry, i) => {
         if (!entry.meta) {
-          let firstChildPath = entry[Object.keys(entry)[0]].meta.path;
-          let childPathSplit = firstChildPath.split('/');
           entry.meta = {
             entityType: 'folder',
             name: entry.key,
-            path: childPathSplit.slice(0, -1).join('/')
+            path: entry.key
           }
         }
       if (entry.meta && (entry.meta.entityType === 'folder')){
