@@ -1,5 +1,7 @@
 # Devshare Site
 
+[![Join the chat at https://gitter.im/KyperTech/devshare-site](https://badges.gitter.im/KyperTech/devshare-site.svg)](https://gitter.im/KyperTech/devshare-site?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
 [![Build Status][travis-image]][travis-url]
 [![Dependency Status][daviddm-image]][daviddm-url]
 [![License][license-image]][license-url]
