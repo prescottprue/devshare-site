@@ -7,7 +7,7 @@ import './NewProjectDialog.scss'
 class NewProjectDialog extends Component {
 
   static propTypes = {
-    open: PropTypes.boolean,
+    open: PropTypes.bool,
     onCreateClick: PropTypes.func
   }
 

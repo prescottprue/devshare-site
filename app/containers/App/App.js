@@ -29,7 +29,7 @@ class Main extends Component {
 
   static propTypes = {
     account: PropTypes.object,
-    children: PropTypes.array,
+    children: PropTypes.object,
     hydrateUser: PropTypes.func,
     logout: PropTypes.func
   }

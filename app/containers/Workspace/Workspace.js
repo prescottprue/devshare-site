@@ -54,8 +54,8 @@ class Workspace extends Component {
   static propTypes = {
     project: PropTypes.object,
     tabs: PropTypes.object,
-    showProjects: PropTypes.boolean,
-    hideName: PropTypes.boolean,
+    showProjects: PropTypes.bool,
+    hideName: PropTypes.bool,
     showButtons: PropTypes.bool,
     projects: PropTypes.array,
     navigateToTab: PropTypes.func.isRequired,

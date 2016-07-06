@@ -19,7 +19,7 @@ class Signup extends Component {
 
   static propTypes = {
     account: PropTypes.object,
-    signup: PropTypes.function.isRequired
+    signup: PropTypes.func.isRequired
   }
 
   static contextTypes = {
