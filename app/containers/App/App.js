@@ -4,13 +4,13 @@ import { connect } from 'react-redux'
 import Devshare from 'devshare'
 import { Actions } from 'redux-devshare'
 import { hydrateUser } from '../../actions/account'
+import getMuiTheme from 'material-ui/styles/getMuiTheme'
 
 // Components
 import Navbar from '../../components/Navbar/Navbar'
 
 // Styling
 import Theme from '../../theme'
-import ThemeManager from 'material-ui/lib/styles/theme-manager'
 import './App.scss'
 
 // Tap Plugin
@@ -40,7 +40,7 @@ class Main extends Component {
 
   getChildContext = () => {
     return {
-      muiTheme: ThemeManager.getMuiTheme(Theme)
+      muiTheme: getMuiTheme(Theme)
     }
   }
 

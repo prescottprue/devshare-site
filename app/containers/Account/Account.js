@@ -5,8 +5,8 @@ import { Actions } from 'redux-devshare'
 
 // Components
 import AccountDialog from '../../components/AccountDialog/AccountDialog'
-import RaisedButton from 'material-ui/lib/raised-button'
-import TextField from 'material-ui/lib/text-field'
+import RaisedButton from 'material-ui/RaisedButton'
+import TextField from 'material-ui/TextField'
 
 import './Account.scss'
 

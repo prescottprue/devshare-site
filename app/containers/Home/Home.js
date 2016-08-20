@@ -8,12 +8,12 @@ import { event } from '../../helpers/ga'
 import { randomProjectId } from '../../helpers'
 
 // Components
-import RaisedButton from 'material-ui/lib/raised-button'
+import RaisedButton from 'material-ui/RaisedButton'
 import Theme from '../../theme'
-import GroupIcon from 'material-ui/lib/svg-icons/social/group'
-import CloudDownload from 'material-ui/lib/svg-icons/file/cloud-download'
-import StartIcon from 'material-ui/lib/svg-icons/content/create'
-import Paper from 'material-ui/lib/paper'
+import GroupIcon from 'material-ui/svg-icons/social/group'
+import CloudDownload from 'material-ui/svg-icons/file/cloud-download'
+import StartIcon from 'material-ui/svg-icons/content/create'
+import Paper from 'material-ui/Paper'
 
 import './Home.scss'
 

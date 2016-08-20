@@ -8,10 +8,10 @@ import { event } from '../../helpers/ga'
 // Components
 import LoginForm from '../../components/LoginForm/LoginForm'
 import GoogleButton from '../../components/GoogleButton/GoogleButton'
-import Paper from 'material-ui/lib/paper'
-import CircularProgress from 'material-ui/lib/circular-progress'
-import Snackbar from 'material-ui/lib/snackbar'
-import RaisedButton from 'material-ui/lib/raised-button'
+import Paper from 'material-ui/Paper'
+import CircularProgress from 'material-ui/CircularProgress'
+import Snackbar from 'material-ui/Snackbar'
+import RaisedButton from 'material-ui/RaisedButton'
 
 import './Login.scss'
 

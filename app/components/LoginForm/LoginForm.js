@@ -1,8 +1,8 @@
 import React, {Component, PropTypes} from 'react'
 import { Link } from 'react-router'
-import TextField from 'material-ui/lib/text-field'
-import RaisedButton from 'material-ui/lib/raised-button'
-import Checkbox from 'material-ui/lib/checkbox'
+import TextField from 'material-ui/TextField'
+import RaisedButton from 'material-ui/RaisedButton'
+import Checkbox from 'material-ui/Checkbox'
 import './LoginForm.scss'
 
 const fieldStyle = { width: '80%' }

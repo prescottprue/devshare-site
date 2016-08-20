@@ -5,11 +5,11 @@ import { Link } from 'react-router'
 import { Actions } from 'redux-devshare'
 
 // Components
-import Paper from 'material-ui/lib/paper'
-import TextField from 'material-ui/lib/text-field'
-import RaisedButton from 'material-ui/lib/raised-button'
-import CircularProgress from 'material-ui/lib/circular-progress'
-import Snackbar from 'material-ui/lib/snackbar'
+import Paper from 'material-ui/Paper'
+import TextField from 'material-ui/TextField'
+import RaisedButton from 'material-ui/RaisedButton'
+import CircularProgress from 'material-ui/CircularProgress'
+import Snackbar from 'material-ui/Snackbar'
 
 import './Recover.scss'
 
