@@ -18,12 +18,12 @@ const buttonStyle = { width: '80%' }
 
 class Recover extends Component {
 
-  state = { errors: { username: null }, open: false }
-
   static propTypes = {
     account: PropTypes.object,
     recover: PropTypes.func
   }
+
+  state = { errors: { username: null }, open: false }
 
   handleInputChange = (name, e) => {
     e.preventDefault()
@@ -103,16 +103,15 @@ class Recover extends Component {
 }
 
 // Place state of redux store into props of component
-function mapStateToProps (state) {
-  return {
-    account: state.account,
-    router: state.router
+const mapStateToProps = ({ account, router }) => (
+  {
+    account,
+    router
   }
-}
+)
 
 // Place action methods into props
-function mapDispatchToProps (dispatch) {
-  return bindActionCreators(Actions.account, dispatch)
-}
+const mapDispatchToProps = (dispatch) =>
+  bindActionCreators(Actions.account, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(Recover)

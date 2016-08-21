@@ -118,7 +118,7 @@ export default class SignupForm extends Component {
         <div className='SignupForm-Submit'>
           <RaisedButton
             label='Sign Up'
-            primary
+            secondary
             type='submit'
             disabled={this.props.account && this.props.account.isFetching}
             style={buttonStyle}

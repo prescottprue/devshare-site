@@ -25,6 +25,7 @@ const iconStyle = {
 const buttonStyle = {
   margin: '3rem',
   height: '3rem',
+  lineHeight: '3rem',
   marginBottom: 5
 }
 const buttonLabelStyle = {
@@ -109,16 +110,15 @@ class Home extends Component {
 }
 
 // Place state of redux store into props of component
-function mapStateToProps (state) {
-  return {
+const mapStateToProps = (state) => (
+  {
     account: state.account,
     router: state.router
   }
-}
+)
 
 // Place action methods into props
-function mapDispatchToProps (dispatch) {
-  return bindActionCreators(Actions.projects, dispatch)
-}
+const mapDispatchToProps = (dispatch) =>
+  bindActionCreators(Actions.projects, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(Home)

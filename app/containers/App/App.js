@@ -68,15 +68,15 @@ class Main extends Component {
 }
 
 // Place state of redux store into props of component
-function mapStateToProps (state) {
-  return {
-    account: state.account,
-    router: state.router
+const mapStateToProps = ({ account, router }) => (
+  {
+    account,
+    router
   }
-}
+)
 
 // Place action methods into props
-function mapDispatchToProps (dispatch) {
+const mapDispatchToProps = (dispatch) => {
   Actions.account.hydrateUser = hydrateUser
   return bindActionCreators(Actions.account, dispatch)
 }
