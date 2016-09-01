@@ -1,7 +1,6 @@
 import React, { PropTypes, Component } from 'react'
 import './Editor.scss'
 import { connect } from 'react-redux'
-import { project } from 'devshare'
 
 class Editor extends Component {
 
@@ -61,12 +60,12 @@ class Editor extends Component {
     require('codemirror/mode/clike/clike')
     require('codemirror/mode/xml/xml')
     const editorDiv = document.getElementById(this.props.name)
-    const { name, owner } = this.props.project
-    const file = project(owner.username, name).fileSystem.file(this.props.filePath)
+    // const { name, owner } = this.props.project
+    // const file = project(owner.username, name).fileSystem.file(this.props.filePath)
     this.editor = CodeMirror(editorDiv, {
       lineNumbers: true,
-      lineWrapping: true,
-      mode: `${file.syntaxMode || 'javascript'}`
+      lineWrapping: true
+      // mode: `${file.syntaxMode || 'javascript'}`
     })
     this.editor.setOption('theme', 'monokai')
     // CodeMirror.Vim.map('jj', '<Esc>', 'insert')
@@ -85,35 +84,35 @@ class Editor extends Component {
 
   handleLoad = (editor) => {
     // Load file content
-    const Firepad = require('firepad')
-    const { name, owner } = this.props.project
-    if (typeof editor.firepad === 'undefined') {
-      const { fileSystem } = project(owner.username, name)
-      const file = fileSystem.file(this.props.filePath)
-      try {
-        try {
-          this.firepad = Firepad.fromCodeMirror(
-            file.firebaseRef(),
-            editor,
-            { userId: this.props.account.username || '&' }
-          )
-        } catch (err) {
-          console.warn('Error creating firepad', err)
-        }
-        if (this.firepad) {
-          this.firepad.on('ready', () => {
-            // TODO: Load original content of file
-            if (this.firepad.isHistoryEmpty()) {
-              Firepad.Headless(fileSystem.firebaseRef()).getText(text => {
-                this.content = text
-              })
-            }
-          })
-        }
-      } catch (err) {
-        console.warn('Load firepad error:', err)
-      }
-    }
+    // const Firepad = require('firepad')
+    // const { name, owner } = this.props.project
+    // if (typeof editor.firepad === 'undefined') {
+    //   const { fileSystem } = project(owner.username, name)
+    //   const file = fileSystem.file(this.props.filePath)
+    //   try {
+    //     try {
+    //       this.firepad = Firepad.fromCodeMirror(
+    //         file.firebaseRef(),
+    //         editor,
+    //         { userId: this.props.account.username || '&' }
+    //       )
+    //     } catch (err) {
+    //       console.warn('Error creating firepad', err)
+    //     }
+    //     if (this.firepad) {
+    //       this.firepad.on('ready', () => {
+    //         // TODO: Load original content of file
+    //         if (this.firepad.isHistoryEmpty()) {
+    //           Firepad.Headless(fileSystem.firebaseRef()).getText(text => {
+    //             this.content = text
+    //           })
+    //         }
+    //       })
+    //     }
+    //   } catch (err) {
+    //     console.warn('Load firepad error:', err)
+    //   }
+    // }
   }
 
   handleDispose = () => {

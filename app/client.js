@@ -4,14 +4,13 @@ import createRoutes from './router'
 import { Provider } from 'react-redux'
 import configureStore from './store/configureStore'
 import { browserHistory } from 'react-router'
-import Devshare from 'devshare'
 
 let initialData = {}
 
-if (Devshare.currentUser) {
-  initialData.account = Devshare.currentUser
-  initialData.entities.users[Devshare.currentUser.username] = Devshare.currentUser
-}
+// if (Devshare.currentUser) {
+//   initialData.account = Devshare.currentUser
+//   initialData.entities.users[Devshare.currentUser.username] = Devshare.currentUser
+// }
 
 const initialState = window.__INITIAL_STATE__ || initialData
 

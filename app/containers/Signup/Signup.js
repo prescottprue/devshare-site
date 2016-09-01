@@ -1,133 +1,110 @@
 import React, { Component, PropTypes } from 'react'
-import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import { Link } from 'react-router'
-import { Actions } from 'redux-devshare'
-import { event } from '../../helpers/ga'
+import GoogleButton from 'react-google-button'
 
 // Components
 import SignupForm from '../../components/SignupForm/SignupForm'
-import GoogleButton from '../../components/GoogleButton/GoogleButton'
 import Paper from 'material-ui/Paper'
-import RaisedButton from 'material-ui/RaisedButton'
 import CircularProgress from 'material-ui/CircularProgress'
 import Snackbar from 'material-ui/Snackbar'
 
+// Styles
 import './Signup.scss'
 
-class Signup extends Component {
+// redux-devsharev3
+import { devshare, helpers } from 'redux-devshare'
+const { pathToJS } = helpers
+
+@devshare()
+@connect(
+  // Map state to props
+  ({devshare}) => ({
+    authError: pathToJS(devshare, 'authError'),
+    account: pathToJS(devshare, 'profile')
+  })
+)
+export default class Signup extends Component {
 
   static propTypes = {
     account: PropTypes.object,
-    signup: PropTypes.func.isRequired
-  }
-
-  static contextTypes = {
-    router: React.PropTypes.object.isRequired
+    devshare: PropTypes.object,
+    authError: PropTypes.object
   }
 
   state = {
-    errors: { username: null, password: null },
-    snackCanOpen: false
+    snackCanOpen: false,
+    errors: { username: null, password: null }
   }
 
-  componentWillReceiveProps (nextProps) {
-    if (nextProps.account.username) {
-      this.context.router.push(`/${nextProps.account.username}`)
+  componentWillReceiveProps ({ account, history }) {
+    if (account && account.username) {
+      history.push(`/${account.username}`)
     }
   }
 
-  handleSnackClose = () => {
-    this.setState({
-      snackCanOpen: false
-    })
-  }
-
-  /**
-   * @function reset
-   * @description Reset whole state (inputs, errors, snackbar open/close)
-   */
   reset = () =>
     this.setState({
       errors: {},
       username: null,
       email: null,
-      name: null,
-      snackCanOpen: false
+      name: null
     })
 
-  /**
-   * @function handleSignup
-   * @description Call signup through redux-devshare action
-   */
-  handleSignup = signupData => {
+  handleSignup = ({ email, password, username }) => {
     this.setState({ snackCanOpen: true })
-    this.props.signup(signupData)
-    event({ category: 'User', action: 'Email Signup' })
+    this.props.devshare.createUser({ email, password }, { username, email })
   }
 
-  /**
-   * @function providerSignup
-   * @description Initiate external providerSignup through redux-devshare action (popup)
-   */
-  providerSignup = provider => {
+  googleLogin = () => {
     this.setState({ snackCanOpen: true })
-    this.props.signup(provider)
-    event({ category: 'User', action: 'Provider Signup', value: provider })
+    this.props.devshare.login({ provider: 'google', type: 'popup' })
   }
 
   render () {
-    if (!this.props.account.isFetching) {
+    const { account, authError } = this.props
+    const { snackCanOpen } = this.state
+
+    if (account && account.isFetching) {
       return (
         <div className='Signup'>
-          <Paper className='Signup-Panel'>
-            <SignupForm onSignup={this.handleSignup} />
-          </Paper>
-          <div className='Signup-Or'>
-            or
+          <div className='Signup-Progress'>
+            <CircularProgress mode='indeterminate' />
           </div>
-          <GoogleButton onClick={this.providerSignup.bind(this, 'google')} />
-          <RaisedButton
-            label='Sign in with GitHub'
-            primary
-            onTouchTap={this.providerSignup.bind(this, 'github')}
-          />
-          <div className='Signup-Login'>
-            <span className='Signup-Login-Label'>
-              Already have an account?
-            </span>
-            <Link className='Signup-Login-Link' to='/login'>Login</Link>
-          </div>
-          <Snackbar
-            open={this.props.account.error !== null && this.state.snackCanOpen}
-            message={this.props.account.error || 'Signup error'}
-            action='close'
-            autoHideDuration={3000}
-            onRequestClose={this.handleSnackClose}
-          />
         </div>
       )
     }
+
     return (
       <div className='Signup'>
-        <div className='Signup-Progress'>
-          <CircularProgress mode='indeterminate' />
+        <Paper className='Signup-Panel'>
+          <SignupForm onSignup={this.handleSignup} />
+        </Paper>
+        <div className='Signup-Or'>
+          <span>or</span>
         </div>
+        <div className='Signup-Providers'>
+          <GoogleButton onClick={this.googleLogin} />
+        </div>
+        <div className='Signup-Login'>
+          <span className='Signup-Login-Label'>
+            Already have an account?
+          </span>
+          <Link className='Signup-Login-Link' to='/login'>
+            Login
+          </Link>
+        </div>
+        {
+          authError && authError.message && snackCanOpen
+          ? <Snackbar
+            open={authError && !!authError.message}
+            message={authError ? authError.message : 'Signup error'}
+            action='close'
+            autoHideDuration={3000}
+          />
+          : null
+        }
       </div>
     )
   }
 }
-
-// Place state of redux store into props of component
-const mapStateToProps = ({ account, router }) => (
-  {
-    account,
-    router
-  }
-)
-
-// Place action methods into props
-const mapDispatchToProps = (dispatch) =>
-  bindActionCreators(Actions.account, dispatch)
-
-export default connect(mapStateToProps, mapDispatchToProps)(Signup)

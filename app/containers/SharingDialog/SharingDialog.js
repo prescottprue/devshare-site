@@ -1,8 +1,6 @@
 import React, {Component, PropTypes} from 'react'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
-import { Actions } from 'redux-devshare'
-import { users } from 'devshare'
 
 import FlatButton from 'material-ui/FlatButton'
 import Dialog from 'material-ui/Dialog'
@@ -59,11 +57,12 @@ export default class SharingDialog extends Component {
     }
   }
 
-  searchAccounts = q =>
-    users()
-      .search(q)
-      .then(matchingUsers => this.setState({ matchingUsers }))
-      .catch(error => this.setState({ error }))
+  searchAccounts = q => {
+    // users()
+    //   .search(q)
+    //   .then(matchingUsers => this.setState({ matchingUsers }))
+    //   .catch(error => this.setState({ error }))
+  }
 
   selectNewCollab = username => {
     this.props.addCollaborator(this.state.project, username)
@@ -188,6 +187,6 @@ const mapStateToProps = (state) => {
 
 // Place action methods into props
 const mapDispatchToProps = (dispatch) =>
-  bindActionCreators(Actions.projects, dispatch)
+  bindActionCreators({}, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(SharingDialog)

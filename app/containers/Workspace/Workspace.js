@@ -1,6 +1,6 @@
 import {
   merge, toArray,
-  findIndex, isFunction,
+  findIndex,
   each, isEqual, debounce,
   last
 } from 'lodash'
@@ -8,8 +8,6 @@ import React, { Component, PropTypes } from 'react'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import * as TabActions from '../../actions/tabs'
-import Rebase from 're-base'
-import Devshare from 'devshare'
 
 // Components
 import SideBar from '../../components/SideBar/SideBar'
@@ -18,7 +16,6 @@ import SharingDialog from '../SharingDialog/SharingDialog'
 import ContextMenu from '../../components/ContextMenu/ContextMenu'
 import Pane from '../../components/Pane/Pane'
 import WorkspacePopover from '../../components/WorkspacePopover/WorkspacePopover'
-import { event } from '../../helpers/ga'
 import './Workspace.scss'
 
 const fileEntityBlackList = ['.DS_Store', 'node_modules']
@@ -76,9 +73,9 @@ class Workspace extends Component {
 
   componentWillUnmount () {
     // Unbind files list from Firebase
-    if (this.fb && isFunction(this.fb.removeBinding)) {
-      this.fb.removeBinding(this.ref)
-    }
+    // if (this.fb && isFunction(this.fb.removeBinding)) {
+    //   this.fb.removeBinding(this.ref)
+    // }
   }
 
   componentWillUpdate (nextProps, nextState) {
@@ -86,19 +83,19 @@ class Workspace extends Component {
   }
 
   fetchProjectFiles = project => {
-    const { name, owner } = project
-    if (!name) return new Error('project name required to fetch projects')
-    if (this.ref && this.ref.endpoint === name) return
-    if (this.ref && this.ref.endpoint !== name) this.fb.reset()
-    const fbUrl = project ? Devshare.project(owner.username, name).fileSystem.firebaseUrl() : null
+    // const { name, owner } = project
+    // if (!name) return new Error('project name required to fetch projects')
+    // if (this.ref && this.ref.endpoint === name) return
+    // if (this.ref && this.ref.endpoint !== name) this.fb.reset()
+    // const fbUrl = project ? Devshare.project(owner.username, name).fileSystem.firebaseUrl() : null
     // Move to parent ref
-    this.fb = Rebase.createClass(fbUrl.replace(`/${name}`, ''))
+    // this.fb = Rebase.createClass(fbUrl.replace(`/${name}`, ''))
     // Bind to files list on firebase
-    this.ref = this.fb.bindToState(name, {
-      context: this,
-      state: 'files',
-      asArray: true
-    })
+    // this.ref = this.fb.bindToState(name, {
+    //   context: this,
+    //   state: 'files',
+    //   asArray: true
+    // })
     this.debounceStateChange()
   }
 
@@ -167,55 +164,59 @@ class Workspace extends Component {
   removeCollaborator = username =>
     this.props.removeCollaborator(this.props.project, username)
 
-  searchUsers = (q, cb) =>
-    Devshare.users()
-      .search(q)
-      .then(usersList =>
-        cb(null, usersList),
-        error => cb(error)
-      )
+  searchUsers = (q, cb) => {
+    // Devshare.users()
+    //   .search(q)
+    //   .then(usersList =>
+    //     cb(null, usersList),
+    //     error => cb(error)
+    //   )
+  }
 
   handleDownloadClick = () => {
     console.log('handle download click')
-    Devshare.project(this.props.project)
-      .fileSystem
-      .download()
-      .then(res => console.log('download successful:', res))
-      .catch(error => {
-        console.error('error downloading files', error)
-        this.error = error.toString()
-      })
+    // Devshare.project(this.props.project)
+    //   .fileSystem
+    //   .download()
+    //   .then(res => console.log('download successful:', res))
+    //   .catch(error => {
+    //     console.error('error downloading files', error)
+    //     this.error = error.toString()
+    //   })
   }
 
-  addFile = (path, content) =>
-    Devshare.project(this.props.project)
-      .fileSystem
-      .addFile(path.replace('/', ''), content)
-      .then(file => event({ category: 'Files', action: 'File added' }))
-      .catch(error => {
-        console.error('error adding file', error)
-        this.error = error.toString
-      })
+  addFile = (path, content) => {
+    // Devshare.project(this.props.project)
+    //   .fileSystem
+    //   .addFile(path.replace('/', ''), content)
+    //   .then(file => event({ category: 'Files', action: 'File added' }))
+    //   .catch(error => {
+    //     console.error('error adding file', error)
+    //     this.error = error.toString
+    //   })
+  }
 
-  addFolder = path =>
-    Devshare.project(this.props.project)
-      .fileSystem
-      .addFolder(path.replace('/', ''))
-      .then(file => event({ category: 'Files', action: 'Folder added' }))
-      .catch(error => this.error = error.toString)
+  addFolder = path => {
+    // Devshare.project(this.props.project)
+    //   .fileSystem
+    //   .addFolder(path.replace('/', ''))
+    //   .then(file => event({ category: 'Files', action: 'Folder added' }))
+    //   .catch(error => this.error = error.toString)
+  }
 
   addEntity = (type, path, content) =>
     type === 'folder'
       ? this.addFolder(path)
       : this.addFile(path, content)
 
-  deleteFile = (path) =>
-    Devshare.project(this.props.project)
-      .fileSystem
-      .file(path)
-      .remove()
-      .then(file => event({ category: 'Files', action: 'File deleted' }))
-      .catch(error => this.error = error.toString)
+  deleteFile = (path) => {
+    // Devshare.project(this.props.project)
+    //   .fileSystem
+    //   .file(path)
+    //   .remove()
+    //   .then(file => event({ category: 'Files', action: 'File deleted' }))
+    //   .catch(error => this.error = error.toString)
+  }
 
   openFile = (file) => {
     const { project, tabs } = this.props

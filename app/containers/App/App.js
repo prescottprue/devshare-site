@@ -1,9 +1,6 @@
 import React, { Component, PropTypes } from 'react'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
-import Devshare from 'devshare'
-import { Actions } from 'redux-devshare'
-import { hydrateUser } from '../../actions/account'
 import getMuiTheme from 'material-ui/styles/getMuiTheme'
 
 // Components
@@ -35,7 +32,7 @@ class Main extends Component {
   }
 
   componentDidMount () {
-    if (Devshare.currentUser) this.props.hydrateUser(Devshare.currentUser)
+    // if (Devshare.currentUser) this.props.hydrateUser(Devshare.currentUser)
   }
 
   getChildContext = () => {
@@ -76,9 +73,7 @@ const mapStateToProps = ({ account, router }) => (
 )
 
 // Place action methods into props
-const mapDispatchToProps = (dispatch) => {
-  // Actions.account.hydrateUser = hydrateUser
-  return bindActionCreators({}, dispatch)
-}
+const mapDispatchToProps = (dispatch) =>
+  bindActionCreators({}, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(Main)

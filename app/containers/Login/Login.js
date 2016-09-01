@@ -1,4 +1,5 @@
 import React, { Component, PropTypes } from 'react'
+import { Link } from 'react-router'
 import GoogleButton from 'react-google-button'
 
 // Components
@@ -20,7 +21,6 @@ const { pathToJS } = helpers
   // Map state to props
   ({devshare}) => ({
     authError: pathToJS(devshare, 'authError'),
-    auth: pathToJS(devshare, 'auth'),
     account: pathToJS(devshare, 'profile')
   })
 )
@@ -28,6 +28,7 @@ export default class Login extends Component {
 
   static propTypes = {
     devshare: PropTypes.object,
+    authError: PropTypes.object,
     account: PropTypes.object
   }
 
@@ -49,7 +50,7 @@ export default class Login extends Component {
 
   render () {
     const { account, authError } = this.props
-    console.log('props', this.props)
+
     // Loading spinner
     if (account && account.isFetching) {
       return (
@@ -66,20 +67,28 @@ export default class Login extends Component {
         <Paper className='Login-Panel'>
           <LoginForm onLogin={this.handleLogin} />
         </Paper>
-        <div>
+        <div className='Login-Or'>
           <span>or</span>
         </div>
         <div className='Login-Providers'>
           <GoogleButton onClick={this.googleLogin} />
         </div>
+        <div className='Login-Signup'>
+          <span className='Login-Signup-Label'>
+            Need an account?
+          </span>
+          <Link className='Login-Signup-Link' to='/signup'>
+            Signup
+          </Link>
+        </div>
         {
           authError && authError.message
           ? <Snackbar
-              open={authError && !!authError.message}
-              message={authError.message || 'Error'}
-              action='close'
-              autoHideDuration={4000}
-              onRequestClose={this.handleRequestClose}
+            open={authError && !!authError.message}
+            message={authError.message || 'Error'}
+            action='close'
+            autoHideDuration={4000}
+            onRequestClose={this.handleRequestClose}
             />
           : null
         }
