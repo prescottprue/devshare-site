@@ -1,65 +1,57 @@
 import React, { Component, PropTypes } from 'react'
-import { bindActionCreators } from 'redux'
-import { connect } from 'react-redux'
-import { Link } from 'react-router'
-import { Actions } from 'redux-devshare'
-import { event } from '../../helpers/ga'
+import GoogleButton from 'react-google-button'
 
 // Components
 import LoginForm from '../../components/LoginForm/LoginForm'
-import GoogleButton from '../../components/GoogleButton/GoogleButton'
 import Paper from 'material-ui/Paper'
 import CircularProgress from 'material-ui/CircularProgress'
 import Snackbar from 'material-ui/Snackbar'
-import RaisedButton from 'material-ui/RaisedButton'
 
+// Styling
 import './Login.scss'
 
-class Login extends Component {
+// redux/devshare
+import { connect } from 'react-redux'
+import { devshare, helpers } from 'redux-devshare'
+const { pathToJS } = helpers
 
-  state = {
-    snackCanOpen: false,
-    errors: { username: null, password: null }
-  }
-
-  static contextTypes = {
-    router: React.PropTypes.object.isRequired
-  }
+@devshare()
+@connect(
+  // Map state to props
+  ({devshare}) => ({
+    authError: pathToJS(devshare, 'authError'),
+    auth: pathToJS(devshare, 'auth'),
+    account: pathToJS(devshare, 'profile')
+  })
+)
+export default class Login extends Component {
 
   static propTypes = {
-    account: PropTypes.object,
-    login: PropTypes.func.isRequired,
-    authWithProvider: PropTypes.func.isRequired
+    devshare: PropTypes.object,
+    account: PropTypes.object
   }
 
-  componentWillReceiveProps (nextProps) {
-    if (nextProps.account.username) {
-      this.context.router.push(`/${nextProps.account.username}`)
+  componentWillReceiveProps ({ account, history }) {
+    if (account && account.username) {
+      history.push(`/${account.username}`)
     }
   }
 
-  handleRequestClose = () =>
-    this.setState({
-      snackCanOpen: false
-    })
-
-  handleLogin = loginData => {
-    this.setState({
-      snackCanOpen: true
-    })
-    this.props.login(loginData)
-    event({ category: 'User', action: 'Email Login' })
+  handleLogin = (loginData) => {
+    this.setState({ snackCanOpen: true })
+    this.props.devshare.login(loginData)
   }
 
-  providerLogin = provider => {
-    this.props.authWithProvider(provider)
-    event({ category: 'User', action: 'Provider Login', value: provider })
+  googleLogin = () => {
+    this.setState({ snackCanOpen: true })
+    this.props.devshare.login({ provider: 'google', type: 'popup' })
   }
 
   render () {
-    const { isFetching, error } = this.props.account
-
-    if (isFetching) {
+    const { account, authError } = this.props
+    console.log('props', this.props)
+    // Loading spinner
+    if (account && account.isFetching) {
       return (
         <div className='Login'>
           <div className='Login-Progress'>
@@ -74,45 +66,24 @@ class Login extends Component {
         <Paper className='Login-Panel'>
           <LoginForm onLogin={this.handleLogin} />
         </Paper>
-        <div className='Login-Or'>
-          or
+        <div>
+          <span>or</span>
         </div>
-        <GoogleButton onClick={this.providerLogin.bind(this, 'google')} />
-        <RaisedButton
-          label='Sign in With GitHub'
-          primary
-          onTouchTap={this.providerLogin.bind(this, 'github')}
-        />
-        <div className='Login-Signup'>
-          <span className='Login-Signup-Label'>
-            Need an account?
-          </span>
-          <Link className='Login-Signup-Link' to='/signup'>
-            Sign Up
-          </Link>
+        <div className='Login-Providers'>
+          <GoogleButton onClick={this.googleLogin} />
         </div>
-        <Snackbar
-          open={typeof error !== 'undefined' && this.state.snackCanOpen}
-          message={error || 'Error'}
-          action='close'
-          autoHideDuration={3000}
-          onRequestClose={this.handleRequestClose}
-        />
+        {
+          authError && authError.message
+          ? <Snackbar
+              open={authError && !!authError.message}
+              message={authError.message || 'Error'}
+              action='close'
+              autoHideDuration={4000}
+              onRequestClose={this.handleRequestClose}
+            />
+          : null
+        }
       </div>
     )
   }
 }
-
-// Place state of redux store into props of component
-const mapStateToProps = ({ account, router }) => (
-  {
-    account,
-    router
-  }
-)
-
-// Place action methods into props
-const mapDispatchToProps = (dispatch) =>
-  bindActionCreators(Actions.account, dispatch)
-
-export default connect(mapStateToProps, mapDispatchToProps)(Login)

@@ -15,7 +15,7 @@ export default class LoginForm extends Component {
     onLogin: PropTypes.func
   }
 
-  state = { errors: { username: null, password: null } }
+  state = { errors: { email: null, password: null } }
 
   /**
    * @function handleInputChange
@@ -40,10 +40,10 @@ export default class LoginForm extends Component {
 
   handleLogin = e => {
     if (e && typeof e.preventDefault === 'function') e.preventDefault()
-    const { username } = this.state
-    if (!username || username === '') {
+    const { email } = this.state
+    if (!email || email === '') {
       return this.setState({
-        errors: { username: 'Username required' }
+        errors: { email: 'Username required' }
       })
     }
     if (!this.password || this.password === '') {
@@ -51,7 +51,7 @@ export default class LoginForm extends Component {
         errors: { password: 'Password required' }
       })
     }
-    const loginData = { username, password: this.password }
+    const loginData = { email, password: this.password }
     if (this.props.onLogin) this.props.onLogin(loginData)
   }
 
@@ -65,8 +65,8 @@ export default class LoginForm extends Component {
         <TextField
           hintText='some@email.com'
           floatingLabelText='Username/Email'
-          onChange={this.handleInputChange.bind(this, 'username')}
-          errorText={this.state.errors.username}
+          onChange={this.handleInputChange.bind(this, 'email')}
+          errorText={this.state.errors.email}
           style={fieldStyle}
         />
         <TextField

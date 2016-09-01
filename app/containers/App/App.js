@@ -77,8 +77,8 @@ const mapStateToProps = ({ account, router }) => (
 
 // Place action methods into props
 const mapDispatchToProps = (dispatch) => {
-  Actions.account.hydrateUser = hydrateUser
-  return bindActionCreators(Actions.account, dispatch)
+  // Actions.account.hydrateUser = hydrateUser
+  return bindActionCreators({}, dispatch)
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(Main)

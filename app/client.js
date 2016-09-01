@@ -6,7 +6,7 @@ import configureStore from './store/configureStore'
 import { browserHistory } from 'react-router'
 import Devshare from 'devshare'
 
-let initialData = {entities: {projects: {}, users: {}}}
+let initialData = {}
 
 if (Devshare.currentUser) {
   initialData.account = Devshare.currentUser

@@ -31,12 +31,12 @@ export default class Navbar extends Component {
   }
 
   render () {
-    const account = this.props.account
+    const { account } = this.props
     const brandLinkLoc = (account && account.username) ? `/${account.username}` : '/'
     const iconButton = (
       <Avatar
         className='Navbar-Avatar'
-        src={account.avatar_url ? account.avatar_url : stockPhotoUrl}
+        src={account && account.avatar_url ? account.avatar_url : stockPhotoUrl}
         size={avatarSize}
       />
     )
@@ -46,7 +46,7 @@ export default class Navbar extends Component {
         <FlatButton label='Login' onClick={this.selectItem.bind(this, null, 'login')} />
       </div>
     )
-    const rightMenu = account.username ? (
+    const rightMenu = account && account.username ? (
       <IconMenu
         iconButtonElement={iconButton}
         targetOrigin={originSettings}

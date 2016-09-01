@@ -10,7 +10,6 @@ import { connect } from 'react-redux'
 import * as TabActions from '../../actions/tabs'
 import Rebase from 're-base'
 import Devshare from 'devshare'
-import { Actions } from 'redux-devshare'
 
 // Components
 import SideBar from '../../components/SideBar/SideBar'
@@ -430,7 +429,7 @@ function mapStateToProps (state) {
   }
 }
 
-const CombinedActions = merge(TabActions, Actions.files, Actions.account, Actions.projects)
+const CombinedActions = merge(TabActions)
 
 // Place action methods into props
 const mapDispatchToProps = dispatch =>

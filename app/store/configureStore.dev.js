@@ -1,13 +1,14 @@
 import { createStore, applyMiddleware, compose } from 'redux'
 import rootReducer from '../reducers'
 import thunk from 'redux-thunk'
-import { Middleware } from 'redux-devshare'
+import { reduxDevshare } from 'redux-devshare'
 import { syncHistory } from 'react-router-redux'
 
 export default function configureStore (initialState, history) {
   const reduxRouterMiddleware = syncHistory(history)
   const createStoreWithMiddleware = compose(
-    applyMiddleware(thunk, Middleware, reduxRouterMiddleware),
+    applyMiddleware(thunk, reduxRouterMiddleware),
+    reduxDevshare({ userProfile: 'users' }),
     typeof window === 'object' && typeof window.devToolsExtension !== 'undefined' ? window.devToolsExtension() : f => f
   )(createStore)
   const store = createStoreWithMiddleware(rootReducer, initialState)

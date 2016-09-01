@@ -1,14 +1,11 @@
 import { combineReducers } from 'redux'
 import { routeReducer } from 'react-router-redux'
-import { Reducers } from 'redux-devshare'
 import tabs from './tabs'
-const { account, entities, projects } = Reducers
+import { reducer as devshare } from 'redux-devshare'
 
 const rootReducer = combineReducers({
-  account,
-  entities,
   tabs,
-  projects,
+  devshare,
   router: routeReducer
 })
 
