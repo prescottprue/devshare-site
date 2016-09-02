@@ -1,21 +1,24 @@
-language: node_js
-
-node_js:
-- 5.9.0
-
 sudo: false
-
-branches:
-  only:
-    - master
+language: node_js
+node_js:
+  - "6"
 
 cache:
   directories:
     - node_modules
 
+install:
+  - npm install
+
 script:
   - npm run lint
-  - npm run build
+  - npm run test
+  - NODE_ENV=development npm run deploy
+  - NODE_ENV=staging npm run deploy
+  - NODE_ENV=production npm run deploy
+
+after_success:
+  - npm run codecov
 
 deploy:
   skip_cleanup: true
