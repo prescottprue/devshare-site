@@ -1,38 +1,128 @@
+import React, { Component, PropTypes } from 'react'
+import { map } from 'lodash'
+
+// Components
+import ProjectTile from '../components/ProjectTile/ProjectTile'
+import NewProjectTile from '../components/NewProjectTile/NewProjectTile'
+import NewProjectDialog from '../components/NewProjectDialog/NewProjectDialog'
+import SharingDialog from '../components/SharingDialog/SharingDialog'
+
+import classes from './ProjectsContainer.scss'
+
+// redux/devshare
 import { connect } from 'react-redux'
-import { increment, doubleAsync } from '../modules/Projects'
+import { devshare, helpers } from 'redux-devshare'
+const { pathToJS, dataToJS } = helpers
 
-/*  This is a container component. Notice it does not contain any JSX,
-    nor does it import React. This component is **only** responsible for
-    wiring in the actions and state necessary to render a presentational
-    component - in this case, the counter:   */
+// Decorators
+@devshare(['projects'])
+@connect(
+  ({devshare}) => ({
+    projects: map(dataToJS(devshare, 'projects'), (project, key) =>
+      Object.assign({}, project, { key })),
+    account: pathToJS(devshare, 'profile')
+  })
+)
+export class Projects extends Component {
 
-import Projects from '../components/Projects'
+  static contextTypes = {
+    router: React.PropTypes.object.isRequired
+  }
 
-/*  Object of action creators (can also be function that returns object).
-    Keys will be passed as props to presentational components. Here we are
-    implementing our wrapper around increment; the component doesn't care   */
+  static propTypes = {
+    account: PropTypes.object,
+    projects: PropTypes.array,
+    devshare: PropTypes.object,
+    params: PropTypes.object,
+    history: PropTypes.object
+  }
 
-const mapActionCreators = {
-  increment: () => increment(1),
-  doubleAsync
+  state = {
+    addCollabModal: false,
+    newProjectModal: false
+  }
+
+  toggleModal = name => {
+    let newState = {}
+    newState[`${name}Modal`] = !this.state[`${name}Modal`] || false
+    this.setState(newState)
+  }
+
+  newSubmit = name => {
+    this.props.devshare.addProject(this.props.account.username, name)
+    this.toggleModal('newProject')
+  }
+
+  openProject = project =>
+    this.context.router.push(`/${project.owner.username}/${project.name}`)
+
+  collaboratorClick = collaborator =>
+    this.props.history.pushState(null, `/${collaborator.username}`)
+
+  collabClick = user =>
+    this.context.router.push(`/${user.username}`)
+
+  addCollabClick = currentProject => {
+    this.setState({ currentProject })
+    this.toggleModal('addCollab')
+  }
+
+  deleteProject = project =>
+    this.props.devshare.deleteProject(project.owner.username, project.name)
+
+  render () {
+    const { projects, account, params: { username } } = this.props
+    const { newProjectModal, addCollabModal, currentProject } = this.state
+
+    const projectsList = projects ? projects.map((project, i) =>
+      (
+      <ProjectTile
+        key={`${project.name}-Collab-${i}`}
+        project={project}
+        onCollabClick={this.collabClick}
+        onAddCollabClick={this.addCollabClick.bind(this, project)}
+        onSelect={this.openProject}
+        onDelete={this.deleteProject}
+      />
+      )
+    ) : <span>No projects yet</span>
+
+    // If username doesn't match route then hide add project tile
+    if (account && account.username === username) {
+      projectsList.unshift((
+        <NewProjectTile
+          key='Project-New'
+          onClick={this.toggleModal.bind(this, 'newProject')}
+        />
+      ))
+    }
+
+    return (
+      <div className={classes['container']}>
+        <div className={classes['tiles']}>
+          {projectsList}
+        </div>
+        {
+          newProjectModal
+          ? (
+            <NewProjectDialog
+              open={newProjectModal}
+              onCreateClick={this.newSubmit}
+            />
+          ) : null
+        }
+        {
+          (currentProject && addCollabModal)
+          ? (
+            <SharingDialog
+              projectKey={`${currentProject.owner.username}/${currentProject.name}`}
+              open={addCollabModal}
+              onRequestClose={this.toggleModal.bind(this, 'addCollab')}
+            />
+          ) : null
+        }
+      </div>
+    )
+  }
 }
-
-const mapStateToProps = (state) => ({
-  counter: state.counter
-})
-
-/*  Note: mapStateToProps is where you should use `reselect` to create selectors, ie:
-
-    import { createSelector } from 'reselect'
-    const counter = (state) => state.counter
-    const tripleCount = createSelector(counter, (count) => count * 3)
-    const mapStateToProps = (state) => ({
-      counter: tripleCount(state)
-    })
-
-    Selectors can compute derived data, allowing Redux to store the minimal possible state.
-    Selectors are efficient. A selector is not recomputed unless one of its arguments change.
-    Selectors are composable. They can be used as input to other selectors.
-    https://github.com/reactjs/reselect    */
-
-export default connect(mapStateToProps, mapActionCreators)(Projects)
+export default Projects
