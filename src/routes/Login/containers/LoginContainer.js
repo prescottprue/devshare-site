@@ -10,6 +10,7 @@ import CircularProgress from 'material-ui/CircularProgress'
 import Snackbar from 'material-ui/Snackbar'
 import LoginForm from '../components/LoginForm'
 import { project as projectSettings } from '../../../config'
+import classes from './LoginContainer.scss'
 
 // Props decorators
 @devshare()
@@ -34,7 +35,7 @@ export default class Login extends Component {
     snackCanOpen: false,
     errorMessage: null
   }
-  
+
   componentWillReceiveProps (nextProps) {
     const { account, authError } = nextProps
     if (authError) {
@@ -56,8 +57,7 @@ export default class Login extends Component {
   }
 
   googleLogin = () => {
-    // TODO: Handle Google Login
-    console.log('google')
+    this.handleLogin({ provider: 'google', type: 'popup' })
   }
 
   render () {
@@ -66,8 +66,8 @@ export default class Login extends Component {
 
     if (isLoading) {
       return (
-        <div className='Login'>
-          <div className='Login-Progress'>
+        <div className={classes['container']}>
+          <div className={classes['progress']}>
             <CircularProgress  mode='indeterminate' />
           </div>
         </div>
@@ -75,19 +75,19 @@ export default class Login extends Component {
     }
 
     return (
-      <div className='Login'>
-        <Paper className='Login-Panel'>
+      <div className={classes['container']}>
+        <Paper className={classes['panel']}>
           <LoginForm onLogin={ this.handleLogin } />
         </Paper>
-        <div className='Login-Or'>
+        <div className={classes['or']}>
           or
         </div>
         <GoogleButton onClick={ this.googleLogin } />
-        <div className='Login-Signup'>
-          <span className='Login-Signup-Label'>
+        <div className={classes['signup']}>
+          <span className={classes['signup-label']}>
             Need an account?
           </span>
-          <Link className='Login-Signup-Link' to='/signup'>
+          <Link className={classes['signup-link']} to='/signup'>
             Sign Up
           </Link>
         </div>

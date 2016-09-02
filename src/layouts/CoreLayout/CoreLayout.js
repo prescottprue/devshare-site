@@ -1,5 +1,5 @@
 import React from 'react'
-import Navbar from '../../components/Navbar'
+import Navbar from '../../containers/Navbar/Navbar'
 import classes from './CoreLayout.scss'
 import '../../styles/core.scss'
 

@@ -5,8 +5,8 @@ import RaisedButton from 'material-ui/RaisedButton'
 import Checkbox from 'material-ui/Checkbox'
 import { Field, reduxForm } from 'redux-form'
 
-import classes from './LoginForm.scss'
-const buttonStyle = {width: '100%'}
+import classes from './SignupForm.scss'
+const buttonStyle = { width: '100%' }
 
 const validate = values => {
   const errors = {}
@@ -15,55 +15,36 @@ const validate = values => {
   return errors
 }
 
-const LoginForm = props => {
-  const { handleSubmit, submitting } = props
+const SignupForm = ({ handleSubmit, submitting }) => {
   return (
     <form className={classes['container']} onSubmit={handleSubmit}>
       <div>
-        <Field
-          name='email'
-          component={TextField}
-          label='Email'
-        />
+        <Field name='username' component={TextField} label='Username' />
       </div>
       <div>
-        <Field
-          name='password'
-          component={TextField}
-          label='Password'
-        />
+        <Field name='email' component={TextField} label='Email' />
+      </div>
+      <div>
+        <Field name='password' component={TextField} label='Password' />
       </div>
       <div className={classes['submit']}>
         <RaisedButton
-          label='Login'
+          label='Signup'
           primary
           type='submit'
           disabled={submitting}
           style={buttonStyle}
         />
       </div>
-      <div className={classes['options']}>
-        <div className={classes['remember']}>
-          <Checkbox
-            name='remember'
-            value='remember'
-            label='Remember'
-            labelStyle={{ fontSize: '.8rem' }}
-          />
-        </div>
-        <Link className={classes['recover']} to='/recover'>
-          Forgot Password?
-        </Link>
-      </div>
     </form>
   )
 }
-LoginForm.propTypes = {
+SignupForm.propTypes = {
   handleSubmit: PropTypes.func,
   submitting: PropTypes.bool
 }
 
 export default reduxForm({
-  form: 'Login',
+  form: 'Signup',
   validate
-})(LoginForm)
+})(SignupForm)

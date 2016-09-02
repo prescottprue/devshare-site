@@ -1,0 +1,16 @@
+@import "../../styles/variables";
+
+.container {
+  flex-direction: row;
+  align-items: center;
+  display: flex;
+  color: $navbarText;
+  font-weight: 200;
+  max-width: 140px;
+}
+.avatar {
+  margin-right: 1rem;
+}
+.menu {
+  margin-top: 6px;
+}

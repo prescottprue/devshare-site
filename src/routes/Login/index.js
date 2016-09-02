@@ -1,5 +1,3 @@
-import { injectReducer } from '../../store/reducers'
-
 export default (store) => ({
   path: 'login',
   /*  Async getComponent is only invoked when route matches   */

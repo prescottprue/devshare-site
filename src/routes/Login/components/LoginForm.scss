@@ -46,7 +46,7 @@
   flex-direction: row;
   flex-basis: 50%;
 }
-.Recover-Link {
+.recover {
   display: inline;
   font-size: .8rem;
   color: $linkBlue;
@@ -54,25 +54,25 @@
     text-decoration: underline;
   }
 }
-.Progress {
+.progress {
   margin-top: 5rem;
 }
 @media screen and (max-width: 958px){
-  .Recover-Link {
+  .recover {
     font-size: 1rem;
   }
-  .Options {
+  .options {
     flex-direction: column;
   }
-  .Remember {
+  .remember {
     display: none;
   }
 }
 @media screen and (max-width: 1000px){
-  .Options {
+  .options {
     flex-direction: column;
   }
-  .Remember {
+  .remember {
     display: none;
   }
 }

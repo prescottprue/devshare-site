@@ -1,5 +1,5 @@
 export const project = {
-  name: 'react-firebase-test'
+  name: 'devshare'
 }
 
 export const firebase = {

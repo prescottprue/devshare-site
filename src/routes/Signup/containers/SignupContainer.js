@@ -1,38 +1,105 @@
+import React, { Component, PropTypes } from 'react'
+import { Link } from 'react-router'
+import GoogleButton from 'react-google-button'
+
+// Components
+import SignupForm from '../components/SignupForm'
+import Paper from 'material-ui/Paper'
+import CircularProgress from 'material-ui/CircularProgress'
+import Snackbar from 'material-ui/Snackbar'
+
+import classes from './SignupContainer.scss'
+
+
+// redux-devsharev3
 import { connect } from 'react-redux'
-import { increment, doubleAsync } from '../modules/Signup'
+import { devshare, helpers } from 'redux-devshare'
+const { pathToJS } = helpers
 
-/*  This is a container component. Notice it does not contain any JSX,
-    nor does it import React. This component is **only** responsible for
-    wiring in the actions and state necessary to render a presentational
-    component - in this case, the counter:   */
+@devshare()
+@connect(
+  // Map state to props
+  ({devshare}) => ({
+    authError: pathToJS(devshare, 'authError'),
+    account: pathToJS(devshare, 'profile')
+  })
+)
+export default class Signup extends Component {
 
-import Signup from '../components/Signup'
+  static propTypes = {
+    account: PropTypes.object,
+    authError: PropTypes.object
+  }
 
-/*  Object of action creators (can also be function that returns object).
-    Keys will be passed as props to presentational components. Here we are
-    implementing our wrapper around increment; the component doesn't care   */
+  state = {
+    snackCanOpen: false,
+    errors: { username: null, password: null }
+  }
 
-const mapActionCreators = {
-  increment: () => increment(1),
-  doubleAsync
-}
+  componentWillReceiveProps ({ account, history }) {
+    if (account && account.username) {
+      history.push(`/${account.username}`)
+    }
+  }
 
-const mapStateToProps = (state) => ({
-  counter: state.counter
-})
-
-/*  Note: mapStateToProps is where you should use `reselect` to create selectors, ie:
-
-    import { createSelector } from 'reselect'
-    const counter = (state) => state.counter
-    const tripleCount = createSelector(counter, (count) => count * 3)
-    const mapStateToProps = (state) => ({
-      counter: tripleCount(state)
+  reset = () =>
+    this.setState({
+      errors: {},
+      username: null,
+      email: null,
+      name: null
     })
 
-    Selectors can compute derived data, allowing Redux to store the minimal possible state.
-    Selectors are efficient. A selector is not recomputed unless one of its arguments change.
-    Selectors are composable. They can be used as input to other selectors.
-    https://github.com/reactjs/reselect    */
+  handleSignup = ({ email, password, username }) => {
+    this.setState({ snackCanOpen: true })
+    this.props.devshare.createUser({ email, password }, { username, email })
+  }
 
-export default connect(mapStateToProps, mapActionCreators)(Signup)
+  googleLogin = () => {
+    this.setState({ snackCanOpen: true })
+    this.props.devshare.login({ provider: 'google', type: 'popup' })
+  }
+
+  render () {
+    const { account, authError, devshare } = this.props
+    const { snackCanOpen } = this.state
+    console.log('props:', devshare)
+    if (account && account.isFetching) {
+      return (
+        <div className={classes['container']}>
+          <div className='Signup-Progress'>
+            <CircularProgress mode='indeterminate' />
+          </div>
+        </div>
+      )
+    }
+
+    return (
+      <div className={classes['container']}>
+        <Paper className={classes['panel']}>
+          <SignupForm onSignup={this.handleSignup} />
+        </Paper>
+        <div className={classes['providers']}>
+          <GoogleButton onClick={this.googleLogin} />
+        </div>
+        <div className={classes['login']}>
+          <span className={classes['login-label']}>
+            Already have an account?
+          </span>
+          <Link className={classes['login-link']} to='/login'>
+            Login
+          </Link>
+        </div>
+        {
+          authError && authError.message && snackCanOpen ?
+            <Snackbar
+              open={authError && !!authError.message}
+              message={authError ? authError.message : 'Signup error'}
+              action='close'
+              autoHideDuration={3000}
+            /> : null
+        }
+      </div>
+    )
+  }
+}
