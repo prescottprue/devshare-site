@@ -6,7 +6,7 @@ const { isLoaded, isEmpty, pathToJS } = helpers
 
 import GoogleButton from 'react-google-button'
 import Paper from 'material-ui/Paper'
-import CircularProgress from 'material-ui/CircularProgress'
+// import CircularProgress from 'material-ui/CircularProgress'
 import Snackbar from 'material-ui/Snackbar'
 import LoginForm from '../components/LoginForm'
 import { project as projectSettings } from '../../../config'
@@ -32,12 +32,11 @@ export default class Login extends Component {
   }
 
   state = {
-    snackCanOpen: false,
-    errorMessage: null
+    snackCanOpen: false
   }
 
   componentWillReceiveProps (nextProps) {
-    const { account, authError } = nextProps
+    const { authError } = nextProps
     if (authError) {
       this.setState({
         isLoading: false
@@ -61,28 +60,28 @@ export default class Login extends Component {
   }
 
   render () {
-    const { isLoading, snackCanOpen, errorMessage } = this.state
+    const { snackCanOpen } = this.state
     const { authError } = this.props
 
-    if (isLoading) {
-      return (
-        <div className={classes['container']}>
-          <div className={classes['progress']}>
-            <CircularProgress  mode='indeterminate' />
-          </div>
-        </div>
-      )
-    }
+    // if (isLoading) {
+    //   return (
+    //     <div className={classes['container']}>
+    //       <div className={classes['progress']}>
+    //         <CircularProgress mode='indeterminate' />
+    //       </div>
+    //     </div>
+    //   )
+    // }
 
     return (
       <div className={classes['container']}>
         <Paper className={classes['panel']}>
-          <LoginForm onLogin={ this.handleLogin } />
+          <LoginForm onLogin={this.handleLogin} />
         </Paper>
         <div className={classes['or']}>
           or
         </div>
-        <GoogleButton onClick={ this.googleLogin } />
+        <GoogleButton onClick={this.googleLogin} />
         <div className={classes['signup']}>
           <span className={classes['signup-label']}>
             Need an account?
@@ -92,14 +91,13 @@ export default class Login extends Component {
           </Link>
         </div>
         <Snackbar
-          open={ isLoaded(authError) && !isEmpty(authError) && snackCanOpen }
-          message={ authError ? authError.toString() : 'Error' }
+          open={isLoaded(authError) && !isEmpty(authError) && snackCanOpen}
+          message={authError && authError.message ? authError.message : 'Error'}
           action='close'
-          autoHideDuration={ 3000 }
-          onRequestClose={ this.handleRequestClose }
+          autoHideDuration={3000}
+          onRequestClose={this.handleRequestClose}
         />
       </div>
     )
-
   }
 }

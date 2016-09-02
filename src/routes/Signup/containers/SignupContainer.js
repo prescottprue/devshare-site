@@ -10,7 +10,6 @@ import Snackbar from 'material-ui/Snackbar'
 
 import classes from './SignupContainer.scss'
 
-
 // redux-devsharev3
 import { connect } from 'react-redux'
 import { devshare, helpers } from 'redux-devshare'
@@ -25,9 +24,9 @@ const { pathToJS } = helpers
   })
 )
 export default class Signup extends Component {
-
   static propTypes = {
     account: PropTypes.object,
+    devshare: PropTypes.object,
     authError: PropTypes.object
   }
 
@@ -91,13 +90,14 @@ export default class Signup extends Component {
           </Link>
         </div>
         {
-          authError && authError.message && snackCanOpen ?
-            <Snackbar
+          authError && authError.message && snackCanOpen
+            ? <Snackbar
               open={authError && !!authError.message}
               message={authError ? authError.message : 'Signup error'}
               action='close'
               autoHideDuration={3000}
-            /> : null
+              />
+            : null
         }
       </div>
     )

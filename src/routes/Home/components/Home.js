@@ -1,7 +1,5 @@
 import React, { Component } from 'react' // eslint-disable-line
 import { map } from 'lodash'
-import { connect } from 'react-redux'
-import { bindActionCreators } from 'redux'
 import { Link } from 'react-router'
 import logo from '../assets/devShareLogo.gif'
 import preview from '../assets/devShareEdit.gif'

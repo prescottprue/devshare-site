@@ -1,8 +1,6 @@
 import React, { PropTypes } from 'react'
-import { Link } from 'react-router'
 import TextField from '../../../components/TextField'
 import RaisedButton from 'material-ui/RaisedButton'
-import Checkbox from 'material-ui/Checkbox'
 import { Field, reduxForm } from 'redux-form'
 
 import classes from './SignupForm.scss'

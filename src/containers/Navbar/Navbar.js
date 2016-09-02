@@ -13,9 +13,10 @@ const originSettings = { horizontal: 'right', vertical: 'bottom' }
 const buttonStyle = { color: 'white' }
 const avatarSize = 50
 
+// redux/devshare
 import { connect } from 'react-redux'
 import { devshare, helpers } from 'redux-devshare'
-const { isLoaded, isEmpty, pathToJS } = helpers
+const { pathToJS } = helpers
 
 // Decorators
 @devshare()
