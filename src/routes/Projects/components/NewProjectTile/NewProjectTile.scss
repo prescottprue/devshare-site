@@ -1,11 +1,16 @@
 @import "../../../../styles/base";
 
-.NewProjectTile {
+.container {
   display: flex;
   flex-direction: row;
   justify-content: center;
   align-items: center;
   cursor: pointer;
+  height: 200px;
+  flex-basis: 300;
+  margin: .5rem;
+  padding: 1.3rem;
+  overflow: hidden;
   min-width: 300px;
   @media screen and (max-width: 600px){
     flex-basis: 80%;

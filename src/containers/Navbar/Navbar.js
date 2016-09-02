@@ -27,9 +27,23 @@ const { pathToJS } = helpers
   })
 )
 export class Navbar extends Component {
+  static contextTypes = {
+    router: PropTypes.object.isRequired
+  }
+
+  static propTypes = {
+    account: PropTypes.object,
+    devshare: PropTypes.object.isRequired
+  }
+
+  handleLogout = () =>
+    this.props.devshare
+      .logout()
+      .then(() => this.context.router.push('/'))
+
   render () {
     const { account } = this.props
-
+    console.log('props', this.props)
     const iconButton = (
       <Avatar
         className={classes['avatar']}
@@ -39,7 +53,7 @@ export class Navbar extends Component {
     )
 
     const mainMenu = (
-      <div className='Navbar-Main-Menu'>
+      <div className={classes['menu']}>
         <Link to='/signup'>
           <FlatButton
             label='Sign Up'
@@ -68,6 +82,7 @@ export class Navbar extends Component {
         <MenuItem
           primaryText='Sign out'
           value='logout'
+          onClick={this.handleLogout}
         />
       </IconMenu>
     ) : mainMenu
@@ -79,16 +94,11 @@ export class Navbar extends Component {
             devshare
           </Link>
         }
-        className={classes['Navbar']}
         showMenuIconButton={false}
         iconElementRight={rightMenu}
       />
     )
   }
-}
-
-Navbar.propTypes = {
-  account: PropTypes.object
 }
 
 export default Navbar

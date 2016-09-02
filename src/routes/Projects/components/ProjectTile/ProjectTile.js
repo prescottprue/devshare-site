@@ -117,8 +117,12 @@ export default class ProjectTile extends Component {
       collaboratorsList.push((
         <div key={`${name}-Add-Collab`} onClick={this.addClick}>
           <Avatar
-            className={classes['collaborator-avatar']}
-            icon={<PersonAddIcon style={personIconStyle} hoverColor={hoverColor} />}
+            icon={
+              <PersonAddIcon
+                style={personIconStyle}
+                hoverColor={hoverColor}
+              />
+            }
             size={avatarSize}
           />
         </div>
@@ -140,8 +144,8 @@ export default class ProjectTile extends Component {
           onSubmit={this.deleteProject}
         />
         <Paper key={`Project-${name}`} className={classes['container']}>
-          <div className='ProjectTile-Top'>
-            <span className='ProjectTile-Name' onClick={this.handleSelect}>
+          <div className={classes['top']}>
+            <span className={classes['name']} onClick={this.handleSelect}>
               {name}
             </span>
             <Popover
@@ -152,8 +156,14 @@ export default class ProjectTile extends Component {
               onRequestClose={this.handleDropdownClose}
             >
               <List>
-                <ListItem primaryText='More Settings' onClick={this.openDialog.bind(this, 'settings', 'dropdown')} />
-                <ListItem primaryText='Delete' onClick={this.openDialog.bind(this, 'delete', 'dropdown')} />
+                <ListItem
+                  primaryText='More Settings'
+                  onClick={() => { this.openDialog('settings', 'dropdown') }}
+                />
+                <ListItem
+                  primaryText='Delete'
+                  onClick={() => { this.openDialog('delete', 'dropdown') }}
+                />
               </List>
             </Popover>
             <SettingsIcon className={classes['settings']} onClick={this.toggleDropdown} hoverColor={hoverColor} />

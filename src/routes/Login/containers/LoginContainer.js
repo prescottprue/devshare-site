@@ -35,12 +35,14 @@ export default class Login extends Component {
     snackCanOpen: false
   }
 
-  componentWillReceiveProps (nextProps) {
-    const { authError } = nextProps
+  componentWillReceiveProps ({ authError, account }) {
     if (authError) {
       this.setState({
         isLoading: false
       })
+    }
+    if (account && account.username) {
+      this.context.router.push(`projects/${account.username}`)
     }
   }
 
@@ -52,7 +54,6 @@ export default class Login extends Component {
       isLoading: true
     })
     this.props.devshare.login(loginData)
-        .then(() => this.context.router.push(`/${projectSettings.postLoginRoute}`))
   }
 
   googleLogin = () => {
