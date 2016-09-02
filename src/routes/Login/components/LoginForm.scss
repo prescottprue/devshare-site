@@ -1,4 +1,4 @@
-@import '../../../styles/variables';
+@import '../../../styles/core';
 .container {
   display: -webkit-box;
   display: -moz-box;
@@ -24,7 +24,6 @@
   min-width: 192px;
   margin-top: 1.5rem;
   text-align: center;
-  color: $linkBlue;
   align-items: center;
   flex-direction: column;
 }
@@ -49,7 +48,6 @@
 .recover {
   display: inline;
   font-size: .8rem;
-  color: $linkBlue;
   .hover {
     text-decoration: underline;
   }

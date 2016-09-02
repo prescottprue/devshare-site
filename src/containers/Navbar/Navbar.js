@@ -17,7 +17,7 @@ import { connect } from 'react-redux'
 import { devshare, helpers } from 'redux-devshare'
 const { isLoaded, isEmpty, pathToJS } = helpers
 
-// Props decorators
+// Decorators
 @devshare()
 @connect(
   ({devshare}) => ({
