@@ -6,7 +6,7 @@ const { isLoaded, isEmpty, pathToJS } = helpers
 
 import GoogleButton from 'react-google-button'
 import Paper from 'material-ui/Paper'
-// import CircularProgress from 'material-ui/CircularProgress'
+import CircularProgress from 'material-ui/CircularProgress'
 import Snackbar from 'material-ui/Snackbar'
 import LoginForm from '../components/LoginForm'
 import { project as projectSettings } from '../../../config'
@@ -24,7 +24,8 @@ export default class Login extends Component {
   static propTypes = {
     account: PropTypes.object,
     devshare: PropTypes.object,
-    authError: PropTypes.object
+    authError: PropTypes.object,
+    location: PropTypes.object.isRequired
   }
 
   static contextTypes = {
@@ -36,13 +37,10 @@ export default class Login extends Component {
   }
 
   componentWillReceiveProps ({ authError, account }) {
-    if (authError) {
+    if (authError && authError.message) {
       this.setState({
         isLoading: false
       })
-    }
-    if (account && account.username) {
-      this.context.router.push(`projects/${account.username}`)
     }
   }
 
@@ -61,18 +59,18 @@ export default class Login extends Component {
   }
 
   render () {
-    const { snackCanOpen } = this.state
+    const { snackCanOpen, isLoading } = this.state
     const { authError } = this.props
 
-    // if (isLoading) {
-    //   return (
-    //     <div className={classes['container']}>
-    //       <div className={classes['progress']}>
-    //         <CircularProgress mode='indeterminate' />
-    //       </div>
-    //     </div>
-    //   )
-    // }
+    if (isLoading) {
+      return (
+        <div className={classes['container']}>
+          <div className={classes['progress']}>
+            <CircularProgress mode='indeterminate' />
+          </div>
+        </div>
+      )
+    }
 
     return (
       <div className={classes['container']}>

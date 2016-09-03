@@ -24,6 +24,9 @@ const { pathToJS } = helpers
   })
 )
 export default class Signup extends Component {
+  static contextTypes = {
+    router: PropTypes.object.isRequired
+  }
   static propTypes = {
     account: PropTypes.object,
     devshare: PropTypes.object,
@@ -35,11 +38,12 @@ export default class Signup extends Component {
     errors: { username: null, password: null }
   }
 
-  componentWillReceiveProps ({ account, history }) {
-    if (account && account.username) {
-      history.push(`/${account.username}`)
-    }
-  }
+  // componentWillReceiveProps ({ account, history, location }) {
+  //   console.log('component will recieve props', account, location)
+  //   if (account && account.username && location.pathname === '/signup') {
+  //     // this.context.router.push(`/projects/${account.username}`)
+  //   }
+  // }
 
   reset = () =>
     this.setState({
@@ -49,9 +53,13 @@ export default class Signup extends Component {
       name: null
     })
 
-  handleSignup = ({ email, password, username }) => {
+  handleSignup = (creds) => {
     this.setState({ snackCanOpen: true })
-    this.props.devshare.createUser({ email, password }, { username, email })
+    this.props.devshare.signup(creds)
+      .then((account) => {
+        console.log('account after signup', account)
+        this.context.router.push(`/projects/${account.username}`)
+      })
   }
 
   googleLogin = () => {
@@ -60,9 +68,9 @@ export default class Signup extends Component {
   }
 
   render () {
-    const { account, authError, devshare } = this.props
+    const { account, authError } = this.props
     const { snackCanOpen } = this.state
-    console.log('props:', devshare)
+
     if (account && account.isFetching) {
       return (
         <div className={classes['container']}>
@@ -76,7 +84,7 @@ export default class Signup extends Component {
     return (
       <div className={classes['container']}>
         <Paper className={classes['panel']}>
-          <SignupForm onSignup={this.handleSignup} />
+          <SignupForm onSubmit={this.handleSignup} />
         </Paper>
         <div className={classes['providers']}>
           <GoogleButton onClick={this.googleLogin} />

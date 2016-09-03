@@ -43,7 +43,7 @@ export class Navbar extends Component {
 
   render () {
     const { account } = this.props
-    console.log('props', this.props)
+
     const iconButton = (
       <Avatar
         className={classes['avatar']}
