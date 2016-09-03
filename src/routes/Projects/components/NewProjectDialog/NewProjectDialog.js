@@ -19,7 +19,9 @@ class NewProjectDialog extends Component {
         open: true
       })
       setTimeout(() => {
-        this.refs.projectNameField.focus()
+        if (this.refs && this.refs.projectNameField) {
+          this.refs.projectNameField.focus()
+        }
       }, 500)
     }
   }

@@ -25,7 +25,8 @@ const { pathToJS, dataToJS } = helpers
   ({ devshare }, { params }) => ({
     projects: map(dataToJS(devshare, `projects/${params.username}`), (project, key) =>
       Object.assign({}, project, { key })),
-    account: pathToJS(devshare, 'profile')
+    account: pathToJS(devshare, 'profile'),
+    auth: pathToJS(devshare, 'auth'),
   })
 )
 export class Projects extends Component {
@@ -53,16 +54,21 @@ export class Projects extends Component {
     this.setState(newState)
   }
 
-  newSubmit = name => {
-    this.props.devshare.addProject(this.props.account.username, name)
-    this.toggleModal('newProject')
-  }
+  // TODO: Add through devshare projects method
+  newSubmit = name =>
+    this.props.devshare
+      .set(`projects/${this.props.account.username}/${name}`,
+        { name, owner: this.props.auth.uid }
+      )
+      .then(() => this.toggleModal('newProject'))
+
+  // TODO: Delete through devshare projects method
+  deleteProject = ({ name }) =>
+    this.props.devshare
+      .remove(`projects/${this.props.params.username}/${name}`)
 
   openProject = project =>
     this.context.router.push(`/${project.owner.username}/${project.name}`)
-
-  collaboratorClick = collaborator =>
-    this.props.history.pushState(null, `/${collaborator.username}`)
 
   collabClick = user =>
     this.context.router.push(`/${user.username}`)
@@ -71,9 +77,6 @@ export class Projects extends Component {
     this.setState({ currentProject })
     this.toggleModal('addCollab')
   }
-
-  deleteProject = project =>
-    this.props.devshare.deleteProject(project.owner.username, project.name)
 
   render () {
     const { projects, account, params: { username } } = this.props

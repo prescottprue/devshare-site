@@ -69,9 +69,9 @@ export default class ProjectTile extends Component {
     newState[`${name}Open`] = true
     if (name2) {
       newState[`${name2}Open`] = false
-      e.preventDefault()
+      e && e.preventDefault && e.preventDefault()
     } else {
-      name2.preventDefault()
+      name2 && name2.preventDefault && name2.preventDefault()
     }
     this.setState(newState)
   }

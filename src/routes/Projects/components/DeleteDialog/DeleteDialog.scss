@@ -1,34 +1,34 @@
 @import '../../../../styles/base';
-.DeleteDialog {
-  &-Content {
-    font-weight: 300;
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-start;
-    align-items: center;
-    overflow-y: scroll;
-    margin-bottom: 20px;
-  }
-  &-Warning {
-    display: inline;
-    color: red;
-  }
-  &-Question {
-    margin-top: 1rem;
-  }
-  &-Restatement {
-    margin-top: 1rem;
-    &-Name {
-      color: $primary;
-    }
-  }
+.container {
 
-  &-InputGroup {
-    margin-top: 1rem;
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-start;
-    align-items: center;
+}
+.content {
+  font-weight: 300;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  overflow-y: scroll;
+  margin-bottom: 20px;
+}
+.warning {
+  display: inline;
+  color: red;
+}
+.question {
+  margin-top: 1rem;
+}
+.restatement {
+  margin-top: 1rem;
+  &-name {
+    color: $primary;
   }
+}
 
+.input-group {
+  margin-top: 1rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
 }
