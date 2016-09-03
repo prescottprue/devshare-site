@@ -1,5 +1,3 @@
-import { injectReducer } from '../../store/reducers'
-
 export default (store) => ({
   path: 'account',
   /*  Async getComponent is only invoked when route matches   */
@@ -10,10 +8,6 @@ export default (store) => ({
       /*  Webpack - use require callback to define
           dependencies for bundling   */
       const Account = require('./containers/AccountContainer').default
-      const reducer = require('./modules/Account').default
-
-      /*  Add the reducer to the store on key 'counter'  */
-      injectReducer(store, { key: 'Account', reducer })
 
       /*  Return getComponent   */
       cb(null, Account)

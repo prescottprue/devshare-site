@@ -17,10 +17,6 @@ export default class ProjectSettingsDialog extends Component {
 
   state = { vimEnabled: this.props.vimEnabled || false }
 
-  componentWillReceiveProps (nextProps) {
-    // console.log('props:', nextProps)
-  }
-
   handleAutoCompleteSubmit = () => {
     // TODO: Add collaborator
   }

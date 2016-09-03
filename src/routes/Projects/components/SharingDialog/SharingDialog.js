@@ -34,7 +34,6 @@ export default class SharingDialog extends Component {
   }
 
   componentWillReceiveProps (nextProps) {
-    // console.log('component recieve props', nextProps)
     if (nextProps.open) {
       this.setState({
         open: nextProps.open

@@ -5,6 +5,7 @@ import LoginRoute from './Login'
 import SignupRoute from './Signup'
 import ProjectsRoute from './Projects'
 import ProjectRoute from './Project'
+import AccountRoute from './Account'
 
 /*  Note: Instead of using JSX, we recommend using react-router
     PlainRoute objects to build route definitions.   */
@@ -14,6 +15,7 @@ export const createRoutes = (store) => ({
   component: CoreLayout,
   indexRoute: Home,
   childRoutes: [
+    AccountRoute(store),
     LoginRoute(store),
     SignupRoute(store),
     ProjectsRoute(store),

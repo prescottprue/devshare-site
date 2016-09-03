@@ -1,16 +1,18 @@
 import React, { Component, PropTypes } from 'react'
 import { Link } from 'react-router'
-import { connect } from 'react-redux'
-import { devshare, helpers } from 'redux-devshare'
-const { isLoaded, isEmpty, pathToJS } = helpers
-
 import GoogleButton from 'react-google-button'
 import Paper from 'material-ui/Paper'
 import CircularProgress from 'material-ui/CircularProgress'
 import Snackbar from 'material-ui/Snackbar'
 import LoginForm from '../components/LoginForm'
-import { project as projectSettings } from '../../../config'
+
+// styles
 import classes from './LoginContainer.scss'
+
+// redux-devsharev3
+import { connect } from 'react-redux'
+import { devshare, helpers } from 'redux-devshare'
+const { isLoaded, isEmpty, pathToJS } = helpers
 
 // Props decorators
 @devshare()
@@ -33,36 +35,30 @@ export default class Login extends Component {
   }
 
   state = {
-    snackCanOpen: false
+    snackCanOpen: false,
+    isLoading: false
   }
-
-  componentWillReceiveProps ({ authError, account }) {
-    if (authError && authError.message) {
-      this.setState({
-        isLoading: false
-      })
-    }
-  }
-
-  handleRequestClose = () => this.setState({ snackCanOpen: false })
 
   handleLogin = loginData => {
     this.setState({
       snackCanOpen: true,
       isLoading: true
     })
-    this.props.devshare.login(loginData)
+    this.props.devshare
+      .login(loginData)
+      .then((account) =>
+        this.context.router.push(`${account.username}`)
+      )
   }
 
-  googleLogin = () => {
+  googleLogin = () =>
     this.handleLogin({ provider: 'google', type: 'popup' })
-  }
 
   render () {
-    const { snackCanOpen, isLoading } = this.state
+    const { isLoading, snackCanOpen } = this.state
     const { authError } = this.props
 
-    if (isLoading) {
+    if (isLoading && !authError) {
       return (
         <div className={classes['container']}>
           <div className={classes['progress']}>
@@ -75,7 +71,7 @@ export default class Login extends Component {
     return (
       <div className={classes['container']}>
         <Paper className={classes['panel']}>
-          <LoginForm onLogin={this.handleLogin} />
+          <LoginForm onSubmit={this.handleLogin} />
         </Paper>
         <div className={classes['or']}>
           or
@@ -89,13 +85,16 @@ export default class Login extends Component {
             Sign Up
           </Link>
         </div>
-        <Snackbar
-          open={isLoaded(authError) && !isEmpty(authError) && snackCanOpen}
-          message={authError && authError.message ? authError.message : 'Error'}
-          action='close'
-          autoHideDuration={3000}
-          onRequestClose={this.handleRequestClose}
-        />
+        {
+          isLoaded(authError) && !isEmpty(authError) && snackCanOpen
+            ? <Snackbar
+              open={isLoaded(authError) && !isEmpty(authError) && snackCanOpen}
+              message={authError ? authError.message : 'Signup error'}
+              action='close'
+              autoHideDuration={3000}
+              />
+            : null
+        }
       </div>
     )
   }

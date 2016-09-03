@@ -13,7 +13,7 @@ import classes from './SignupContainer.scss'
 // redux-devsharev3
 import { connect } from 'react-redux'
 import { devshare, helpers } from 'redux-devshare'
-const { pathToJS } = helpers
+const { isLoaded, isEmpty, pathToJS } = helpers
 
 @devshare()
 @connect(
@@ -35,43 +35,43 @@ export default class Signup extends Component {
 
   state = {
     snackCanOpen: false,
-    errors: { username: null, password: null }
+    isLoading: false
   }
 
-  // componentWillReceiveProps ({ account, history, location }) {
-  //   console.log('component will recieve props', account, location)
-  //   if (account && account.username && location.pathname === '/signup') {
-  //     // this.context.router.push(`/projects/${account.username}`)
-  //   }
-  // }
-
-  reset = () =>
+  handleRequestClose = () =>
     this.setState({
-      errors: {},
-      username: null,
-      email: null,
-      name: null
+      snackCanOpen: false
     })
 
   handleSignup = (creds) => {
-    this.setState({ snackCanOpen: true })
-    this.props.devshare.signup(creds)
-      .then((account) => {
-        console.log('account after signup', account)
-        this.context.router.push(`/projects/${account.username}`)
-      })
+    this.setState({
+      snackCanOpen: true,
+      isLoading: true
+    })
+    this.props.devshare
+      .signup(creds)
+      .then(account =>
+        this.context.router.push(`${account.username}`)
+      )
   }
 
   googleLogin = () => {
-    this.setState({ snackCanOpen: true })
-    this.props.devshare.login({ provider: 'google', type: 'popup' })
+    this.setState({
+      snackCanOpen: true,
+      isLoading: true
+    })
+    this.props.devshare
+      .login({ provider: 'google', type: 'popup' })
+      .then(account =>
+        this.context.router.push(`${account.username}`)
+      )
   }
 
   render () {
-    const { account, authError } = this.props
-    const { snackCanOpen } = this.state
+    const { authError } = this.props
+    const { snackCanOpen, isLoading } = this.state
 
-    if (account && account.isFetching) {
+    if (isLoading && !authError) {
       return (
         <div className={classes['container']}>
           <div className='Signup-Progress'>
@@ -100,7 +100,7 @@ export default class Signup extends Component {
         {
           authError && authError.message && snackCanOpen
             ? <Snackbar
-              open={authError && !!authError.message}
+              open={isLoaded(authError) && !isEmpty(authError) && snackCanOpen}
               message={authError ? authError.message : 'Signup error'}
               action='close'
               autoHideDuration={3000}

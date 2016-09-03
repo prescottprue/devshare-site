@@ -31,6 +31,7 @@ const LoginForm = props => {
           name='password'
           component={TextField}
           label='Password'
+          type='password'
         />
       </div>
       <div className={classes['submit']}>

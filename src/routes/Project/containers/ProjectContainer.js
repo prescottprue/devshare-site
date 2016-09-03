@@ -1,38 +1,53 @@
-import { connect } from 'react-redux'
-import { increment, doubleAsync } from '../modules/Project'
+import React, { Component, PropTypes } from 'react'
+import Workspace from '../components/Project'
 
-/*  This is a container component. Notice it does not contain any JSX,
-    nor does it import React. This component is **only** responsible for
-    wiring in the actions and state necessary to render a presentational
-    component - in this case, the counter:   */
+export default class Project extends Component {
 
-import Project from '../components/Project'
+  static contextTypes = {
+    router: React.PropTypes.object.isRequired
+  }
 
-/*  Object of action creators (can also be function that returns object).
-    Keys will be passed as props to presentational components. Here we are
-    implementing our wrapper around increment; the component doesn't care   */
+  static propTypes = {
+    username: PropTypes.string,
+    name: PropTypes.string,
+    account: PropTypes.object,
+    project: PropTypes.string,
+    projects: PropTypes.array,
+    getProjects: PropTypes.func,
+    getProject: PropTypes.func
+  }
 
-const mapActionCreators = {
-  increment: () => increment(1),
-  doubleAsync
+  componentWillMount () {
+    const { account, projects, username, name } = this.props
+    if (account.username && !projects && username !== 'anon') {
+      // Load all projects if user is logged in
+      return this.props.getProjects(account.username)
+    }
+    // Load only single project if user is not logged in
+    this.props.getProject(username, name)
+  }
+
+  componentWillReceiveProps (nextProps) {
+    if (nextProps.account.username && (this.props.account.username !== nextProps.account.username)) {
+      this.props.getProjects(nextProps.account.username)
+    }
+  }
+
+  selectProject = proj => {
+    if (proj.owner) {
+      this.context.router.push(`/${proj.owner.username}/${proj.name}`)
+    }
+  }
+
+  render () {
+    return (
+      <div className='Project'>
+        <Workspace
+          project={this.props.project}
+          showButtons
+          onProjectSelect={this.selectProject}
+        />
+      </div>
+    )
+  }
 }
-
-const mapStateToProps = (state) => ({
-  counter: state.counter
-})
-
-/*  Note: mapStateToProps is where you should use `reselect` to create selectors, ie:
-
-    import { createSelector } from 'reselect'
-    const counter = (state) => state.counter
-    const tripleCount = createSelector(counter, (count) => count * 3)
-    const mapStateToProps = (state) => ({
-      counter: tripleCount(state)
-    })
-
-    Selectors can compute derived data, allowing Redux to store the minimal possible state.
-    Selectors are efficient. A selector is not recomputed unless one of its arguments change.
-    Selectors are composable. They can be used as input to other selectors.
-    https://github.com/reactjs/reselect    */
-
-export default connect(mapStateToProps, mapActionCreators)(Project)

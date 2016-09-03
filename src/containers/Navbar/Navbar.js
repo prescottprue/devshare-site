@@ -47,7 +47,7 @@ export class Navbar extends Component {
     const iconButton = (
       <Avatar
         className={classes['avatar']}
-        src={account && account.avatar_url ? account.avatar_url : stockPhotoUrl}
+        src={account && account.avatarUrl ? account.avatarUrl : stockPhotoUrl}
         size={avatarSize}
       />
     )
@@ -75,10 +75,12 @@ export class Navbar extends Component {
         targetOrigin={originSettings}
         anchorOrigin={originSettings}
       >
-        <MenuItem
-          primaryText='Account'
-          value='account'
-        />
+        <Link to='/account'>
+          <MenuItem
+            primaryText='Account'
+            value='account'
+          />
+        </Link>
         <MenuItem
           primaryText='Sign out'
           value='logout'

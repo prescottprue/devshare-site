@@ -15,10 +15,15 @@ import { devshare, helpers } from 'redux-devshare'
 const { pathToJS, dataToJS } = helpers
 
 // Decorators
-@devshare(['projects'])
+@devshare(
+  ({ params }) =>
+    ([
+      `projects/${params.username}`
+    ])
+)
 @connect(
-  ({devshare}) => ({
-    projects: map(dataToJS(devshare, 'projects'), (project, key) =>
+  ({ devshare }, { params }) => ({
+    projects: map(dataToJS(devshare, `projects/${params.username}`), (project, key) =>
       Object.assign({}, project, { key })),
     account: pathToJS(devshare, 'profile')
   })
