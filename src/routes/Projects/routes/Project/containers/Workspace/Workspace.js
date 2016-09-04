@@ -1,11 +1,11 @@
 import React, { Component, PropTypes } from 'react'
-import { findIndex, each, last } from 'lodash'
+import { findIndex, each, last, toArray } from 'lodash'
 
-// import SideBar from '../SideBar/SideBar'
-// import Pane from '../Pane/Pane'
+import SideBar from '../SideBar/SideBar'
+import Pane from '../Pane/Pane'
 
 // Components
-import ContextMenu from '../../components/ContextMenu/ContextMenu'
+// import ContextMenu from '../../components/ContextMenu/ContextMenu'
 import WorkspacePopover from '../../components/WorkspacePopover/WorkspacePopover'
 import classes from './Workspace.scss'
 
@@ -27,7 +27,7 @@ const { pathToJS, dataToJS } = helpers
 @connect(
   // Map state to props
   ({devshare}, { params }) => ({
-    projects: dataToJS(devshare, `projects/${params.username}`),
+    projects: toArray(dataToJS(devshare, `projects/${params.username}`)),
     project: dataToJS(devshare, `projects/${params.username}/${params.projectname}`),
     authError: pathToJS(devshare, 'authError'),
     account: pathToJS(devshare, 'profile')
@@ -59,6 +59,10 @@ export default class Workspace extends Component {
     devshare: PropTypes.shape({
       project: PropTypes.func,
       users: PropTypes.func
+    }),
+    params: PropTypes.shape({
+      username: PropTypes.string,
+      projectname: PropTypes.string
     }),
     project: PropTypes.object,
     tabs: PropTypes.object,
@@ -158,39 +162,36 @@ export default class Workspace extends Component {
       })
   }
 
-  addFile = (path, content) => {
+  addFile = (path, content) =>
     this.props.devshare
       .project(this.props.project)
       .fileSystem
       .addFile(path.replace('/', ''), content)
-      .then(file => event({ category: 'Files', action: 'File added' }))
+      // .then(file => event({ category: 'Files', action: 'File added' }))
       .catch(error => {
         console.error('error adding file', error)
         this.error = error.toString
       })
-  }
 
-  addFolder = path => {
+  addFolder = path =>
     this.props.devshare
       .project(this.props.project)
       .fileSystem
       .addFolder(path.replace('/', ''))
-      .then(file => event({ category: 'Files', action: 'Folder added' }))
-  }
+      // .then(file => event({ category: 'Files', action: 'Folder added' }))
 
   addEntity = (type, path, content) =>
     type === 'folder'
       ? this.addFolder(path)
       : this.addFile(path, content)
 
-  deleteFile = (path) => {
+  deleteFile = (path) =>
     this.props.devshare
       .project(this.props.project)
       .fileSystem
       .file(path)
       .remove()
       .then(file => event({ category: 'Files', action: 'File deleted' }))
-  }
 
   openFile = (file) => {
     const { project, tabs } = this.props
@@ -289,7 +290,8 @@ export default class Workspace extends Component {
   // }
 
   render () {
-    // const { project, tabs } = this.props
+    const { project, params } = this.props
+    if (!project) return (<div>Loading...</div>)
     return (
       <div className={classes['container']} ref='workspace'>
         <WorkspacePopover
@@ -300,14 +302,13 @@ export default class Workspace extends Component {
           open={this.state.popoverOpen}
           onClose={this.handlePopoverClose}
         />
-        {/* <Pane
-          tabs={tabs}
-          onTabSelect={this.selectTab}
-          onTabClose={this.closeTab}
+        <SideBar project={project} />
+        <Pane
           project={project}
+          params={params}
           vimEnabled={this.state.vimEnabled}
-        /> */}
-        {
+        />
+        {/* {
           this.state.contextMenu.open
           ? (
             <ContextMenu
@@ -319,7 +320,7 @@ export default class Workspace extends Component {
               dismiss={this.dismissContextMenu}
             />
           ) : null
-        }
+        } */}
       </div>
     )
   }

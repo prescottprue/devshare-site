@@ -92,6 +92,14 @@ export default class SideBar extends Component {
     this.props.onRightClick(null, { x: e.clientX, y: e.clientY })
   }
 
+  addFileClick = () => {
+
+  }
+
+  addFolderClick = () => {
+
+  }
+
   render () {
     const showProjects = !isUndefined(this.props.showProjects) ? this.props.showProjects : true
 
@@ -172,8 +180,8 @@ export default class SideBar extends Component {
                 </IconButton>
             }>
               <MenuItem primaryText='Upload files' onClick={this.handleFileUploadClick} />
-              <MenuItem primaryText='Add file' onClick={this.props.onAddFileClick.bind(this, '/')} />
-              <MenuItem primaryText='Add folder' onClick={this.props.onAddFolderClick.bind(this, '/')} />
+              <MenuItem primaryText='Add file' onClick={this.addFileClick} />
+              <MenuItem primaryText='Add folder' onClick={this.addFolderClick} />
             </IconMenu>
             <IconButton
               style={iconButtonStyle}

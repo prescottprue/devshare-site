@@ -58,7 +58,7 @@ export default class Project extends Component {
     const { settingsOpen, sharingOpen, vimEnabled } = this.state
     console.log('props in project', this.props)
     return (
-      <div className={classes['container']}>
+      <div className={classes['container']} ref='workspace'>
         <Workspace project={project} params={params} />
         {
           settingsOpen &&
