@@ -1,9 +1,9 @@
 import React, { PropTypes, Component } from 'react'
-import { isArray, isUndefined, find } from 'lodash'
+import { find } from 'lodash'
 
-import TreeView from '../../components/TreeView'
+// import TreeView from '../../components/TreeView'
 
-import SelectField from 'material-ui/SelectField'
+// import SelectField from 'material-ui/SelectField'
 import MenuItem from 'material-ui/MenuItem'
 import IconButton from 'material-ui/IconButton'
 import IconMenu from 'material-ui/IconMenu'
@@ -13,7 +13,7 @@ import GroupIcon from 'material-ui/svg-icons/social/group'
 import CopyIcon from 'material-ui/svg-icons/content/content-copy'
 import ArchiveIcon from 'material-ui/svg-icons/content/archive'
 
-import './SideBar.scss'
+// import classes from './SideBar.scss'
 
 // Icon styles
 const iconButtonStyle = { width: '50px', height: '50px', padding: '0px' }
@@ -101,14 +101,19 @@ export default class SideBar extends Component {
   }
 
   render () {
-    const showProjects = !isUndefined(this.props.showProjects) ? this.props.showProjects : true
+    const { files } = this.props
 
-    let projectsMenu
-    if (isArray(this.props.projects) && this.props.projects.length > 0) {
-      projectsMenu = this.props.projects.map((project, i) => {
-        return <MenuItem key={`Project-${i}`} label={project.name} value={project.name} primaryText={project.name} />
-      })
-    }
+    // const projectsMenu = isArray(projects) && projects.length > 0
+    //   ? projects.map((project, i) =>
+    //       <MenuItem
+    //         key={`Project-${i}`}
+    //         label={project.name}
+    //         value={project.name}
+    //         primaryText={project.name}
+    //       />
+    //     )
+    //   : null
+
     return (
       <div className={this.state.filesOver ? 'SideBar SideBar--FileHover' : 'SideBar'}
         onDragOver={this.handleFileDrag}
@@ -117,27 +122,27 @@ export default class SideBar extends Component {
         onContextMenu={this.handleRightClick}
       >
         <div className='SideBar-Dropzone'>
-        {
+        {/* {
           (projectsMenu && showProjects)
             ? (
             <SelectField
               style={{width: '80%', marginLeft: '10%'}}
               labelStyle={{fontSize: '1.5rem', fontWeight: '300', textOverflow: 'ellipsis'}}
               autoWidth={false}
-              value={this.props.project.name}
+              value={project.name}
               children={projectsMenu}
               onChange={this.selectProject}
             />
             ) : null
-        }
-          <TreeView
+        } */}
+          {/* <TreeView
             account={this.props.account}
             fileStructure={this.props.files}
             onFileClick={this.props.onFileClick}
             onRightClick={this.props.onRightClick}
-            projectName={this.props.project.name}
+            projectName={project.name}
             loading={this.props.filesLoading}
-          />
+          /> */}
           <input type='file' ref='fileInput' style={{display: 'none'}} onChange={this.handleFileUpload} multiple />
           <div className='SideBar-Buttons'>
             <IconButton
@@ -161,7 +166,7 @@ export default class SideBar extends Component {
               tooltipStyle={tooltipStyle}
               tooltipPosition={tooltipPosition}
               touch
-              disabled={!this.props.files || this.props.files.length < 1}>
+              disabled={!files || files.length < 1}>
               <ArchiveIcon />
             </IconButton>
           </div>

@@ -30,8 +30,6 @@ export default class Project extends Component {
   }
 
   static propTypes = {
-    username: PropTypes.string,
-    name: PropTypes.string,
     account: PropTypes.object,
     project: PropTypes.object,
     auth: PropTypes.object,
@@ -57,6 +55,7 @@ export default class Project extends Component {
     const { project, params } = this.props
     const { settingsOpen, sharingOpen, vimEnabled } = this.state
     console.log('props in project', this.props)
+    if (!project) return <div>loading...</div>
     return (
       <div className={classes['container']} ref='workspace'>
         <Workspace project={project} params={params} />
