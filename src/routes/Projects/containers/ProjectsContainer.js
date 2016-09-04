@@ -26,7 +26,7 @@ const { pathToJS, dataToJS } = helpers
     projects: map(dataToJS(devshare, `projects/${params.username}`), (project, key) =>
       Object.assign({}, project, { key })),
     account: pathToJS(devshare, 'profile'),
-    auth: pathToJS(devshare, 'auth'),
+    auth: pathToJS(devshare, 'auth')
   })
 )
 export class Projects extends Component {
@@ -39,6 +39,8 @@ export class Projects extends Component {
     account: PropTypes.object,
     projects: PropTypes.array,
     devshare: PropTypes.object,
+    auth: PropTypes.object,
+    children: PropTypes.object,
     params: PropTypes.object,
     history: PropTypes.object
   }
@@ -67,8 +69,9 @@ export class Projects extends Component {
     this.props.devshare
       .remove(`projects/${this.props.params.username}/${name}`)
 
+  // TODO: Open based on project info instead of route param
   openProject = project =>
-    this.context.router.push(`/${project.owner.username}/${project.name}`)
+    this.context.router.push(`/${this.props.params.username}/${project.name}`)
 
   collabClick = user =>
     this.context.router.push(`/${user.username}`)
@@ -79,6 +82,9 @@ export class Projects extends Component {
   }
 
   render () {
+    // TODO: Look into moving this into its own layer
+    if (this.props.children) return this.props.children
+
     const { projects, account, params: { username } } = this.props
     const { newProjectModal, addCollabModal, currentProject } = this.state
 
