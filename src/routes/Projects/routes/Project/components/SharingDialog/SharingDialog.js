@@ -1,7 +1,4 @@
-import React, {Component, PropTypes} from 'react'
-import { bindActionCreators } from 'redux'
-import { connect } from 'react-redux'
-import { Actions } from 'redux-devshare'
+import React, { Component, PropTypes } from 'react'
 import { users } from 'devshare'
 
 import FlatButton from 'material-ui/FlatButton'
@@ -12,17 +9,12 @@ import Avatar from 'material-ui/Avatar'
 import PersonIcon from 'material-ui/svg-icons/social/person'
 import RemoveIcon from 'material-ui/svg-icons/content/remove-circle'
 import Colors from 'material-ui/styles/colors'
-import './SharingDialog.scss'
+import classes from './SharingDialog.scss'
 
 export default class SharingDialog extends Component {
-  constructor () {
-    super()
-    const { projects, projectKey } = this.props
-    this.state = {
-      project: projects[projectKey] || {},
-      collaborators: projects[projectKey] ? projects[projectKey].collaborators : [],
-      error: null
-    }
+
+  state = {
+    error: null
   }
 
   static propTypes = {
@@ -36,10 +28,10 @@ export default class SharingDialog extends Component {
   }
 
   componentDidMount () {
-    const project = this.props.projects[this.props.projectKey]
-    this.setState({
-      collaborators: project ? project.collaborators : []
-    })
+    // const project = this.props.projects[this.props.projectKey]
+    // this.setState({
+    //   collaborators: project ? project.collaborators : []
+    // })
   }
 
   componentWillReceiveProps (nextProps) {
@@ -131,14 +123,13 @@ export default class SharingDialog extends Component {
         title='Sharing'
         actions={actions}
         modal={false}
-        bodyClassName='SharingDialog-Content'
-        titleClassName='SharingDialog-Content-Title'
-        contentClassName='SharingDialog'
-      >
+        bodyClassName={classes['body']}
+        titleClassName={classes['title']}
+        contentClassName={classes['container']}>
         {
           this.props.error
           ? (
-            <div className='SharingDialog-Error'>
+            <div className={classes['Error']}>
               <span>{this.props.error}</span>
             </div>
           )
@@ -152,7 +143,7 @@ export default class SharingDialog extends Component {
             </List>
             )
             : (
-            <div className='SharingDialog-No-Collabs'>
+            <div className={classes['No-Collabs']}>
               <span>No current collaborators</span>
             </div>
             )
@@ -173,21 +164,3 @@ export default class SharingDialog extends Component {
     )
   }
 }
-// Place state of redux store into props of component
-const mapStateToProps = (state) => {
-  const projects = (state.entities && state.entities.projects)
-    ? state.entities.projects
-    : {}
-  return {
-    projects,
-    error: state.projects.error || null,
-    account: state.account,
-    router: state.router
-  }
-}
-
-// Place action methods into props
-const mapDispatchToProps = (dispatch) =>
-  bindActionCreators(Actions.projects, dispatch)
-
-export default connect(mapStateToProps, mapDispatchToProps)(SharingDialog)

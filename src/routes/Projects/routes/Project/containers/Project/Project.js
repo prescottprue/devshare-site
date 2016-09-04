@@ -1,26 +1,29 @@
 import React, { Component, PropTypes } from 'react'
 import Workspace from '../Workspace/Workspace'
+import { toArray } from 'lodash'
 
 import classes from './Project.scss'
-import ProjectSettingsDialog from '../../components/ProjectSettingsDialog/ProjectSettingsDialog'
+import SettingsDialog from '../../components/SettingsDialog/SettingsDialog'
 import SharingDialog from '../../components/SharingDialog/SharingDialog'
 
 // redux-devsharev3
 import { connect } from 'react-redux'
 import { devshare, helpers } from 'redux-devshare'
-const { pathToJS, dataToJS } = helpers
+const { dataToJS } = helpers
 
-@devshare(({ params }) =>
-  ([
-    `projects/${params.username}/${params.projectname}`
-  ])
+@devshare(
+  // Get paths from devshare
+  ({ params }) =>
+    ([
+      `projects/${params.username}`,
+      `projects/${params.username}/${params.projectname}`
+    ])
 )
 @connect(
   // Map state to props
   ({devshare}, { params }) => ({
-    project: dataToJS(devshare, `projects/${params.username}/${params.projectname}`),
-    authError: pathToJS(devshare, 'authError'),
-    account: pathToJS(devshare, 'profile')
+    projects: toArray(dataToJS(devshare, `projects/${params.username}`)),
+    project: dataToJS(devshare, `projects/${params.username}/${params.projectname}`)
   })
 )
 export default class Project extends Component {
@@ -31,6 +34,7 @@ export default class Project extends Component {
 
   static propTypes = {
     account: PropTypes.object,
+    projects: PropTypes.array,
     project: PropTypes.object,
     auth: PropTypes.object,
     params: PropTypes.object,
@@ -45,30 +49,37 @@ export default class Project extends Component {
     }
   }
 
-  closeDialog = (name) => {
+  toggleDialog = (name) => {
     const newState = {}
-    newState[`${name}Open`] = false
+    newState[`${name}Open`] = !this.state[`${name}Open`]
     this.setState(newState)
   }
 
   render () {
-    const { project, params } = this.props
+    const { projects, project, params } = this.props
     const { settingsOpen, sharingOpen, vimEnabled } = this.state
-    console.log('props in project', this.props)
+
     if (!project) return <div>loading...</div>
+
     return (
       <div className={classes['container']} ref='workspace'>
-        <Workspace project={project} params={params} />
+        <Workspace
+          project={project}
+          projects={projects}
+          params={params}
+          onSettingsClick={() => { this.toggleDialog('settings') }}
+          onSharingClick={() => { this.toggleDialog('sharing') }}
+        />
         {
           settingsOpen &&
           (
-            <ProjectSettingsDialog
+            <SettingsDialog
               project={project}
               open={settingsOpen}
               onSave={this.saveSettings}
               onVimToggle={this.toggleVim}
               vimEnabled={vimEnabled}
-              onRequestClose={() => { this.closeDialog('settings') }}
+              onRequestClose={() => { this.toggleDialog('settings') }}
             />
           )
         }
@@ -82,7 +93,7 @@ export default class Project extends Component {
               onSave={this.saveSettings}
               onAddCollab={this.addCollaborator}
               onRemoveCollab={this.removeCollaborator}
-              onRequestClose={() => { this.closeDialog('sharing') }}
+              onRequestClose={() => { this.toggleDialog('sharing') }}
             />
           )
         }

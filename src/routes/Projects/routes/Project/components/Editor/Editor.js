@@ -1,7 +1,6 @@
 import React, { PropTypes, Component } from 'react'
-import classes from './Editor.scss'
-import { connect } from 'react-redux'
 import { project } from 'devshare'
+import classes from './Editor.scss'
 
 export default class Editor extends Component {
 
@@ -130,7 +129,8 @@ export default class Editor extends Component {
 
   render () {
     return (
-      <div className={classes['container']} id={this.props.name}></div>
+      <div className={classes['container']} id={this.props.name}>
+      </div>
     )
   }
 }

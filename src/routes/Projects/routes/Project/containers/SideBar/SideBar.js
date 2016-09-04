@@ -1,9 +1,9 @@
 import React, { PropTypes, Component } from 'react'
-import { find } from 'lodash'
+import { isArray } from 'lodash'
 
 import TreeView from '../TreeView'
 
-// import SelectField from 'material-ui/SelectField'
+import SelectField from 'material-ui/SelectField'
 import MenuItem from 'material-ui/MenuItem'
 import IconButton from 'material-ui/IconButton'
 import IconMenu from 'material-ui/IconMenu'
@@ -27,7 +27,10 @@ export default class SideBar extends Component {
   static propTypes = {
     projects: PropTypes.array,
     project: PropTypes.object.isRequired,
-    files: PropTypes.array
+    files: PropTypes.array,
+    showProjects: PropTypes.bool,
+    onSettingsClick: PropTypes.func.isRequired,
+    onSharingClick: PropTypes.func.isRequired
   }
 
   state = {
@@ -39,10 +42,10 @@ export default class SideBar extends Component {
   }
 
   selectProject = (e, i, name) => {
-    if (this.props && this.props.onProjectSelect) {
-      let proj = find(this.props.projects, { name })
-      this.props.onProjectSelect(proj, i)
-    }
+    // if (this.props && this.props.onProjectSelect) {
+    //   let proj = find(this.props.projects, { name })
+    //   // this.props.onProjectSelect(proj, i)
+    // }
   }
 
   handleFileUploadClick = (e) => {
@@ -50,7 +53,7 @@ export default class SideBar extends Component {
   }
 
   handleFileUpload = (e) => {
-    this.props.onFilesAdd(e)
+    // this.props.onFilesAdd(e)
   }
 
   handleFileDrag = (e) => {
@@ -61,7 +64,7 @@ export default class SideBar extends Component {
   }
 
   handleFileDrop = (e) => {
-    this.props.onFilesDrop(e)
+    // this.props.onFilesDrop(e)
     this.setState({ filesOver: false })
   }
 
@@ -72,30 +75,53 @@ export default class SideBar extends Component {
   handleRightClick = (e) => {
     e.preventDefault()
     e.stopPropagation()
-    this.props.onRightClick(null, { x: e.clientX, y: e.clientY })
+    // this.props.onRightClick(null, { x: e.clientX, y: e.clientY })
   }
 
-  addFileClick = () => {
+  addFileClick = (f) => {
+    console.log('add file clicked', f)
+  }
+
+  addFolderClick = (f) => {
+    console.log('add folder clicked', f)
+  }
+
+  downloadClick = () => {
+    console.log('enable download functionality')
+  }
+
+  fileClick = () => {
 
   }
 
-  addFolderClick = () => {
+  rightClick = () => {
+
+  }
+
+  cloneClick = () => {
 
   }
 
   render () {
-    const { files, project } = this.props
+    const {
+      files,
+      project,
+      projects,
+      onSettingsClick,
+      onSharingClick,
+      showProjects
+    } = this.props
 
-    // const projectsMenu = isArray(projects) && projects.length > 0
-    //   ? projects.map((project, i) =>
-    //       <MenuItem
-    //         key={`Project-${i}`}
-    //         label={project.name}
-    //         value={project.name}
-    //         primaryText={project.name}
-    //       />
-    //     )
-    //   : null
+    const projectsMenu = isArray(projects) && projects.length > 0
+      ? projects.map((project, i) =>
+        <MenuItem
+          key={`Project-${i}`}
+          label={project.name}
+          value={project.name}
+          primaryText={project.name}
+        />
+        )
+      : null
 
     return (
       <div className={classnames(classes['container'], { 'filehover': this.state.filesOver })}
@@ -105,7 +131,7 @@ export default class SideBar extends Component {
         onContextMenu={this.handleRightClick}
       >
         <div className={classes['dropzone']}>
-        {/* {
+        {
           (projectsMenu && showProjects)
             ? (
             <SelectField
@@ -117,13 +143,12 @@ export default class SideBar extends Component {
               onChange={this.selectProject}
             />
             ) : null
-        } */}
+        }
           <TreeView
-            fileStructure={this.props.files}
-            onFileClick={this.props.onFileClick}
-            onRightClick={this.props.onRightClick}
+            fileStructure={files}
+            onFileClick={this.fileClick}
+            onRightClick={this.rightClick}
             project={project}
-            loading={this.props.filesLoading}
           />
           <input
             type='file'
@@ -136,7 +161,7 @@ export default class SideBar extends Component {
             <IconButton
               style={iconButtonStyle}
               iconStyle={iconStyle}
-              onClick={this.props.onCloneClick}
+              onClick={this.cloneClick}
               tooltip='Clone'
               tooltipStyle={tooltipStyle}
               tooltipPosition={tooltipPosition}
@@ -147,7 +172,7 @@ export default class SideBar extends Component {
             <IconButton
               style={iconButtonStyle}
               iconStyle={iconStyle}
-              onClick={this.props.onDownloadClick}
+              onClick={this.downloadClick}
               tooltip='Download'
               tooltipStyle={tooltipStyle}
               tooltipPosition={tooltipPosition}
@@ -176,7 +201,7 @@ export default class SideBar extends Component {
             <IconButton
               style={iconButtonStyle}
               iconStyle={iconStyle}
-              onClick={this.props.onSharingClick}
+              onClick={onSharingClick}
               tooltip='Sharing'
               tooltipStyle={tooltipStyle}
               tooltipPosition={tooltipPosition}
@@ -186,7 +211,7 @@ export default class SideBar extends Component {
             <IconButton
               style={iconButtonStyle}
               iconStyle={iconStyle}
-              onClick={this.props.onSettingsClick}
+              onClick={onSettingsClick}
               tooltip='Settings'
               tooltipStyle={tooltipStyle}
               tooltipPosition={tooltipPosition}

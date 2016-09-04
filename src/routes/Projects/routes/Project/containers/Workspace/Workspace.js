@@ -1,5 +1,5 @@
 import React, { Component, PropTypes } from 'react'
-import { findIndex, each, last, toArray } from 'lodash'
+import { findIndex, each, last } from 'lodash'
 
 import SideBar from '../SideBar/SideBar'
 import Pane from '../Pane/Pane'
@@ -11,24 +11,16 @@ import classes from './Workspace.scss'
 
 const fileEntityBlackList = ['.DS_Store', 'node_modules']
 
-// redux-devsharev3
+// redux
 import { connect } from 'react-redux'
-import { devshare, helpers } from 'redux-devshare'
-const { pathToJS, dataToJS } = helpers
+import { helpers } from 'redux-devshare'
+const { pathToJS } = helpers
 
 // TODO: Load files list
 // TODO: Wire tab actions
-@devshare(({ params }) =>
-  ([
-    `projects/${params.username}`,
-    `projects/${params.username}/${params.projectname}`
-  ])
-)
 @connect(
   // Map state to props
   ({devshare}, { params }) => ({
-    projects: toArray(dataToJS(devshare, `projects/${params.username}`)),
-    project: dataToJS(devshare, `projects/${params.username}/${params.projectname}`),
     authError: pathToJS(devshare, 'authError'),
     account: pathToJS(devshare, 'profile')
   })
@@ -64,6 +56,7 @@ export default class Workspace extends Component {
       username: PropTypes.string,
       projectname: PropTypes.string
     }),
+    account: PropTypes.object,
     project: PropTypes.object,
     tabs: PropTypes.object,
     showProjects: PropTypes.bool,
@@ -75,6 +68,8 @@ export default class Workspace extends Component {
     closeTab: PropTypes.func,
     addCollaborator: PropTypes.func,
     removeCollaborator: PropTypes.func,
+    onSettingsClick: PropTypes.func.isRequired,
+    onSharingClick: PropTypes.func.isRequired,
     onProjectSelect: PropTypes.func
   }
 
@@ -290,8 +285,17 @@ export default class Workspace extends Component {
   // }
 
   render () {
-    const { project, params } = this.props
+    const {
+      project,
+      params,
+      onSettingsClick,
+      onSharingClick,
+      account,
+      projects
+    } = this.props
+
     if (!project) return (<div>Loading...</div>)
+
     return (
       <div className={classes['container']} ref='workspace'>
         <WorkspacePopover
@@ -302,7 +306,14 @@ export default class Workspace extends Component {
           open={this.state.popoverOpen}
           onClose={this.handlePopoverClose}
         />
-        <SideBar project={project} />
+        <SideBar
+          project={project}
+          projects={projects}
+          account={account}
+          onSettingsClick={onSettingsClick}
+          onSharingClick={onSharingClick}
+          showProjects={!!account && !!account.username}
+        />
         <Pane
           project={project}
           params={params}
