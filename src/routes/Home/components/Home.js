@@ -72,7 +72,7 @@ export class Home extends Component {
         <div>
           <div className={classes['hero']}>
             <div className={classes['logo']}>
-              <img src={logo} />
+              <img src={logo} alt='Devshare' />
               <span className={classes['brand']}>devShare</span>
             </div>
             <span className={classes['name']}>Build together</span>

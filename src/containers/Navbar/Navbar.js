@@ -10,7 +10,7 @@ import Avatar from 'material-ui/Avatar'
 
 const stockPhotoUrl = 'https://s3.amazonaws.com/kyper-cdn/img/User.png'
 const originSettings = { horizontal: 'right', vertical: 'bottom' }
-const buttonStyle = { color: 'white' }
+const buttonStyle = { color: 'white', textDecoration: 'none' }
 const avatarSize = 50
 
 // redux/devshare
@@ -75,7 +75,7 @@ export class Navbar extends Component {
         targetOrigin={originSettings}
         anchorOrigin={originSettings}
       >
-        <Link to='/account'>
+        <Link to='/account' style={buttonStyle}>
           <MenuItem
             primaryText='Account'
             value='account'
@@ -89,10 +89,11 @@ export class Navbar extends Component {
       </IconMenu>
     ) : mainMenu
 
+    const brandPath = account && account.username ? `/${account.username}` : '/'
     return (
       <AppBar
         title={
-          <Link to='/' style={buttonStyle}>
+          <Link to={brandPath} className={classes['brand']}>
             devshare
           </Link>
         }
