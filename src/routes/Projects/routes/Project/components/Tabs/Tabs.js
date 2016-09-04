@@ -1,7 +1,7 @@
 import React, { PropTypes, Component } from 'react'
 import Tab from '../Tab/Tab'
 
-import './Tabs.scss'
+import classes from  './Tabs.scss'
 
 class Tabs extends Component {
   constructor (props) {
@@ -42,7 +42,7 @@ class Tabs extends Component {
       })
     }
     return (
-      <ul className='Tabs'>
+      <ul className={classes['container']}>
         {tabs}
       </ul>
     )

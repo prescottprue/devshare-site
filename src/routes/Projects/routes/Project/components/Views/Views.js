@@ -1,6 +1,6 @@
 import React, { PropTypes, Component } from 'react'
 import View from '../View'
-import './Views.scss'
+import classes from './Views.scss'
 
 export default class Views extends Component {
 
@@ -50,7 +50,7 @@ export default class Views extends Component {
     }
     const views = this.buildViews()
     return (
-      <div className='Views'>
+      <div className={classes['container']}>
         {views}
       </div>
     )

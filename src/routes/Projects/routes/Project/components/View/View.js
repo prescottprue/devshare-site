@@ -1,6 +1,6 @@
 import React, { PropTypes, Component } from 'react'
 import Editor from '../Editor'
-import './View.scss'
+import classes from './View.scss'
 
 export default class View extends Component {
 
@@ -20,7 +20,7 @@ export default class View extends Component {
       // TODO: Switch view type based on provided type instead of availability of editor data
       const { file } = this.props.viewData
       return (
-        <div className='View' style={style}>
+        <div className={classes['container']} style={style}>
           <Editor
             key={file.path}
             name={name}
@@ -35,8 +35,8 @@ export default class View extends Component {
     }
     // Empty View
     return (
-      <div className='View-Default'>
-        <span className='View-Default-Label'>Click on a file to open</span>
+      <div className={classes['default']}>
+        <span className={classes['default-label']}>Click on a file to open</span>
       </div>
     )
   }

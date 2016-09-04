@@ -1,9 +1,10 @@
-import { omit } from 'lodash'
 import React, { PropTypes, Component } from 'react'
-import TreeFolder from '../TreeFolder'
-import TreeFile from '../TreeFile'
+import { omit } from 'lodash'
+
+import TreeFolder from '../../components/TreeFolder'
+import TreeFile from '../../components/TreeFile'
 import CircularProgress from 'material-ui/CircularProgress'
-import './TreeView.scss'
+import classes from './TreeView.scss'
 
 export default class TreeView extends Component {
 
@@ -14,7 +15,7 @@ export default class TreeView extends Component {
     })),
     onFileClick: PropTypes.func,
     onFolderClick: PropTypes.func,
-    projectName: PropTypes.string,
+    project: PropTypes.object,
     loading: PropTypes.bool,
     onRightClick: PropTypes.func
   }
@@ -69,12 +70,12 @@ export default class TreeView extends Component {
     }
     const structure = this.getStructure()
     return (
-      <div className='TreeView'>
-        <div className='TreeView-Container'>
+      <div className={classes['container']}>
+        <div className={classes['wrapper']}>
           {
             (structure && !this.props.loading)
             ? (
-              <ol className='TreeView-Structure'>
+              <ol className={classes['structure']}>
                 {structure}
               </ol>
             )
@@ -83,14 +84,14 @@ export default class TreeView extends Component {
           {
             (!structure && !loading)
             ? (
-              <div className='TreeView-None' key='NotFound-1'>
-                <div className='TreeView-None-Desktop'>
+              <div className={classes['none']} key='NotFound-1'>
+                <div className={classes['none-desktop']}>
                   <span><strong>Right click</strong></span>
                   <span className=''>OR</span>
                   <strong>Drop files</strong>
                   <span>to get started</span>
                 </div>
-                <div className='TreeView-None-Mobile'>
+                <div className={classes['none-mobile']}>
                   <span>Touch the Plus to get started</span>
                 </div>
               </div>
@@ -101,7 +102,7 @@ export default class TreeView extends Component {
             loading
             ? (
               <div
-                className='TreeView-Loader'
+                className={classes['loader']}
                 style={loading ? {display: 'block'} : {display: 'none'}}>
                 <CircularProgress size={0.75} />
               </div>

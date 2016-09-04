@@ -1,7 +1,7 @@
 import React, { PropTypes, Component } from 'react'
 import { find } from 'lodash'
 
-// import TreeView from '../../components/TreeView'
+import TreeView from '../TreeView'
 
 // import SelectField from 'material-ui/SelectField'
 import MenuItem from 'material-ui/MenuItem'
@@ -13,7 +13,8 @@ import GroupIcon from 'material-ui/svg-icons/social/group'
 import CopyIcon from 'material-ui/svg-icons/content/content-copy'
 import ArchiveIcon from 'material-ui/svg-icons/content/archive'
 
-// import classes from './SideBar.scss'
+const classnames = require('classnames')
+import classes from './SideBar.scss'
 
 // Icon styles
 const iconButtonStyle = { width: '50px', height: '50px', padding: '0px' }
@@ -24,27 +25,9 @@ const tooltipPosition = 'top-center'
 export default class SideBar extends Component {
 
   static propTypes = {
-    account: PropTypes.object,
     projects: PropTypes.array,
     project: PropTypes.object.isRequired,
-    files: PropTypes.array,
-    onFileClick: PropTypes.func,
-    onPublishClick: PropTypes.func,
-    showButtons: PropTypes.bool,
-    showProjects: PropTypes.bool,
-    onLogoutClick: PropTypes.func,
-    onAddFileClick: PropTypes.func,
-    onAddFolderClick: PropTypes.func,
-    loadFiles: PropTypes.func,
-    onFilesDrop: PropTypes.func,
-    onSharingClick: PropTypes.func,
-    onFilesAdd: PropTypes.func,
-    onRightClick: PropTypes.func,
-    filesLoading: PropTypes.bool,
-    onCloneClick: PropTypes.func,
-    onDownloadClick: PropTypes.func,
-    onProjectSelect: PropTypes.func,
-    onSettingsClick: PropTypes.func
+    files: PropTypes.array
   }
 
   state = {
@@ -101,7 +84,7 @@ export default class SideBar extends Component {
   }
 
   render () {
-    const { files } = this.props
+    const { files, project } = this.props
 
     // const projectsMenu = isArray(projects) && projects.length > 0
     //   ? projects.map((project, i) =>
@@ -115,13 +98,13 @@ export default class SideBar extends Component {
     //   : null
 
     return (
-      <div className={this.state.filesOver ? 'SideBar SideBar--FileHover' : 'SideBar'}
+      <div className={classnames(classes['container'], { 'filehover': this.state.filesOver })}
         onDragOver={this.handleFileDrag}
         onDragLeave={this.handleFileDragLeave}
         onDrop={this.handleFileDrop}
         onContextMenu={this.handleRightClick}
       >
-        <div className='SideBar-Dropzone'>
+        <div className={classes['dropzone']}>
         {/* {
           (projectsMenu && showProjects)
             ? (
@@ -135,20 +118,24 @@ export default class SideBar extends Component {
             />
             ) : null
         } */}
-          {/* <TreeView
-            account={this.props.account}
+          <TreeView
             fileStructure={this.props.files}
             onFileClick={this.props.onFileClick}
             onRightClick={this.props.onRightClick}
-            projectName={project.name}
+            project={project}
             loading={this.props.filesLoading}
-          /> */}
-          <input type='file' ref='fileInput' style={{display: 'none'}} onChange={this.handleFileUpload} multiple />
-          <div className='SideBar-Buttons'>
+          />
+          <input
+            type='file'
+            ref='fileInput'
+            style={{display: 'none'}}
+            onChange={this.handleFileUpload}
+            multiple
+          />
+          <div className={classes['buttons']}>
             <IconButton
               style={iconButtonStyle}
               iconStyle={iconStyle}
-              className='SideBar-Button'
               onClick={this.props.onCloneClick}
               tooltip='Clone'
               tooltipStyle={tooltipStyle}
@@ -160,7 +147,6 @@ export default class SideBar extends Component {
             <IconButton
               style={iconButtonStyle}
               iconStyle={iconStyle}
-              className='SideBar-Button'
               onClick={this.props.onDownloadClick}
               tooltip='Download'
               tooltipStyle={tooltipStyle}
@@ -170,9 +156,8 @@ export default class SideBar extends Component {
               <ArchiveIcon />
             </IconButton>
           </div>
-          <div className='SideBar-Buttons'>
+          <div className={classes['buttons']}>
             <IconMenu
-              className='SideBar-Button'
               iconButtonElement={
                 <IconButton
                   style={iconButtonStyle}
@@ -191,7 +176,6 @@ export default class SideBar extends Component {
             <IconButton
               style={iconButtonStyle}
               iconStyle={iconStyle}
-              className='SideBar-Button'
               onClick={this.props.onSharingClick}
               tooltip='Sharing'
               tooltipStyle={tooltipStyle}
@@ -202,7 +186,6 @@ export default class SideBar extends Component {
             <IconButton
               style={iconButtonStyle}
               iconStyle={iconStyle}
-              className='SideBar-Button'
               onClick={this.props.onSettingsClick}
               tooltip='Settings'
               tooltipStyle={tooltipStyle}

@@ -1,15 +1,10 @@
 import React, { PropTypes, Component } from 'react'
-import FontIcon from 'material-ui/FontIcon'
+import CloseIcon from 'material-ui/svg-icons/navigation/close'
 
-import './Tab.scss'
+import classes from './Tab.scss'
+const classnames = require('classnames')
 
 class Tab extends Component {
-  constructor () {
-    super()
-    this._handleClick = this._handleClick.bind(this)
-    this.handleTabClick = this.handleTabClick.bind(this)
-    this.handleCloseClick = this.handleCloseClick.bind(this)
-  }
   static propTypes = {
     title: PropTypes.string.isRequired,
     index: PropTypes.number.isRequired,
@@ -17,39 +12,42 @@ class Tab extends Component {
     onSelect: PropTypes.func,
     onClose: PropTypes.func
   };
-  handleCloseClick (event) {
+
+  handleCloseClick = event => {
     this._handleClick()
     if (this.props.onClose) {
       this.props.onClose(this.props.index)
     }
   }
-  handleTabClick (event) {
+
+  handleTabClick = event => {
     this._handleClick()
     if (this.props.onSelect) {
       this.props.onSelect(this.props.index)
     }
   }
+
   render () {
-    let className = (this.props.active) ? 'Tab active' : 'Tab'
-    const iconSize = '18'
-    const iconStyle = {color: '#aaaaaa', fontSize: iconSize}
+    const iconSize = 18
+    const iconStyle = { color: '#aaaaaa', fontSize: iconSize }
+    const { active, title } = this.props
     return (
-      <li className={className}>
-        <div className='Tab-Title' onClick={this.handleTabClick}>{this.props.title}</div>
-        <div className='Tab-Close' onClick={this.handleCloseClick}>
-          <FontIcon className='material-icons'
-            style={iconStyle}>
-            close
-          </FontIcon>
+      <li className={classnames(classes['container'], active && classes['active'])}>
+        <div className={classes['title']} onClick={this.handleTabClick}>
+          {title}
+        </div>
+        <div className={classes['close']} onClick={this.handleCloseClick}>
+          <CloseIcon style={iconStyle} />
         </div>
         {/* TODO: Make tab indicator :after css class*/}
-        <div className='Tab-Indicator'>
+        <div className={classes['indicator']}>
         </div>
       </li>
     )
   }
+
   // Handle event after click
-  _handleClick () {
+  _handleClick = () => {
     if (event.button !== 0) {
       return
     }

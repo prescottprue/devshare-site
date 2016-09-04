@@ -1,6 +1,6 @@
 /*TODO: extract height into local variable and colors into global variable*/
 @import '../../../../../../styles/colors';
-.Tab {
+.container {
   display: inline-block;
   position: relative;
   flex-grow: 1;
@@ -22,31 +22,31 @@
   }
   &.active {
     z-index: 1;
-    .Tab-Indicator {
+    .indicator {
       background-color: $accentColor;
     }
   }
-  &-Indicator {
-    background-color: $blackGray;
-    position: absolute;
-    height: 5px;
-    width: 100%;
-    bottom: 0;
-  }
-  &-Title {
-    position: relative;
-    text-align: center;
-    width: 100%;
-    z-index: 1;
-  }
-  &-Close {
-    position: absolute;
-    // display: none;
-    bottom: 0;
-    right: 10px;
-    z-index: 3;
-    text-align: right;
-    vertical-align: center;
-    cursor: pointer;
-  }
+}
+.indicator {
+  background-color: $blackGray;
+  position: absolute;
+  height: 5px;
+  width: 100%;
+  bottom: 0;
+}
+.title {
+  position: relative;
+  text-align: center;
+  width: 100%;
+  z-index: 1;
+}
+.close {
+  position: absolute;
+  // display: none;
+  bottom: 0;
+  right: 10px;
+  z-index: 3;
+  text-align: right;
+  vertical-align: center;
+  cursor: pointer;
 }

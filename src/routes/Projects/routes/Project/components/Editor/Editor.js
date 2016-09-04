@@ -1,9 +1,9 @@
 import React, { PropTypes, Component } from 'react'
-import './Editor.scss'
+import classes from './Editor.scss'
 import { connect } from 'react-redux'
 import { project } from 'devshare'
 
-class Editor extends Component {
+export default class Editor extends Component {
 
   static propTypes = {
     mode: PropTypes.string,
@@ -130,16 +130,7 @@ class Editor extends Component {
 
   render () {
     return (
-      <div className='Editor' id={this.props.name}></div>
+      <div className={classes['container']} id={this.props.name}></div>
     )
   }
 }
-
-// Place state of redux store into props of component
-function mapStateToProps (state) {
-  return {
-    account: state.account
-  }
-}
-
-export default connect(mapStateToProps, {})(Editor)
