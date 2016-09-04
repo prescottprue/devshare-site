@@ -1,32 +1,44 @@
-import {
-  findIndex,
-  each, isEqual, debounce,
-  last
-} from 'lodash'
 import React, { Component, PropTypes } from 'react'
+import { findIndex, each, last } from 'lodash'
+
+// import SideBar from '../SideBar/SideBar'
+// import Pane from '../Pane/Pane'
 
 // Components
-import SideBar from '../SideBar/SideBar'
-import ProjectSettingsDialog from '../ProjectSettingsDialog/ProjectSettingsDialog'
-import SharingDialog from '../SharingDialog/SharingDialog'
-import ContextMenu from '../ContextMenu/ContextMenu'
-import Pane from '../Pane/Pane'
-import WorkspacePopover from '../WorkspacePopover/WorkspacePopover'
-import './Workspace.scss'
+import ContextMenu from '../../components/ContextMenu/ContextMenu'
+import WorkspacePopover from '../../components/WorkspacePopover/WorkspacePopover'
+import classes from './Workspace.scss'
 
 const fileEntityBlackList = ['.DS_Store', 'node_modules']
 
+// redux-devsharev3
+import { connect } from 'react-redux'
+import { devshare, helpers } from 'redux-devshare'
+const { pathToJS, dataToJS } = helpers
+
+// TODO: Load files list
+// TODO: Wire tab actions
+@devshare(({ params }) =>
+  ([
+    `projects/${params.username}`,
+    `projects/${params.username}/${params.projectname}`
+  ])
+)
+@connect(
+  // Map state to props
+  ({devshare}, { params }) => ({
+    projects: dataToJS(devshare, `projects/${params.username}`),
+    project: dataToJS(devshare, `projects/${params.username}/${params.projectname}`),
+    authError: pathToJS(devshare, 'authError'),
+    account: pathToJS(devshare, 'profile')
+  })
+)
 export default class Workspace extends Component {
-  constructor () {
-    super()
-    this.debounceStateChange = debounce(this.debounceStateChange, 1000)
-  }
 
   state = {
     inputVisible: false,
     settingsOpen: false,
     sharingOpen: false,
-    files: [],
     addPath: '',
     addType: 'file',
     popoverOpen: false,
@@ -44,6 +56,10 @@ export default class Workspace extends Component {
   }
 
   static propTypes = {
+    devshare: PropTypes.shape({
+      project: PropTypes.func,
+      users: PropTypes.func
+    }),
     project: PropTypes.object,
     tabs: PropTypes.object,
     showProjects: PropTypes.bool,
@@ -57,37 +73,6 @@ export default class Workspace extends Component {
     removeCollaborator: PropTypes.func,
     onProjectSelect: PropTypes.func
   }
-
-  componentWillReceiveProps (nextProps) {
-    // Rebind files if props change (new project selected)
-    this.fetchProjectFiles(nextProps.project)
-  }
-
-  componentWillUpdate (nextProps, nextState) {
-    if (!isEqual(this.state.files, nextState.files)) this.debounceStateChange()
-  }
-
-  fetchProjectFiles = project => {
-    const { name } = project
-    if (!name) return new Error('project name required to fetch projects')
-    if (this.ref && this.ref.endpoint === name) return
-    // if (this.ref && this.ref.endpoint !== name) this.fb.reset()
-    // const fbUrl = project ? Devshare.project(owner.username, name).fileSystem.firebaseUrl() : null
-    // Move to parent ref
-    // this.fb = Rebase.createClass(fbUrl.replace(`/${name}`, ''))
-    // Bind to files list on firebase
-    // this.ref = this.fb.bindToState(name, {
-    //   context: this,
-    //   state: 'files',
-    //   asArray: true
-    // })
-    this.debounceStateChange()
-  }
-
-  debounceStateChange = () =>
-    this.setState({
-      debouncedFiles: this.state.files
-    })
 
   toggleSettingsModal = () =>
     this.setState({
@@ -149,44 +134,48 @@ export default class Workspace extends Component {
   removeCollaborator = username =>
     this.props.removeCollaborator(this.props.project, username)
 
+  // TODO: expose search in redux-devshare
   searchUsers = (q, cb) => {
-    // Devshare.users()
-    //   .search(q)
-    //   .then(usersList =>
-    //     cb(null, usersList),
-    //     error => cb(error)
-    //   )
+    this.props.devshare.users()
+      .search(q)
+      .then(usersList =>
+        cb(null, usersList),
+        error => cb(error)
+      )
   }
 
+  // TODO: Expose file system in redux-devshare
   handleDownloadClick = () => {
     console.log('handle download click')
-    // Devshare.project(this.props.project)
-    //   .fileSystem
-    //   .download()
-    //   .then(res => console.log('download successful:', res))
-    //   .catch(error => {
-    //     console.error('error downloading files', error)
-    //     this.error = error.toString()
-    //   })
+    this.props.devshare
+      .project(this.props.project)
+      .fileSystem
+      .download()
+      .then(res => console.log('download successful:', res))
+      .catch(error => {
+        console.error('error downloading files', error)
+        this.error = error.toString()
+      })
   }
 
   addFile = (path, content) => {
-    // Devshare.project(this.props.project)
-    //   .fileSystem
-    //   .addFile(path.replace('/', ''), content)
-    //   .then(file => event({ category: 'Files', action: 'File added' }))
-    //   .catch(error => {
-    //     console.error('error adding file', error)
-    //     this.error = error.toString
-    //   })
+    this.props.devshare
+      .project(this.props.project)
+      .fileSystem
+      .addFile(path.replace('/', ''), content)
+      .then(file => event({ category: 'Files', action: 'File added' }))
+      .catch(error => {
+        console.error('error adding file', error)
+        this.error = error.toString
+      })
   }
 
   addFolder = path => {
-    // Devshare.project(this.props.project)
-    //   .fileSystem
-    //   .addFolder(path.replace('/', ''))
-    //   .then(file => event({ category: 'Files', action: 'Folder added' }))
-    //   .catch(error => this.error = error.toString)
+    this.props.devshare
+      .project(this.props.project)
+      .fileSystem
+      .addFolder(path.replace('/', ''))
+      .then(file => event({ category: 'Files', action: 'Folder added' }))
   }
 
   addEntity = (type, path, content) =>
@@ -195,12 +184,12 @@ export default class Workspace extends Component {
       : this.addFile(path, content)
 
   deleteFile = (path) => {
-    // Devshare.project(this.props.project)
-    //   .fileSystem
-    //   .file(path)
-    //   .remove()
-    //   .then(file => event({ category: 'Files', action: 'File deleted' }))
-    //   .catch(error => this.error = error.toString)
+    this.props.devshare
+      .project(this.props.project)
+      .fileSystem
+      .file(path)
+      .remove()
+      .then(file => event({ category: 'Files', action: 'File deleted' }))
   }
 
   openFile = (file) => {
@@ -291,20 +280,7 @@ export default class Workspace extends Component {
     })
   }
 
-  toggleDialog = (name) => {
-    let newState = {}
-    newState[`${name}Open`] = !newState[`${name}Open`] || true
-    this.setState(newState)
-  }
-
-  closeDialog = (name) => {
-    console.log('close menu called:', name)
-    let newState = {}
-    newState[`${name}Open`] = false
-    this.setState(newState)
-  }
   // TODO: Finish a popup for clone settings
-  //
   // cloneProject = p => {
   //   Devshare.project(this.props.project)
   //     .clone()
@@ -313,10 +289,9 @@ export default class Workspace extends Component {
   // }
 
   render () {
-    const { project } = this.props
-    const { name, owner } = project || {}
+    // const { project, tabs } = this.props
     return (
-      <div className='Workspace' ref='workspace'>
+      <div className={classes['container']} ref='workspace'>
         <WorkspacePopover
           workspaceElement={this.refs.workspace}
           initialPath={this.state.addPath}
@@ -325,62 +300,13 @@ export default class Workspace extends Component {
           open={this.state.popoverOpen}
           onClose={this.handlePopoverClose}
         />
-        <SideBar
-          projects={this.props.projects}
-          showProjects={this.props.showProjects}
-          project={this.props.project}
-          onProjectSelect={this.props.onProjectSelect}
-          showButtons={this.props.showButtons}
-          files={this.state.debouncedFiles}
-          hideName={this.props.hideName}
-          onFileClick={this.openFile}
-          onSettingsClick={this.toggleSettingsModal}
-          onSharingClick={this.toggleSharingModal}
-          onAddFileClick={this.showPopover.bind(this, 'file')}
-          onAddFolderClick={this.showPopover.bind(this, 'folder')}
-          onFilesDrop={this.onFilesDrop}
-          onFilesAdd={this.onFilesAdd}
-          onDownloadClick={this.handleDownloadClick}
-          onRightClick={this.showContextMenu}
-          filesLoading={this.state.filesLoading}
-          onCloneClick={this.showPopover.bind(this, 'clone')}
-        />
-        <Pane
-          tabs={this.props.tabs}
+        {/* <Pane
+          tabs={tabs}
           onTabSelect={this.selectTab}
           onTabClose={this.closeTab}
-          project={this.props.project}
+          project={project}
           vimEnabled={this.state.vimEnabled}
-        />
-        {
-          this.state.settingsOpen
-            ? (
-            <ProjectSettingsDialog
-              project={this.props.project}
-              open={this.state.settingsOpen}
-              onSave={this.saveSettings}
-              onVimToggle={this.toggleVim}
-              vimEnabled={this.state.vimEnabled}
-              onRequestClose={this.closeDialog.bind(this, 'settings')}
-            />
-            )
-            : null
-        }
-        {
-          this.state.sharingOpen
-          ? (
-            <SharingDialog
-              projectKey={`${owner.username}/${name}`}
-              open={this.state.sharingOpen}
-              onUserSearch={this.searchUsers}
-              onSave={this.saveSettings}
-              onAddCollab={this.addCollaborator}
-              onRemoveCollab={this.removeCollaborator}
-              onRequestClose={this.closeDialog.bind(this, 'sharing')}
-            />
-          )
-           : null
-        }
+        /> */}
         {
           this.state.contextMenu.open
           ? (

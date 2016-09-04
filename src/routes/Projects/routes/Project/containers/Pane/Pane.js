@@ -1,6 +1,6 @@
 import React, { PropTypes, Component } from 'react'
-import Tabs from '../Tabs'
-import Views from '../Views'
+import Tabs from '../../components/Tabs'
+import Views from '../../components/Views'
 
 import './Pane.scss'
 

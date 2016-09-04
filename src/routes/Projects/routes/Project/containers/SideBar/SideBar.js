@@ -1,6 +1,7 @@
-import { isArray, isUndefined, find } from 'lodash'
 import React, { PropTypes, Component } from 'react'
-import TreeView from '../TreeView'
+import { isArray, isUndefined, find } from 'lodash'
+
+import TreeView from '../../components/TreeView'
 
 import SelectField from 'material-ui/SelectField'
 import MenuItem from 'material-ui/MenuItem'
