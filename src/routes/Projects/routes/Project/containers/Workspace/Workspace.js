@@ -36,15 +36,7 @@ export default class Workspace extends Component {
     popoverOpen: false,
     debouncedFiles: null,
     filesLoading: false,
-    vimEnabled: false,
-    contextMenu: {
-      path: '',
-      open: false,
-      position: {
-        x: 0,
-        y: 0
-      }
-    }
+    vimEnabled: false
   }
 
   static propTypes = {
@@ -81,35 +73,6 @@ export default class Workspace extends Component {
   toggleSharingModal = () =>
     this.setState({
       sharingOpen: !this.state.sharingOpen
-    })
-
-  selectTab = index =>
-    this.props.navigateToTab({ project: this.props.project, index })
-
-  closeTab = index =>
-    this.props.closeTab({ project: this.props.project, index })
-
-  toggleVim = vimState =>
-    this.setState({
-      vimEnabled: !this.state.vimEnabled
-    })
-
-  showContextMenu = (path, position) =>
-    this.setState({
-      contextMenu: {
-        open: true,
-        path: path,
-        position
-      }
-    })
-
-  dismissContextMenu = (path, position) =>
-    this.setState({
-      contextMenu: {
-        open: false,
-        path: '',
-        position
-      }
     })
 
   showPopover = (addType, addPath) =>

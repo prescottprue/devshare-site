@@ -73,7 +73,7 @@ export default class WorkspacePopover extends Component {
             onChange={this.handleChange}
             ref='popoverTextField'
             onFocus={this.handleFocus}
-            onEnterKeyDown={this.onSubmit}
+            onKeyDown={this.onSubmit}
           />
         </div>
       </Popover>

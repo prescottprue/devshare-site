@@ -6,8 +6,8 @@ import { connect } from 'react-redux'
 
 @connect(
   // Map state to props
-  ({devshare}, { params }) => ({
-    tabs: { list: [] }
+  ({devshare, tabs}, { params }) => ({
+    tabs
   })
 )
 export default class Pane extends Component {

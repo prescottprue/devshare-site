@@ -1,3 +1,4 @@
+import { injectReducer } from '../../../../store/reducers'
 
 export default (store) => ({
   path: ':projectname',
@@ -9,6 +10,9 @@ export default (store) => ({
       /*  Webpack - use require callback to define
           dependencies for bundling   */
       const Project = require('./containers/Project/Project').default
+      const tabsReducer = require('./modules/tabs/reducer').default
+
+      injectReducer(store, { key: 'tabs', reducer: tabsReducer })
 
       /*  Return getComponent   */
       cb(null, Project)

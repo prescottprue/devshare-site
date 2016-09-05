@@ -20,6 +20,24 @@ export default class TreeView extends Component {
     onRightClick: PropTypes.func
   }
 
+  showContextMenu = (path, position) =>
+    this.setState({
+      contextMenu: {
+        open: true,
+        path: path,
+        position
+      }
+    })
+
+  dismissContextMenu = (path, position) =>
+    this.setState({
+      contextMenu: {
+        open: false,
+        path: '',
+        position
+      }
+    })
+
   getStructure = () => {
     if (!this.props.fileStructure || !this.props.fileStructure.length) return null
     return this.props.fileStructure.map((entry, i) => {
@@ -44,7 +62,7 @@ export default class TreeView extends Component {
             isCollapsed={entry.isCollapsed}
             children={children}
             onFileClick={this.props.onFileClick}
-            onRightClick={this.props.onRightClick}
+            onRightClick={this.showContextMenu}
           />
         )
       }
@@ -56,7 +74,7 @@ export default class TreeView extends Component {
           data={entry.meta}
           active={entry.active}
           onClick={this.props.onFileClick}
-          onRightClick={this.props.onRightClick}
+          onRightClick={this.showContextMenu}
           users={entry.users}
         />
       )

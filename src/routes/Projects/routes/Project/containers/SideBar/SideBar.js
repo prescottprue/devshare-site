@@ -2,7 +2,7 @@ import React, { PropTypes, Component } from 'react'
 import { isArray } from 'lodash'
 
 import TreeView from '../TreeView'
-
+import ContextMenu from '../../components/ContextMenu/ContextMenu'
 import SelectField from 'material-ui/SelectField'
 import MenuItem from 'material-ui/MenuItem'
 import IconButton from 'material-ui/IconButton'
@@ -19,7 +19,6 @@ import classes from './SideBar.scss'
 // Icon styles
 const iconButtonStyle = { width: '50px', height: '50px', padding: '0px' }
 const iconStyle = { width: '100%', height: '100%' }
-const tooltipStyle = { margin: '0px' }
 const tooltipPosition = 'top-center'
 
 export default class SideBar extends Component {
@@ -30,16 +29,56 @@ export default class SideBar extends Component {
     files: PropTypes.array,
     showProjects: PropTypes.bool,
     onSettingsClick: PropTypes.func.isRequired,
-    onSharingClick: PropTypes.func.isRequired
+    onSharingClick: PropTypes.func.isRequired,
+    navigateToTab: PropTypes.func,
+    closeTab: PropTypes.func,
+    onShowPopover: PropTypes.func
   }
 
   state = {
-    filesOver: false
+    filesOver: false,
+    contextMenu: {
+      path: '',
+      open: false,
+      position: {
+        x: 0,
+        y: 0
+      }
+    }
   }
 
   componentDidMount () {
     this.refs.fileInput.setAttribute('webkitdirectory', '')
   }
+
+  selectTab = index =>
+    this.props.navigateToTab({ project: this.props.project, index })
+
+  closeTab = index =>
+    this.props.closeTab({ project: this.props.project, index })
+
+  toggleVim = vimState =>
+    this.setState({
+      vimEnabled: !this.state.vimEnabled
+    })
+
+  showContextMenu = (path, position) =>
+    this.setState({
+      contextMenu: {
+        open: true,
+        path: path,
+        position
+      }
+    })
+
+  dismissContextMenu = (path, position) =>
+    this.setState({
+      contextMenu: {
+        open: false,
+        path: '',
+        position
+      }
+    })
 
   selectProject = (e, i, name) => {
     // if (this.props && this.props.onProjectSelect) {
@@ -75,7 +114,8 @@ export default class SideBar extends Component {
   handleRightClick = (e) => {
     e.preventDefault()
     e.stopPropagation()
-    // this.props.onRightClick(null, { x: e.clientX, y: e.clientY })
+    console.log('right click:', { x: e.clientX, y: e.clientY })
+    this.showContextMenu(null, { x: e.clientX, y: e.clientY })
   }
 
   addFileClick = (f) => {
@@ -101,6 +141,13 @@ export default class SideBar extends Component {
   cloneClick = () => {
 
   }
+
+  showPopover = (addType, addPath) =>
+    this.setState({
+      addPath,
+      addType,
+      popoverOpen: true
+    })
 
   render () {
     const {
@@ -163,7 +210,6 @@ export default class SideBar extends Component {
               iconStyle={iconStyle}
               onClick={this.cloneClick}
               tooltip='Clone'
-              tooltipStyle={tooltipStyle}
               tooltipPosition={tooltipPosition}
               touch
               disabled>
@@ -174,7 +220,6 @@ export default class SideBar extends Component {
               iconStyle={iconStyle}
               onClick={this.downloadClick}
               tooltip='Download'
-              tooltipStyle={tooltipStyle}
               tooltipPosition={tooltipPosition}
               touch
               disabled={!files || files.length < 1}>
@@ -188,7 +233,6 @@ export default class SideBar extends Component {
                   style={iconButtonStyle}
                   iconStyle={iconStyle}
                   tooltip='Add'
-                  tooltipStyle={tooltipStyle}
                   tooltipPosition={tooltipPosition}
                   touch >
                   <AddIcon />
@@ -203,7 +247,6 @@ export default class SideBar extends Component {
               iconStyle={iconStyle}
               onClick={onSharingClick}
               tooltip='Sharing'
-              tooltipStyle={tooltipStyle}
               tooltipPosition={tooltipPosition}
               touch >
               <GroupIcon />
@@ -213,12 +256,24 @@ export default class SideBar extends Component {
               iconStyle={iconStyle}
               onClick={onSettingsClick}
               tooltip='Settings'
-              tooltipStyle={tooltipStyle}
               tooltipPosition={tooltipPosition}
               touch >
               <SettingsIcon />
             </IconButton>
           </div>
+          {
+            this.state.contextMenu.open
+            ? (
+              <ContextMenu
+                path={this.state.contextMenu.path}
+                onAddFileClick={() => { this.props.showPopover('file') }}
+                onAddFolderClick={() => { this.props.showPopover('folder') }}
+                onFileDelete={this.deleteFile}
+                position={this.state.contextMenu.position}
+                dismiss={this.dismissContextMenu}
+              />
+            ) : null
+          }
         </div>
       </div>
     )

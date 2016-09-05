@@ -1,5 +1,5 @@
 import React, { PropTypes, Component } from 'react'
-import './ContextMenu.scss'
+import classes from './ContextMenu.scss'
 
 class ContextMenu extends Component {
 
@@ -70,7 +70,7 @@ class ContextMenu extends Component {
     }
 
     return (
-      <ul style={contextMenuStyle} className='ContextMenu'>
+      <ul style={contextMenuStyle} className={classes['container']}>
         <li onClick={this.handleNewClick.bind(this, 'file')}>Add new file</li>
         <li onClick={this.handleNewClick.bind(this, 'folder')}>Add new folder</li>
         {this.props.path && <li onClick={this.handleDeleteClick}>Delete</li>}
