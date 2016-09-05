@@ -3,6 +3,7 @@ import { routerMiddleware } from 'react-router-redux'
 import thunk from 'redux-thunk'
 import makeRootReducer from './reducers'
 import { reduxDevshare } from 'redux-devshare'
+import config from '../config'
 
 export default (initialState = {}, history) => {
   // ======================================================
@@ -29,7 +30,7 @@ export default (initialState = {}, history) => {
     initialState,
     compose(
       applyMiddleware(...middleware),
-      reduxDevshare({ userProfile: 'users' }),
+      reduxDevshare(config),
       ...enhancers
     )
   )

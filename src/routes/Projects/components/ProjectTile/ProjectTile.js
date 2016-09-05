@@ -128,6 +128,7 @@ export default class ProjectTile extends Component {
         </div>
       ))
     }
+
     return (
       <div>
         <ProjectSettingsDialog
@@ -169,7 +170,7 @@ export default class ProjectTile extends Component {
             <SettingsIcon className={classes['settings']} onClick={this.toggleDropdown} hoverColor={hoverColor} />
           </div>
           <span className={classes['owner']}>
-            {(owner && owner.username) ? owner.username : 'No Owner'}
+            {owner || 'No Owner'}
           </span>
           <div className={classes['collaborators']}>
             {collaboratorsList}

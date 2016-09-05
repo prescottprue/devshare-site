@@ -5,7 +5,7 @@ import { toArray } from 'lodash'
 import classes from './Project.scss'
 import SettingsDialog from '../../components/SettingsDialog/SettingsDialog'
 import SharingDialog from '../../components/SharingDialog/SharingDialog'
-
+import CircularProgress from 'material-ui/CircularProgress'
 // redux-devsharev3
 import { connect } from 'react-redux'
 import { devshare, helpers } from 'redux-devshare'
@@ -41,7 +41,11 @@ export default class Project extends Component {
     children: PropTypes.object
   }
 
-  state = { settingsOpen: false, sharingOpen: false, vimEnabled: false }
+  state = {
+    settingsOpen: false,
+    sharingOpen: false,
+    vimEnabled: false
+  }
 
   selectProject = proj => {
     if (proj.owner) {
@@ -59,7 +63,13 @@ export default class Project extends Component {
     const { projects, project, params } = this.props
     const { settingsOpen, sharingOpen, vimEnabled } = this.state
 
-    if (!project) return <div>loading...</div>
+    if (!project) {
+      return (
+        <div className={classes['progress']}>
+          <CircularProgress />
+        </div>
+      )
+    }
 
     return (
       <div className={classes['container']} ref='workspace'>

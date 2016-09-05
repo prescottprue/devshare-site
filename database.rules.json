@@ -1,0 +1,16 @@
+{
+  "rules": {
+    ".read": "auth !== null",
+    ".write": "auth !== null",
+    "cars": {
+      ".read": true,
+      ".write": true
+		},
+    "projects": {
+      ".indexOn": ["name", "owner"]
+    },
+    "users": {
+      ".indexOn": ["uid"]
+    }
+  }
+}

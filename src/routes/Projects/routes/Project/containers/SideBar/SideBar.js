@@ -1,5 +1,5 @@
 import React, { PropTypes, Component } from 'react'
-import { isArray } from 'lodash'
+import { isArray, each, toArray, last, findIndex } from 'lodash'
 
 import TreeView from '../TreeView'
 import ContextMenu from '../../components/ContextMenu/ContextMenu'
@@ -16,22 +16,46 @@ import ArchiveIcon from 'material-ui/svg-icons/content/archive'
 const classnames = require('classnames')
 import classes from './SideBar.scss'
 
+const fileEntityBlackList = ['.DS_Store', 'node_modules']
+
 // Icon styles
 const iconButtonStyle = { width: '50px', height: '50px', padding: '0px' }
 const iconStyle = { width: '100%', height: '100%' }
 const tooltipPosition = 'top-center'
 
+// redux-devsharev3
+import { connect } from 'react-redux'
+import { bindActionCreators } from 'redux'
+import { actions as TabActions } from '../../modules/tabs'
+import { devshare, helpers } from 'redux-devshare'
+const { dataToJS } = helpers
+
+@devshare(
+  ({ project }) => {
+    console.debug('project in sidebar', project)
+    return ([
+      `files/${project.owner}/${project.name}`
+    ])
+  }
+
+)
+@connect(({ devshare }, { project }) => ({
+  files: dataToJS(devshare, `files/${project.owner}/${project.name}`)
+}), (dispatch) => bindActionCreators(TabActions, dispatch))
 export default class SideBar extends Component {
 
   static propTypes = {
     projects: PropTypes.array,
+    devshare: PropTypes.object,
     project: PropTypes.object.isRequired,
     files: PropTypes.array,
+    tabs: PropTypes.object,
+    openTab: PropTypes.func,
+    closeTab: PropTypes.func,
     showProjects: PropTypes.bool,
     onSettingsClick: PropTypes.func.isRequired,
     onSharingClick: PropTypes.func.isRequired,
     navigateToTab: PropTypes.func,
-    closeTab: PropTypes.func,
     onShowPopover: PropTypes.func
   }
 
@@ -51,17 +75,6 @@ export default class SideBar extends Component {
     this.refs.fileInput.setAttribute('webkitdirectory', '')
   }
 
-  selectTab = index =>
-    this.props.navigateToTab({ project: this.props.project, index })
-
-  closeTab = index =>
-    this.props.closeTab({ project: this.props.project, index })
-
-  toggleVim = vimState =>
-    this.setState({
-      vimEnabled: !this.state.vimEnabled
-    })
-
   showContextMenu = (path, position) =>
     this.setState({
       contextMenu: {
@@ -80,19 +93,8 @@ export default class SideBar extends Component {
       }
     })
 
-  selectProject = (e, i, name) => {
-    // if (this.props && this.props.onProjectSelect) {
-    //   let proj = find(this.props.projects, { name })
-    //   // this.props.onProjectSelect(proj, i)
-    // }
-  }
-
   handleFileUploadClick = (e) => {
     this.refs.fileInput.click()
-  }
-
-  handleFileUpload = (e) => {
-    // this.props.onFilesAdd(e)
   }
 
   handleFileDrag = (e) => {
@@ -103,61 +105,155 @@ export default class SideBar extends Component {
   }
 
   handleFileDrop = (e) => {
-    // this.props.onFilesDrop(e)
-    this.setState({ filesOver: false })
+    e.preventDefault()
+    this.setState({
+      filesLoading: true,
+      filesOver: false
+    })
+    each(e.dataTransfer.items, item => {
+      let entry = item.webkitGetAsEntry()
+      this.handleEntries(entry)
+    })
+    this.setState({
+      filesLoading: false
+    })
   }
 
   handleFileDragLeave = (e) => {
     this.setState({ filesOver: false })
   }
 
+  handleEntries = (entries) => {
+    if (entries.isFile) {
+      this.readAndSaveFileEntry(entries)
+    } else if (entries.isDirectory) {
+      this.readAndSaveFolderEntry(entries)
+    }
+    each(entries, (entry) => {
+      if (fileEntityBlackList.indexOf(last(entry.fullPath.split('/'))) !== -1) {
+        return void 0
+      }
+      if (entry.isFile) {
+        this.readAndSaveFileEntry(entry)
+      } else if (entry.isDirectory) {
+        this.readAndSaveFolderEntry(entry)
+      }
+    })
+  }
+
   handleRightClick = (e) => {
     e.preventDefault()
     e.stopPropagation()
-    console.log('right click:', { x: e.clientX, y: e.clientY })
     this.showContextMenu(null, { x: e.clientX, y: e.clientY })
   }
 
-  addFileClick = (f) => {
-    console.log('add file clicked', f)
+  readAndSaveFileEntry = (entry) => {
+    let parent = this
+    // TODO: Use bind instead of parent var
+    function readAndSaveFile (file, path) {
+      let reader = new FileReader()
+      reader.onloadend = function (e) {
+        parent.addFile(path, this.result)
+      }
+      reader.readAsText(file)
+    }
+    if (entry.webkitRelativePath) return readAndSaveFile(entry, entry.webkitRelativePath)
+    entry.file(file => readAndSaveFile(file, entry.fullPath))
   }
 
-  addFolderClick = (f) => {
-    console.log('add folder clicked', f)
+  readAndSaveFolderEntry = (entry) => {
+    this.addFolder(entry.fullPath)
+    let reader = entry.createReader()
+    reader.readEntries(folder => {
+      if (folder.length > 1) this.handleEntries(folder)
+    })
+  }
+
+  addFile = (path, content) =>
+    this.props.devshare
+      .project(this.props.project)
+      .fileSystem
+      .addFile(path.replace('/', ''), content)
+      // .then(file => event({ category: 'Files', action: 'File added' }))
+      .catch(error => {
+        console.error('error adding file', error)
+        this.error = error.toString
+      })
+
+  addFolder = path =>
+    this.props.devshare
+      .project(this.props.project)
+      .fileSystem
+      .addFolder(path.replace('/', ''))
+      // .then(file => event({ category: 'Files', action: 'Folder added' }))
+
+  addEntity = (type, path, content) =>
+    type === 'folder'
+      ? this.addFolder(path)
+      : this.addFile(path, content)
+
+  deleteFile = path =>
+    this.props.devshare
+      .project(this.props.project)
+      .fileSystem
+      .file(path)
+      .remove()
+      .then(file => event({ category: 'Files', action: 'File deleted' }))
+
+  openFile = file => {
+    const { project, tabs } = this.props
+    const tabData = {
+      project,
+      title: file.name || file.path.split('/')[file.path.split('/').length - 1],
+      type: 'file',
+      file
+    }
+    // TODO: Search by matching path instead of tab title
+    // Search for already matching title
+    const matchingInd = findIndex(tabs.list, {title: tabData.title})
+    // Only open tab if file is not already open
+    if (matchingInd === -1) {
+      this.props.openTab(tabData)
+      // Select last tab
+      const newInd = tabs.list ? tabs.list.length - 1 : 0
+      return this.props.navigateToTab({ project, index: newInd })
+    }
+    this.props.navigateToTab({
+      project,
+      index: matchingInd
+    })
   }
 
   downloadClick = () => {
-    console.log('enable download functionality')
-  }
-
-  fileClick = () => {
-
-  }
-
-  rightClick = () => {
-
+    console.log('download called', this.props.project)
+    this.props.devshare
+      .project(this.props.project)
+      .fileSystem
+      .download()
+      .then(res => console.log('download successful:', res))
+      .catch(error => {
+        console.error('error downloading files', error)
+        this.error = error.toString()
+      })
   }
 
   cloneClick = () => {
-
+    // TODO: Open clone dialog
+    console.log('Open clone dialog')
   }
-
-  showPopover = (addType, addPath) =>
-    this.setState({
-      addPath,
-      addType,
-      popoverOpen: true
-    })
 
   render () {
     const {
       files,
       project,
       projects,
+      showProjects,
       onSettingsClick,
       onSharingClick,
-      showProjects
+      onShowPopover
     } = this.props
+    console.log('files:', files)
+    const { contextMenu, filesOver } = this.state
 
     const projectsMenu = isArray(projects) && projects.length > 0
       ? projects.map((project, i) =>
@@ -171,7 +267,7 @@ export default class SideBar extends Component {
       : null
 
     return (
-      <div className={classnames(classes['container'], { 'filehover': this.state.filesOver })}
+      <div className={classnames(classes['container'], { 'filehover': filesOver })}
         onDragOver={this.handleFileDrag}
         onDragLeave={this.handleFileDragLeave}
         onDrop={this.handleFileDrop}
@@ -192,15 +288,14 @@ export default class SideBar extends Component {
             ) : null
         }
           <TreeView
-            fileStructure={files}
-            onFileClick={this.fileClick}
-            onRightClick={this.rightClick}
+            fileStructure={toArray(files)}
+            onRightClick={this.showContextMenu}
             project={project}
           />
           <input
             type='file'
             ref='fileInput'
-            style={{display: 'none'}}
+            className={classes['file-input']}
             onChange={this.handleFileUpload}
             multiple
           />
@@ -238,9 +333,18 @@ export default class SideBar extends Component {
                   <AddIcon />
                 </IconButton>
             }>
-              <MenuItem primaryText='Upload files' onClick={this.handleFileUploadClick} />
-              <MenuItem primaryText='Add file' onClick={this.addFileClick} />
-              <MenuItem primaryText='Add folder' onClick={this.addFolderClick} />
+              <MenuItem
+                primaryText='Upload files'
+                onClick={this.handleFileUploadClick}
+              />
+              <MenuItem
+                primaryText='Add file'
+                onClick={() => { onShowPopover('file') }}
+              />
+              <MenuItem
+                primaryText='Add folder'
+                onClick={() => { onShowPopover('folder') }}
+              />
             </IconMenu>
             <IconButton
               style={iconButtonStyle}
@@ -262,14 +366,14 @@ export default class SideBar extends Component {
             </IconButton>
           </div>
           {
-            this.state.contextMenu.open
+            contextMenu.open
             ? (
               <ContextMenu
-                path={this.state.contextMenu.path}
-                onAddFileClick={() => { this.props.showPopover('file') }}
-                onAddFolderClick={() => { this.props.showPopover('folder') }}
+                path={contextMenu.path}
+                onAddFileClick={() => { onShowPopover('file') }}
+                onAddFolderClick={() => { onShowPopover('folder') }}
                 onFileDelete={this.deleteFile}
-                position={this.state.contextMenu.position}
+                position={contextMenu.position}
                 dismiss={this.dismissContextMenu}
               />
             ) : null

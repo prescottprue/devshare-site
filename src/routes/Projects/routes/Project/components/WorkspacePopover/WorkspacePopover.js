@@ -2,7 +2,7 @@ import React, { Component, PropTypes } from 'react'
 import Popover from 'material-ui/Popover/Popover'
 import TextField from 'material-ui/TextField'
 
-import './WorkspacePopover.scss'
+import classes from './WorkspacePopover.scss'
 
 const originSettings = { horizontal: 'middle', vertical: 'top' }
 const pathInputStyling = { padding: 20 }
@@ -31,7 +31,9 @@ export default class WorkspacePopover extends Component {
       activePopover: key
     }, () => {
       setTimeout(() => {
-        this.refs.popoverTextField.focus()
+        if (this.refs.popoverTextField) {
+          this.refs.popoverTextField.focus()
+        }
       }, 500)
     })
 
@@ -45,9 +47,11 @@ export default class WorkspacePopover extends Component {
     this.props.onClose()
   }
 
-  onSubmit = () => {
-    this.props.onSubmit(this.props.type, this.state.path)
-    this.closePopover('pop')
+  onSubmit = (e) => {
+    if (e && e.key === 'Enter') {
+      this.props.onSubmit(this.props.type, this.state.path)
+      this.closePopover('pop')
+    }
   }
 
   handleChange = e =>
@@ -59,19 +63,21 @@ export default class WorkspacePopover extends Component {
   }
 
   render () {
+    const { initialPath, type } = this.props
     return (
-      <Popover className='WorkspacePopover' open={this.state.activePopover === 'pop'}
+      <Popover className={classes['container']} open={this.state.activePopover === 'pop'}
         anchorEl={this.props.workspaceElement}
         anchorOrigin={originSettings}
         targetOrigin={originSettings}
         onRequestClose={this.closePopover.bind(this, 'pop')} >
         <div style={pathInputStyling}>
-          <p>Enter path for new {this.props.type}</p>
+          <p>Enter path for new {type}</p>
           <TextField
-            hintText={this.props.initialPath}
-            defaultValue={this.props.initialPath}
+            hintText={initialPath}
+            defaultValue={initialPath}
             onChange={this.handleChange}
             ref='popoverTextField'
+            name='path'
             onFocus={this.handleFocus}
             onKeyDown={this.onSubmit}
           />

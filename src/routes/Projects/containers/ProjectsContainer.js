@@ -59,10 +59,12 @@ export class Projects extends Component {
   // TODO: Add through devshare projects method
   newSubmit = name =>
     this.props.devshare
-      .set(`projects/${this.props.account.username}/${name}`,
-        { name, owner: this.props.auth.uid }
-      )
+      .projects()
+      .add({ name, owner: this.props.account.username })
       .then(() => this.toggleModal('newProject'))
+      .catch(err => {
+        console.error('error creating new project', err)
+      })
 
   // TODO: Delete through devshare projects method
   deleteProject = ({ name }) =>

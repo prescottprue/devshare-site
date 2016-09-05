@@ -3,7 +3,6 @@ import { findIndex, each, last } from 'lodash'
 
 import SideBar from '../SideBar/SideBar'
 import Pane from '../Pane/Pane'
-
 // Components
 // import ContextMenu from '../../components/ContextMenu/ContextMenu'
 import WorkspacePopover from '../../components/WorkspacePopover/WorkspacePopover'
@@ -13,11 +12,12 @@ const fileEntityBlackList = ['.DS_Store', 'node_modules']
 
 // redux
 import { connect } from 'react-redux'
-import { helpers } from 'redux-devshare'
+import { devshare, helpers } from 'redux-devshare'
 const { pathToJS } = helpers
 
 // TODO: Load files list
 // TODO: Wire tab actions
+@devshare()
 @connect(
   // Map state to props
   ({devshare}, { params }) => ({
@@ -120,16 +120,21 @@ export default class Workspace extends Component {
       })
   }
 
-  addFile = (path, content) =>
+  addFile = (path, content) => {
+    console.log('add file called:', path, content)
     this.props.devshare
       .project(this.props.project)
       .fileSystem
       .addFile(path.replace('/', ''), content)
-      // .then(file => event({ category: 'Files', action: 'File added' }))
+      .then(file => {
+        console.log('file added successfully', file)
+        // event({ category: 'Files', action: 'File added' })
+      })
       .catch(error => {
         console.error('error adding file', error)
         this.error = error.toString
       })
+  }
 
   addFolder = path =>
     this.props.devshare
@@ -257,8 +262,6 @@ export default class Workspace extends Component {
       projects
     } = this.props
 
-    if (!project) return (<div>Loading...</div>)
-
     return (
       <div className={classes['container']} ref='workspace'>
         <WorkspacePopover
@@ -276,25 +279,13 @@ export default class Workspace extends Component {
           onSettingsClick={onSettingsClick}
           onSharingClick={onSharingClick}
           showProjects={!!account && !!account.username}
+          onShowPopover={this.showPopover}
         />
         <Pane
           project={project}
           params={params}
           vimEnabled={this.state.vimEnabled}
         />
-        {/* {
-          this.state.contextMenu.open
-          ? (
-            <ContextMenu
-              path={this.state.contextMenu.path}
-              onAddFileClick={this.showPopover.bind(this, 'file')}
-              onAddFolderClick={this.showPopover.bind(this, 'folder')}
-              onFileDelete={this.deleteFile}
-              position={this.state.contextMenu.position}
-              dismiss={this.dismissContextMenu}
-            />
-          ) : null
-        } */}
       </div>
     )
   }
