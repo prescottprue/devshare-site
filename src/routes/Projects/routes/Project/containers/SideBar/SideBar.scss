@@ -26,6 +26,13 @@
 a {
   text-align: center;
 }
+.treeview {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  flex: auto;
+  flex-grow: 1;
+}
 .buttons {
   display: flex;
   flex-direction: row;

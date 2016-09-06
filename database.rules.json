@@ -2,11 +2,15 @@
   "rules": {
     ".read": "auth !== null",
     ".write": "auth !== null",
-    "cars": {
-      ".read": true,
-      ".write": true
-		},
+    "files": {
+      "anon": {
+        ".read": true,
+        ".write": true
+      }
+    },
     "projects": {
+      ".read": true,
+      ".write": true,
       ".indexOn": ["name", "owner"]
     },
     "users": {

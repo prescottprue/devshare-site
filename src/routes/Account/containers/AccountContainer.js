@@ -1,20 +1,19 @@
 import React, { Component, PropTypes } from 'react'
 
 // Components
-import AccountDialog from '../components/AccountDialog/AccountDialog'
-import RaisedButton from 'material-ui/RaisedButton'
-import TextField from 'material-ui/TextField'
+// import AccountDialog from '../components/AccountDialog/AccountDialog'
+import AccountForm from '../components/AccountForm/AccountForm'
+import CircularProgress from 'material-ui/CircularProgress'
+import Paper from 'material-ui/Paper'
 
 import classes from './AccountContainer.scss'
 
-const textFieldStyle = { width: '60%' }
-const buttonStyle = { 'marginTop': '2rem', width: '20%' }
 const defaultUserImageUrl = 'https://s3.amazonaws.com/kyper-cdn/img/User.png'
 
 // redux-devsharev3
 import { connect } from 'react-redux'
 import { devshare, helpers } from 'redux-devshare'
-const { pathToJS } = helpers
+const { pathToJS, isLoaded } = helpers
 
 @devshare()
 @connect(
@@ -32,12 +31,11 @@ export default class Account extends Component {
 
   static propTypes = {
     account: PropTypes.object,
-    logout: PropTypes.func,
     devshare: PropTypes.shape({
-      logout: PropTypes.func.isRequired
-    }),
-    uploadAvatar: PropTypes.func,
-    updateAccount: PropTypes.func
+      logout: PropTypes.func.isRequired,
+      uploadAvatar: PropTypes.func,
+      updateAccount: PropTypes.func
+    })
   }
 
   state = { modalOpen: false }
@@ -53,11 +51,7 @@ export default class Account extends Component {
       name: this.refs.name.getValue(),
       email: this.refs.email.getValue()
     }
-    this.props.updateAccount(account)
-  }
-
-  handleAvatarUpload = imageFile => {
-    this.props.uploadAvatar(imageFile)
+    this.props.devshare.updateAccount(account)
   }
 
   toggleModal = () => {
@@ -67,43 +61,35 @@ export default class Account extends Component {
   }
 
   render () {
-    const { account } = this.props
+    const { account, devshare: { saveAccount } } = this.props
+
+    if (!isLoaded(account)) {
+      return (
+        <div className={classes['container']}>
+          <CircularProgress size={1.5} />
+        </div>
+      )
+    }
+
     return (
       <div className={classes['container']}>
-        <AccountDialog
-          modalOpen={this.state.modalOpen}
-          toggleModal={this.toggleModal}
-          onSave={this.handleAvatarUpload}
-        />
-        <div className={classes['settings']}>
-          <div className={classes['avatar']}>
-            <img
-              className={classes['avatar-current']}
-              src={account && account.avatarUrl || defaultUserImageUrl}
-              onClick={this.toggleModal}
-            />
+        <Paper className={classes['pane']}>
+          <div className={classes['settings']}>
+            <div className={classes['avatar']}>
+              <img
+                className={classes['avatar-current']}
+                src={account && account.avatarUrl || defaultUserImageUrl}
+                onClick={this.toggleModal}
+              />
+            </div>
+            <div className={classes['meta']}>
+              <AccountForm
+                onSubmit={saveAccount}
+                account={account}
+              />
+            </div>
           </div>
-          <div className={classes['meta']}>
-            <TextField
-              hintText='Email'
-              floatingLabelText='Email'
-              ref='email'
-              defaultValue={account && account.email || 'No Email'}
-              style={textFieldStyle}
-            />
-            <RaisedButton
-              primary
-              label='Save'
-              onClick={this.handleSave}
-              style={buttonStyle}
-            />
-            <RaisedButton
-              label='Logout'
-              onClick={this.handleLogout}
-              style={buttonStyle}
-            />
-          </div>
-        </div>
+        </Paper>
       </div>
     )
   }

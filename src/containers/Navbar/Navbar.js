@@ -4,15 +4,21 @@ import { Link } from 'react-router'
 // Components
 import AppBar from 'material-ui/AppBar'
 import IconMenu from 'material-ui/IconMenu'
+import IconButton from 'material-ui/IconButton'
 import MenuItem from 'material-ui/MenuItem'
 import FlatButton from 'material-ui/FlatButton'
 import Avatar from 'material-ui/Avatar'
 
 const stockPhotoUrl = 'https://s3.amazonaws.com/kyper-cdn/img/User.png'
-const originSettings = { horizontal: 'right', vertical: 'bottom' }
+const originSettings = { horizontal: 'left', vertical: 'bottom' }
 const buttonStyle = { color: 'white', textDecoration: 'none' }
 const avatarSize = 50
 
+const avatarStyles = {
+  icon: { width: avatarSize, height: avatarSize },
+  button: { marginRight: '1.5rem', width: avatarSize, height: avatarSize },
+  wrapper: { marginTop: 45 - avatarSize }
+}
 // redux/devshare
 import { connect } from 'react-redux'
 import { devshare, helpers } from 'redux-devshare'
@@ -45,11 +51,11 @@ export class Navbar extends Component {
     const { account } = this.props
 
     const iconButton = (
-      <Avatar
-        className={classes['avatar']}
-        src={account && account.avatarUrl ? account.avatarUrl : stockPhotoUrl}
-        size={avatarSize}
-      />
+      <IconButton iconStyle={avatarStyles.icon} style={avatarStyles.button}>
+        <Avatar
+          src={account && account.avatarUrl ? account.avatarUrl : stockPhotoUrl}
+        />
+      </IconButton>
     )
 
     const mainMenu = (
@@ -74,13 +80,13 @@ export class Navbar extends Component {
         iconButtonElement={iconButton}
         targetOrigin={originSettings}
         anchorOrigin={originSettings}
+        animated={false}
       >
-        <Link to='/account' style={buttonStyle}>
-          <MenuItem
-            primaryText='Account'
-            value='account'
-          />
-        </Link>
+        <MenuItem
+          primaryText='Account'
+          value='account'
+          onTouchTap={() => this.context.router.push('/account')}
+        />
         <MenuItem
           primaryText='Sign out'
           value='logout'
@@ -89,7 +95,12 @@ export class Navbar extends Component {
       </IconMenu>
     ) : mainMenu
 
+    // Only apply styling if avatar is showing
+    const menuStyle = account && account.username && avatarStyles.wrapper
+
+    // Redirect to users home page if logged int
     const brandPath = account && account.username ? `/${account.username}` : '/'
+
     return (
       <AppBar
         title={
@@ -99,6 +110,7 @@ export class Navbar extends Component {
         }
         showMenuIconButton={false}
         iconElementRight={rightMenu}
+        iconStyleRight={menuStyle}
       />
     )
   }

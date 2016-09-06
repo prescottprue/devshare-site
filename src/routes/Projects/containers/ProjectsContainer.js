@@ -6,13 +6,13 @@ import ProjectTile from '../components/ProjectTile/ProjectTile'
 import NewProjectTile from '../components/NewProjectTile/NewProjectTile'
 import NewProjectDialog from '../components/NewProjectDialog/NewProjectDialog'
 import SharingDialog from '../components/SharingDialog/SharingDialog'
-
+import CircularProgress from 'material-ui/CircularProgress'
 import classes from './ProjectsContainer.scss'
 
 // redux/devshare
 import { connect } from 'react-redux'
 import { devshare, helpers } from 'redux-devshare'
-const { pathToJS, dataToJS } = helpers
+const { pathToJS, dataToJS, isLoaded, isEmpty } = helpers
 
 // Decorators
 @devshare(
@@ -90,7 +90,24 @@ export class Projects extends Component {
     const { projects, account, params: { username } } = this.props
     const { newProjectModal, addCollabModal, currentProject } = this.state
 
-    const projectsList = projects ? projects.map((project, i) =>
+    if (!isLoaded(projects)) {
+      return (
+        <div className={classes['progress']}>
+          <CircularProgress />
+        </div>
+      )
+    }
+
+    // User has no projects and doesn't match logged in user
+    if (isEmpty(projects) && account && username !== account.username) {
+      return (
+        <div className={classes['container']}>
+          <div>This user has no projects</div>
+        </div>
+      )
+    }
+
+    const projectsList = projects.map((project, i) =>
       (
       <ProjectTile
         key={`${project.name}-Collab-${i}`}
@@ -101,7 +118,7 @@ export class Projects extends Component {
         onDelete={this.deleteProject}
       />
       )
-    ) : <span>No projects yet</span>
+    )
 
     // If username doesn't match route then hide add project tile
     if (account && account.username === username) {

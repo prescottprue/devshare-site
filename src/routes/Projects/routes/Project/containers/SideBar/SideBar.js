@@ -1,5 +1,5 @@
 import React, { PropTypes, Component } from 'react'
-import { isArray, each, toArray, last, findIndex } from 'lodash'
+import { isArray, each, last, findIndex, map } from 'lodash'
 
 import TreeView from '../TreeView'
 import ContextMenu from '../../components/ContextMenu/ContextMenu'
@@ -12,6 +12,7 @@ import SettingsIcon from 'material-ui/svg-icons/action/settings'
 import GroupIcon from 'material-ui/svg-icons/social/group'
 import CopyIcon from 'material-ui/svg-icons/content/content-copy'
 import ArchiveIcon from 'material-ui/svg-icons/content/archive'
+import RaisedButton from 'material-ui/RaisedButton'
 
 const classnames = require('classnames')
 import classes from './SideBar.scss'
@@ -28,20 +29,26 @@ import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import { actions as TabActions } from '../../modules/tabs'
 import { devshare, helpers } from 'redux-devshare'
-const { dataToJS } = helpers
+const { isLoaded, dataToJS } = helpers
 
 @devshare(
-  ({ project }) => {
-    console.debug('project in sidebar', project)
-    return ([
+  ({ project }) =>
+    ([
       `files/${project.owner}/${project.name}`
     ])
-  }
-
 )
-@connect(({ devshare }, { project }) => ({
-  files: dataToJS(devshare, `files/${project.owner}/${project.name}`)
-}), (dispatch) => bindActionCreators(TabActions, dispatch))
+@connect(
+  ({ devshare }, { project }) =>
+    ({
+      files: map(
+        dataToJS(devshare, `files/${project.owner}/${project.name}`),
+        (file, key) => Object.assign(file, { key })
+      )
+    }),
+  // Map dispatch to props
+  (dispatch) =>
+    bindActionCreators(TabActions, dispatch)
+)
 export default class SideBar extends Component {
 
   static propTypes = {
@@ -252,7 +259,7 @@ export default class SideBar extends Component {
       onSharingClick,
       onShowPopover
     } = this.props
-    console.log('files:', files)
+
     const { contextMenu, filesOver } = this.state
 
     const projectsMenu = isArray(projects) && projects.length > 0
@@ -274,23 +281,25 @@ export default class SideBar extends Component {
         onContextMenu={this.handleRightClick}
       >
         <div className={classes['dropzone']}>
-        {
-          (projectsMenu && showProjects)
-            ? (
-            <SelectField
-              style={{width: '80%', marginLeft: '10%'}}
-              labelStyle={{fontSize: '1.5rem', fontWeight: '300', textOverflow: 'ellipsis'}}
-              autoWidth={false}
-              value={project.name}
-              children={projectsMenu}
-              onChange={this.selectProject}
-            />
-            ) : null
-        }
+          {
+            (projectsMenu && showProjects)
+              ? <SelectField
+                style={{width: '80%', marginLeft: '10%'}}
+                labelStyle={{fontSize: '1.5rem', fontWeight: '300', textOverflow: 'ellipsis'}}
+                autoWidth={false}
+                value={project.name}
+                children={projectsMenu}
+                onChange={this.selectProject}
+                />
+              : <RaisedButton
+                label='Save To Account'
+                />
+          }
           <TreeView
-            fileStructure={toArray(files)}
+            fileStructure={files}
             onRightClick={this.showContextMenu}
             project={project}
+            loading={!isLoaded(files)}
           />
           <input
             type='file'

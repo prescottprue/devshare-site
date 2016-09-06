@@ -6,7 +6,6 @@ import Checkbox from 'material-ui/Checkbox'
 import { Field, reduxForm } from 'redux-form'
 
 import classes from './LoginForm.scss'
-const buttonStyle = {width: '100%'}
 
 const validate = values => {
   const errors = {}
@@ -40,7 +39,6 @@ const LoginForm = props => {
           primary
           type='submit'
           disabled={submitting}
-          style={buttonStyle}
         />
       </div>
       <div className={classes['options']}>

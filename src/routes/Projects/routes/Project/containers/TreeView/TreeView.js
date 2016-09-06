@@ -10,13 +10,14 @@ export default class TreeView extends Component {
 
   static propTypes = {
     fileStructure: PropTypes.arrayOf(PropTypes.shape({
-      name: PropTypes.string,
-      path: PropTypes.string
+      meta: PropTypes.shape({
+        name: PropTypes.string.isRequired,
+        path: PropTypes.string.isRequired
+      })
     })),
+    loading: PropTypes.bool.isRequired,
     onFileClick: PropTypes.func,
     onFolderClick: PropTypes.func,
-    project: PropTypes.object,
-    loading: PropTypes.bool,
     onRightClick: PropTypes.func
   }
 
@@ -51,6 +52,7 @@ export default class TreeView extends Component {
           path: childPathSplit.slice(0, -1).join('/')
         }
       }
+
       // Folder
       if (entry.meta && (entry.meta.entityType === 'folder')) {
         const children = Object.assign({}, omit(entry, ['key', 'meta']))
@@ -66,6 +68,7 @@ export default class TreeView extends Component {
           />
         )
       }
+
       // File
       return (
         <TreeFile
@@ -82,16 +85,13 @@ export default class TreeView extends Component {
   }
 
   render () {
-    let loading = false
-    if (this.props.fileStructure === null || this.props.loading) {
-      loading = true
-    }
+    const { loading } = this.props
     const structure = this.getStructure()
     return (
       <div className={classes['container']}>
         <div className={classes['wrapper']}>
           {
-            (structure && !this.props.loading)
+            (structure && !loading)
             ? (
               <ol className={classes['structure']}>
                 {structure}

@@ -9,7 +9,7 @@ import CircularProgress from 'material-ui/CircularProgress'
 // redux-devsharev3
 import { connect } from 'react-redux'
 import { devshare, helpers } from 'redux-devshare'
-const { dataToJS } = helpers
+const { isLoaded, dataToJS } = helpers
 
 @devshare(
   // Get paths from devshare
@@ -63,7 +63,7 @@ export default class Project extends Component {
     const { projects, project, params } = this.props
     const { settingsOpen, sharingOpen, vimEnabled } = this.state
 
-    if (!project) {
+    if (!isLoaded(project)) {
       return (
         <div className={classes['progress']}>
           <CircularProgress />

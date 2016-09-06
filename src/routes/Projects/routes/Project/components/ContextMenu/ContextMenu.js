@@ -1,7 +1,7 @@
 import React, { PropTypes, Component } from 'react'
 import classes from './ContextMenu.scss'
 
-class ContextMenu extends Component {
+export class ContextMenu extends Component {
 
   static propTypes = {
     event: PropTypes.object,
@@ -64,6 +64,7 @@ class ContextMenu extends Component {
   }
 
   render () {
+    const { path } = this.props
     var contextMenuStyle = {
       top: this.state.contextMenu.top,
       left: this.state.contextMenu.left
@@ -71,9 +72,18 @@ class ContextMenu extends Component {
 
     return (
       <ul style={contextMenuStyle} className={classes['container']}>
-        <li onClick={this.handleNewClick.bind(this, 'file')}>Add new file</li>
-        <li onClick={this.handleNewClick.bind(this, 'folder')}>Add new folder</li>
-        {this.props.path && <li onClick={this.handleDeleteClick}>Delete</li>}
+        <li onClick={this.handleNewClick.bind(this, 'file')}>
+          Add new file
+        </li>
+        <li onClick={this.handleNewClick.bind(this, 'folder')}>
+          Add new folder
+        </li>
+        {
+          path &&
+            <li onClick={this.handleDeleteClick}>
+              Delete
+            </li>
+        }
       </ul>
     )
   }
