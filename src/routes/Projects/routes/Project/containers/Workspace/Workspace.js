@@ -1,19 +1,18 @@
 import React, { Component, PropTypes } from 'react'
-import { findIndex, each, last } from 'lodash'
 
+// Containers
 import SideBar from '../SideBar/SideBar'
 import Pane from '../Pane/Pane'
+
 // Components
 import WorkspacePopover from '../../components/WorkspacePopover/WorkspacePopover'
 import classes from './Workspace.scss'
 
-// redux
+// redux/devshare
 import { connect } from 'react-redux'
 import { devshare, helpers } from 'redux-devshare'
 const { pathToJS } = helpers
 
-// TODO: Load files list
-// TODO: Wire tab actions
 @devshare()
 @connect(
   // Map state to props
@@ -133,7 +132,7 @@ export default class Workspace extends Component {
       .fileSystem
       .file(path)
       .remove()
-      .then(file => event({ category: 'Files', action: 'File deleted' }))
+      // .then(file => event({ category: 'Files', action: 'File deleted' }))
 
   render () {
     const {

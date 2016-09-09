@@ -4,20 +4,19 @@ import {
   SET_ACTIVE_TAB
 } from './constants'
 
-export function navigateToTab (tabData) {
-  const { index, project } = tabData
+export function navigateToTab (project, index) {
+  console.log('navigate to tab', project, index)
   if (!project || !project.name) {
     console.error('Project name is requried to navigate to tab')
     throw new Error('Project name is requried to navigate to tab')
   }
   return {
     type: SET_ACTIVE_TAB,
-    index: index || 0,
+    index,
     project
   }
 }
-export function closeTab (tabData) {
-  const { index, project } = tabData
+export function closeTab (project, index) {
   if (!project || !project.name) {
     console.error('Project name is requried to navigate to tab')
     throw new Error('Project name is requried to navigate to tab')
@@ -28,8 +27,8 @@ export function closeTab (tabData) {
     project
   }
 }
-export function openTab (tabData) {
-  const { project, title, type, file, data } = tabData
+
+export function openTab (project, { title, type, file, data }) {
   if (!project || !project.name) {
     console.error('Project name is requried to open a tab')
     throw new Error('Project name is requried to open a tab')
@@ -42,6 +41,7 @@ export function openTab (tabData) {
     payload: file || data || {}
   }
 }
+
 export function openContentInTab (tabData) {
   const { project, title, type, file, data } = tabData
   if (!project || !project.name) {

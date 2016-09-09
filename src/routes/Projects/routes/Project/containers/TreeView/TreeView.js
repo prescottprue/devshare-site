@@ -1,5 +1,5 @@
 import React, { PropTypes, Component } from 'react'
-import { omit, findIndex, map } from 'lodash'
+import { each, omit, findIndex, map, last } from 'lodash'
 
 import TreeFolder from '../../components/TreeFolder'
 import TreeFile from '../../components/TreeFile'
@@ -22,11 +22,11 @@ const fileEntityBlackList = ['.DS_Store', 'node_modules']
     ])
 )
 @connect(
-  ({ devshare, tabs }, { project }) =>
+  ({ devshare, tabs }, { project: { name, owner } }) =>
     ({
-      tabs: tabs[project.name] ? tabs[project.name].list : [],
+      tabs: tabs[`${owner}/${name}`] && tabs[`${owner}/${name}`].list ? tabs[`${owner}/${name}`].list : [],
       files: map(
-        dataToJS(devshare, `files/${project.owner}/${project.name}`),
+        dataToJS(devshare, `files/${owner}/${name}`),
         (file, key) => Object.assign(file, { key })
       )
     }),
@@ -72,25 +72,22 @@ export default class TreeView extends Component {
   openFile = file => {
     const { project, tabs } = this.props
     const tabData = {
-      project,
       title: file.name || file.path.split('/')[file.path.split('/').length - 1],
       type: 'file',
       file
     }
-    console.log('open file called:', { tabData, tabs })
+
     // Search for already matching path
     const matchingInd = findIndex(tabs, (t) => t.file.path === tabData.file.path)
+
     // Only open tab if file is not already open
     if (matchingInd === -1) {
-      this.props.openTab(tabData)
+      this.props.openTab(project, tabData)
       // Select last tab
-      const newInd = tabs.list ? tabs.list.length - 1 : 0
-      return this.props.navigateToTab({ project, index: newInd })
+      return this.props.navigateToTab(project)
     }
-    this.props.navigateToTab({
-      project,
-      index: matchingInd
-    })
+
+    this.props.navigateToTab(project, matchingInd)
   }
 
   onFilesAdd = (e) => {
@@ -155,9 +152,9 @@ export default class TreeView extends Component {
       return (
         <div className={classes['container']}>
           <div className={classes['wrapper']}>
-              <div className={classes['loader']}>
-                <CircularProgress size={0.75} />
-              </div>
+            <div className={classes['loader']}>
+              <CircularProgress size={0.75} />
+            </div>
           </div>
         </div>
       )

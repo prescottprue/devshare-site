@@ -5,53 +5,48 @@ import {
 } from './constants'
 
 import { merge, clone } from 'lodash'
+import { fromJS } from 'immutable'
 
-const initialState = {
-  list: [],
-  currentIndex: 0
-}
-export default function tabs (state = initialState, action) {
-  let newState, projectKey
-  switch (action.type) {
+const initialState = fromJS({})
+
+export default function tabs (state = initialState, { type, project, payload, title, index }) {
+  switch (type) {
     case TAB_OPEN:
-      if (!action.project || !action.project.name) {
+      if (!project || !project.name) {
         console.error('Project name needed to open tab')
         return
       }
-      newState = clone(state)
-      projectKey = action.project.owner.username
-        ? `${action.project.owner.username}/${action.project.name}`
-        : action.project.name
-      if (!newState[projectKey]) {
-        newState[projectKey] = {list: [], currentIndex: 0}
-      }
-      if (!newState[projectKey].list) {
-        newState[projectKey].list = []
-      }
-      if (!newState[projectKey].currentIndex) {
-        newState[projectKey].currentIndex = 0
-      }
-      newState[projectKey].list.push({title: action.title, file: action.payload})
-      return merge({}, state, newState) // push would not work
+      const projectKey = project.owner
+        ? `${project.owner}/${project.name}`
+        : project.name
+      const stateWithTab = state[projectKey] && state[projectKey].list
+        ?
+        {
+          list: [
+            ...state[projectKey].list,
+            { title, file: payload }
+          ]
+        }
+        : {
+            list: [
+              { title, file: payload }
+            ]
+          }
+      return state.setIn(
+        [ projectKey ],
+        fromJS(stateWithTab)
+      )
     case TAB_CLOSE:
-      newState = clone(state)
-      projectKey = action.project.owner.username
-        ? `${action.project.owner.username}/${action.project.name}`
-        : action.project.name
-      newState[projectKey].list.splice(action.index, 1)
-      const newInd = (action.index > 0) ? action.index - 1 : 0
+      const newState = clone(state)
+      newState[projectKey].list.splice(index, 1)
+      const newInd = (index > 0) ? index - 1 : 0
       newState[projectKey].currentIndex = newInd
       return merge({}, newState)
     case SET_ACTIVE_TAB:
-      newState = clone(state)
-      projectKey = action.project.owner.username
-        ? `${action.project.owner.username}/${action.project.name}`
-        : action.project.name
-      if (!state[projectKey]) {
-        newState[projectKey] = {}
-      }
-      newState[projectKey].currentIndex = action.index
-      return merge({}, state, newState)
+      console.log('setting active tab:', `${project.owner}/${project.name}`)
+      const listLength = state.getIn([`${project.owner}/${project.name}`, 'list']).toJS().length
+      console.log('tojs in active tab:', listLength)
+      return state.setIn([`${project.owner}/${project.name}`, 'currentIndex'], index || listLength - 1)
     default:
       return state
   }

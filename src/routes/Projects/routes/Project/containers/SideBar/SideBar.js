@@ -19,10 +19,21 @@ import classes from './SideBar.scss'
 
 const fileEntityBlackList = ['.DS_Store', 'node_modules']
 
-// Icon styles
+// styles
 const iconButtonStyle = { width: '50px', height: '50px', padding: '0px' }
 const iconStyle = { width: '100%', height: '100%' }
 const tooltipPosition = 'top-center'
+const projectSelectStyles = {
+  field: {
+    width: '80%',
+    marginLeft: '10%'
+  },
+  label: {
+    fontSize: '1.5rem',
+    fontWeight: '300',
+    textOverflow: 'ellipsis'
+  }
+}
 
 // redux-devsharev3
 import { devshare, helpers } from 'redux-devshare'
@@ -57,6 +68,7 @@ export default class SideBar extends Component {
     devshare: PropTypes.object,
     project: PropTypes.object.isRequired,
     tabs: PropTypes.array,
+    files: PropTypes.array,
     openTab: PropTypes.func,
     closeTab: PropTypes.func,
     showProjects: PropTypes.bool,
@@ -260,8 +272,8 @@ export default class SideBar extends Component {
           {
             (projectsMenu && showProjects)
               ? <SelectField
-                style={{width: '80%', marginLeft: '10%'}}
-                labelStyle={{fontSize: '1.5rem', fontWeight: '300', textOverflow: 'ellipsis'}}
+                style={projectSelectStyles.field}
+                labelStyle={projectSelectStyles.label}
                 autoWidth={false}
                 value={project.name}
                 children={projectsMenu}

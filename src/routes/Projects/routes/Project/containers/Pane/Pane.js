@@ -6,12 +6,16 @@ import classes from './Pane.scss'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import { actions as TabActions } from '../../modules/tabs'
-
+import { devshare, helpers } from 'redux-devshare'
+const { isLoaded, isEmpty, customToJS, pathToJS, toJS } = helpers
 @connect(
   // Map state to props
-  ({devshare, tabs}, { params: { projectname } }) => ({
-    tabs: tabs[projectname] || {}
-  }),
+  ({devshare, tabs}, { params: { username, projectname } }) => {
+    console.log(' username project', { username, projectname, tabs }, toJS(tabs))
+    return ({
+      tabs: toJS(tabs)[`${username}/${projectname}`] || {}
+    })
+  },
   // Map dispatch to props
   (dispatch) =>
     bindActionCreators(TabActions, dispatch)
@@ -21,33 +25,30 @@ export default class Pane extends Component {
   static propTypes = {
     tabs: PropTypes.object,
     project: PropTypes.object,
-    onTabSelect: PropTypes.func,
-    onTabClose: PropTypes.func,
-    vimEnabled: PropTypes.bool
-  }
-
-  closeTab = (ind) => {
-    this.props.onTabClose(ind)
-  }
-
-  selectTab = (ind) => {
-    this.props.onTabSelect(ind)
+    openTab: PropTypes.func.isRequired,
+    closeTab: PropTypes.func.isRequired
   }
 
   render () {
-    const { tabs: { list, currentIndex } } = this.props
+    const {
+      project,
+      closeTab,
+      openTab,
+      tabs: { list, currentIndex }
+    } = this.props
+    console.debug('tabs in props:', list, currentIndex)
     return (
       <div className={classes['container']}>
         <Tabs
           list={list}
           currentIndex={currentIndex}
-          onClose={this.closeTab}
-          onSelect={this.selectTab}
+          onClose={(i) => closeTab(project, i)}
+          onSelect={(i) => openTab(project, i)}
         />
         <Views
           views={list}
           currentIndex={currentIndex}
-          project={this.props.project}
+          project={project}
           workspace={this.workspace}
         />
       </div>
