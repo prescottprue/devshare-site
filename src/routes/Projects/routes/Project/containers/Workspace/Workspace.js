@@ -4,11 +4,8 @@ import { findIndex, each, last } from 'lodash'
 import SideBar from '../SideBar/SideBar'
 import Pane from '../Pane/Pane'
 // Components
-// import ContextMenu from '../../components/ContextMenu/ContextMenu'
 import WorkspacePopover from '../../components/WorkspacePopover/WorkspacePopover'
 import classes from './Workspace.scss'
-
-const fileEntityBlackList = ['.DS_Store', 'node_modules']
 
 // redux
 import { connect } from 'react-redux'
@@ -35,8 +32,7 @@ export default class Workspace extends Component {
     addType: 'file',
     popoverOpen: false,
     debouncedFiles: null,
-    filesLoading: false,
-    vimEnabled: false
+    filesLoading: false
   }
 
   static propTypes = {
@@ -106,30 +102,13 @@ export default class Workspace extends Component {
       )
   }
 
-  // TODO: Expose file system in redux-devshare
-  handleDownloadClick = () => {
-    console.log('handle download click')
-    this.props.devshare
-      .project(this.props.project)
-      .fileSystem
-      .download()
-      .then(res => console.log('download successful:', res))
-      .catch(error => {
-        console.error('error downloading files', error)
-        this.error = error.toString()
-      })
-  }
-
   addFile = (path, content) => {
     console.log('add file called:', path, content)
     this.props.devshare
       .project(this.props.project)
       .fileSystem
       .addFile(path.replace('/', ''), content)
-      .then(file => {
-        console.log('file added successfully', file)
-        // event({ category: 'Files', action: 'File added' })
-      })
+      // .then(file => event({ category: 'Files', action: 'File added' }))
       .catch(error => {
         console.error('error adding file', error)
         this.error = error.toString
@@ -155,102 +134,6 @@ export default class Workspace extends Component {
       .file(path)
       .remove()
       .then(file => event({ category: 'Files', action: 'File deleted' }))
-
-  openFile = (file) => {
-    const { project, tabs } = this.props
-    const tabData = {
-      project,
-      title: file.name || file.path.split('/')[file.path.split('/').length - 1],
-      type: 'file',
-      file
-    }
-    // TODO: Search by matching path instead of tab title
-    // Search for already matching title
-    const matchingInd = findIndex(tabs.list, {title: tabData.title})
-    // Only open tab if file is not already open
-    if (matchingInd === -1) {
-      this.props.openTab(tabData)
-      // Select last tab
-      const newInd = tabs.list ? tabs.list.length - 1 : 0
-      return this.props.navigateToTab({ project, index: newInd })
-    }
-    this.props.navigateToTab({
-      project,
-      index: matchingInd
-    })
-  }
-
-  readAndSaveFileEntry = (entry) => {
-    let parent = this
-    // TODO: Use bind instead of parent var
-    function readAndSaveFile (file, path) {
-      let reader = new FileReader()
-      reader.onloadend = function (e) {
-        parent.addFile(path, this.result)
-      }
-      reader.readAsText(file)
-    }
-    if (entry.webkitRelativePath) return readAndSaveFile(entry, entry.webkitRelativePath)
-    entry.file(file => readAndSaveFile(file, entry.fullPath))
-  }
-
-  readAndSaveFolderEntry = (entry) => {
-    this.addFolder(entry.fullPath)
-    let reader = entry.createReader()
-    reader.readEntries(folder => {
-      if (folder.length > 1) this.handleEntries(folder)
-    })
-  }
-
-  handleEntries = (entries) => {
-    if (entries.isFile) {
-      this.readAndSaveFileEntry(entries)
-    } else if (entries.isDirectory) {
-      this.readAndSaveFolderEntry(entries)
-    }
-    each(entries, (entry) => {
-      if (fileEntityBlackList.indexOf(last(entry.fullPath.split('/'))) !== -1) {
-        return void 0
-      }
-      if (entry.isFile) {
-        this.readAndSaveFileEntry(entry)
-      } else if (entry.isDirectory) {
-        this.readAndSaveFolderEntry(entry)
-      }
-    })
-  }
-
-  onFilesDrop = (e) => {
-    e.preventDefault()
-    this.setState({
-      filesLoading: true
-    })
-    each(e.dataTransfer.items, item => {
-      let entry = item.webkitGetAsEntry()
-      this.handleEntries(entry)
-    })
-    this.setState({
-      filesLoading: false
-    })
-  }
-
-  onFilesAdd = (e) => {
-    e.preventDefault()
-    each(e.target.files, item => {
-      if (fileEntityBlackList.indexOf(last(item.webkitRelativePath.split('/'))) !== -1) {
-        return void 0
-      }
-      this.readAndSaveFileEntry(item)
-    })
-  }
-
-  // TODO: Finish a popup for clone settings
-  // cloneProject = p => {
-  //   Devshare.project(this.props.project)
-  //     .clone()
-  //     .then()
-  //     .catch()
-  // }
 
   render () {
     const {
@@ -284,7 +167,6 @@ export default class Workspace extends Component {
         <Pane
           project={project}
           params={params}
-          vimEnabled={this.state.vimEnabled}
         />
       </div>
     )

@@ -1,5 +1,5 @@
 import React, { PropTypes, Component } from 'react'
-import { isArray, each, last, findIndex, map } from 'lodash'
+import { isArray, each, last, map } from 'lodash'
 
 import TreeView from '../TreeView'
 import ContextMenu from '../../components/ContextMenu/ContextMenu'
@@ -25,11 +25,11 @@ const iconStyle = { width: '100%', height: '100%' }
 const tooltipPosition = 'top-center'
 
 // redux-devsharev3
+import { devshare, helpers } from 'redux-devshare'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import { actions as TabActions } from '../../modules/tabs'
-import { devshare, helpers } from 'redux-devshare'
-const { isLoaded, dataToJS } = helpers
+const { isEmpty, dataToJS } = helpers
 
 @devshare(
   ({ project }) =>
@@ -38,8 +38,9 @@ const { isLoaded, dataToJS } = helpers
     ])
 )
 @connect(
-  ({ devshare }, { project }) =>
+  ({ devshare, tabs }, { project }) =>
     ({
+      tabs: tabs[project.name] ? tabs[project.name].list : [],
       files: map(
         dataToJS(devshare, `files/${project.owner}/${project.name}`),
         (file, key) => Object.assign(file, { key })
@@ -55,8 +56,7 @@ export default class SideBar extends Component {
     projects: PropTypes.array,
     devshare: PropTypes.object,
     project: PropTypes.object.isRequired,
-    files: PropTypes.array,
-    tabs: PropTypes.object,
+    tabs: PropTypes.array,
     openTab: PropTypes.func,
     closeTab: PropTypes.func,
     showProjects: PropTypes.bool,
@@ -207,30 +207,6 @@ export default class SideBar extends Component {
       .remove()
       .then(file => event({ category: 'Files', action: 'File deleted' }))
 
-  openFile = file => {
-    const { project, tabs } = this.props
-    const tabData = {
-      project,
-      title: file.name || file.path.split('/')[file.path.split('/').length - 1],
-      type: 'file',
-      file
-    }
-    // TODO: Search by matching path instead of tab title
-    // Search for already matching title
-    const matchingInd = findIndex(tabs.list, {title: tabData.title})
-    // Only open tab if file is not already open
-    if (matchingInd === -1) {
-      this.props.openTab(tabData)
-      // Select last tab
-      const newInd = tabs.list ? tabs.list.length - 1 : 0
-      return this.props.navigateToTab({ project, index: newInd })
-    }
-    this.props.navigateToTab({
-      project,
-      index: matchingInd
-    })
-  }
-
   downloadClick = () => {
     console.log('download called', this.props.project)
     this.props.devshare
@@ -295,12 +271,7 @@ export default class SideBar extends Component {
                 label='Save To Account'
                 />
           }
-          <TreeView
-            fileStructure={files}
-            onRightClick={this.showContextMenu}
-            project={project}
-            loading={!isLoaded(files)}
-          />
+          <TreeView project={project} files={files} />
           <input
             type='file'
             ref='fileInput'
@@ -326,7 +297,7 @@ export default class SideBar extends Component {
               tooltip='Download'
               tooltipPosition={tooltipPosition}
               touch
-              disabled={!files || files.length < 1}>
+              disabled={isEmpty(files)}>
               <ArchiveIcon />
             </IconButton>
           </div>

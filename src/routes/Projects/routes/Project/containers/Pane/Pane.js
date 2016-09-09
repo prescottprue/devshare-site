@@ -2,13 +2,19 @@ import React, { PropTypes, Component } from 'react'
 import Tabs from '../../components/Tabs'
 import Views from '../../components/Views'
 import classes from './Pane.scss'
+
 import { connect } from 'react-redux'
+import { bindActionCreators } from 'redux'
+import { actions as TabActions } from '../../modules/tabs'
 
 @connect(
   // Map state to props
-  ({devshare, tabs}, { params }) => ({
-    tabs
-  })
+  ({devshare, tabs}, { params: { projectname } }) => ({
+    tabs: tabs[projectname] || {}
+  }),
+  // Map dispatch to props
+  (dispatch) =>
+    bindActionCreators(TabActions, dispatch)
 )
 export default class Pane extends Component {
 
