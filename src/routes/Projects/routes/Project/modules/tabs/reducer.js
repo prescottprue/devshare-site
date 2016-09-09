@@ -19,7 +19,7 @@ export default function tabs (state = initialState, { type, project, payload, ti
         ? `${project.owner}/${project.name}`
         : project.name
 
-      const stateWithTab = state.getIn([`${project.owner}/${project.name}`, 'list'])
+      const stateWithTab = state.getIn([projectKey, 'list'])
         ? [
           ...state.getIn([projectKey, 'list']).toJS(),
             { title, file: payload }
@@ -34,9 +34,7 @@ export default function tabs (state = initialState, { type, project, payload, ti
     case TAB_CLOSE:
       return state.deleteIn([`${project.owner}/${project.name}`, 'list', index])
     case SET_ACTIVE_TAB:
-      console.log('setting active tab:', `${project.owner}/${project.name}`)
       const listLength = state.getIn([`${project.owner}/${project.name}`, 'list']).toJS().length
-      console.log('tojs in active tab:', listLength)
       return state.setIn([`${project.owner}/${project.name}`, 'currentIndex'], index || listLength - 1)
     default:
       return state

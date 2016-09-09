@@ -34,7 +34,7 @@ export default class Pane extends Component {
       openTab,
       tabs: { list, currentIndex }
     } = this.props
-    console.debug('tabs in props:', list, currentIndex)
+
     return (
       <div className={classes['container']}>
         <Tabs

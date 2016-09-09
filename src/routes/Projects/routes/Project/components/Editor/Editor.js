@@ -2,11 +2,23 @@ import React, { PropTypes, Component } from 'react'
 import { project } from 'devshare'
 import classes from './Editor.scss'
 
+import { connect } from 'react-redux'
+import { helpers } from 'redux-devshare'
+const { pathToJS } = helpers
+
+@connect(
+  // Map state to props
+  ({ devshare }) => ({
+    account: pathToJS(devshare, 'profile')
+  })
+)
 export default class Editor extends Component {
 
   static propTypes = {
     mode: PropTypes.string,
-    account: PropTypes.object,
+    account: PropTypes.shape({
+      username: PropTypes.string.isRequired
+    }),
     theme: PropTypes.string,
     name: PropTypes.string.isRequired,
     height: PropTypes.string,
@@ -61,7 +73,7 @@ export default class Editor extends Component {
     require('codemirror/mode/xml/xml')
     const editorDiv = document.getElementById(this.props.name)
     const { name, owner } = this.props.project
-    const file = project(owner.username, name).fileSystem.file(this.props.filePath)
+    const file = project(owner, name).fileSystem.file(this.props.filePath)
     this.editor = CodeMirror(editorDiv, {
       lineNumbers: true,
       lineWrapping: true,
@@ -85,21 +97,21 @@ export default class Editor extends Component {
   handleLoad = (editor) => {
     // Load file content
     const Firepad = require('firepad')
-    const { name, owner } = this.props.project
+    const { project: { name, owner }, account } = this.props
     if (typeof editor.firepad === 'undefined') {
-      const { fileSystem } = project(owner.username, name)
+      const { fileSystem } = project(owner, name)
       const file = fileSystem.file(this.props.filePath)
       try {
         try {
           this.firepad = Firepad.fromCodeMirror(
             file.firebaseRef(),
             editor,
-            { userId: this.props.account.username || '&' }
+            { userId: account ? account.username : '&' }
           )
         } catch (err) {
           console.warn('Error creating firepad', err)
         }
-        if (this.firepad) {
+        if (this.firepad && this.firepad.on) {
           this.firepad.on('ready', () => {
             // TODO: Load original content of file
             if (this.firepad.isHistoryEmpty()) {

@@ -122,7 +122,7 @@ webpackConfig.eslint = {
 // JavaScript / JSON
 webpackConfig.module.loaders = [{
   test: /\.(js|jsx)$/,
-  exclude: /node_modules/,
+  exclude: [/node_modules/, /devshare\//],
   loader: 'babel',
   query: {
     cacheDirectory: true
