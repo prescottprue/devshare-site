@@ -79,7 +79,7 @@ export default class TreeView extends Component {
 
     // Search for already matching path
     const matchingInd = findIndex(tabs, (t) => t.file.path === tabData.file.path)
-
+    // console.log('matching index:', tabs, tabData, matchingInd, )
     // Only open tab if file is not already open
     if (matchingInd === -1) {
       this.props.openTab(project, tabData)

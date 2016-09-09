@@ -69,7 +69,6 @@ export default class SideBar extends Component {
     project: PropTypes.object.isRequired,
     tabs: PropTypes.array,
     files: PropTypes.array,
-    openTab: PropTypes.func,
     closeTab: PropTypes.func,
     showProjects: PropTypes.bool,
     onSettingsClick: PropTypes.func.isRequired,

@@ -4,7 +4,6 @@ import {
   SET_ACTIVE_TAB
 } from './constants'
 
-import { merge, clone } from 'lodash'
 import { fromJS } from 'immutable'
 
 const initialState = fromJS({})
@@ -19,29 +18,21 @@ export default function tabs (state = initialState, { type, project, payload, ti
       const projectKey = project.owner
         ? `${project.owner}/${project.name}`
         : project.name
-      const stateWithTab = state[projectKey] && state[projectKey].list
-        ?
-        {
-          list: [
-            ...state[projectKey].list,
+
+      const stateWithTab = state.getIn([`${project.owner}/${project.name}`, 'list'])
+        ? [
+          ...state.getIn([projectKey, 'list']).toJS(),
             { title, file: payload }
-          ]
-        }
-        : {
-            list: [
-              { title, file: payload }
-            ]
-          }
+        ]
+        : [
+            { title, file: payload }
+        ]
       return state.setIn(
-        [ projectKey ],
+        [ projectKey, 'list' ],
         fromJS(stateWithTab)
       )
     case TAB_CLOSE:
-      const newState = clone(state)
-      newState[projectKey].list.splice(index, 1)
-      const newInd = (index > 0) ? index - 1 : 0
-      newState[projectKey].currentIndex = newInd
-      return merge({}, newState)
+      return state.deleteIn([`${project.owner}/${project.name}`, 'list', index])
     case SET_ACTIVE_TAB:
       console.log('setting active tab:', `${project.owner}/${project.name}`)
       const listLength = state.getIn([`${project.owner}/${project.name}`, 'list']).toJS().length

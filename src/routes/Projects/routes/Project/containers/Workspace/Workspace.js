@@ -51,7 +51,6 @@ export default class Workspace extends Component {
     showButtons: PropTypes.bool,
     projects: PropTypes.array,
     navigateToTab: PropTypes.func,
-    openTab: PropTypes.func,
     closeTab: PropTypes.func,
     addCollaborator: PropTypes.func,
     removeCollaborator: PropTypes.func,

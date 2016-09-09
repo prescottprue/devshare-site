@@ -6,16 +6,14 @@ import classes from './Pane.scss'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import { actions as TabActions } from '../../modules/tabs'
-import { devshare, helpers } from 'redux-devshare'
-const { isLoaded, isEmpty, customToJS, pathToJS, toJS } = helpers
+import { helpers } from 'redux-devshare'
+const { toJS } = helpers
+
 @connect(
   // Map state to props
-  ({devshare, tabs}, { params: { username, projectname } }) => {
-    console.log(' username project', { username, projectname, tabs }, toJS(tabs))
-    return ({
-      tabs: toJS(tabs)[`${username}/${projectname}`] || {}
-    })
-  },
+  ({devshare, tabs}, { params: { username, projectname } }) => ({
+    tabs: toJS(tabs)[`${username}/${projectname}`] || {}
+  }),
   // Map dispatch to props
   (dispatch) =>
     bindActionCreators(TabActions, dispatch)
