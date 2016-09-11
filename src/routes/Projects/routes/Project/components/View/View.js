@@ -5,7 +5,9 @@ import classes from './View.scss'
 export default class View extends Component {
 
   static propTypes = {
-    viewData: PropTypes.object,
+    viewData: PropTypes.shape({
+      file: PropTypes.object
+    }),
     visible: PropTypes.bool.isRequired,
     index: PropTypes.number.isRequired,
     project: PropTypes.object.isRequired,
@@ -13,12 +15,13 @@ export default class View extends Component {
   }
 
   render () {
-    const style = this.props.visible ? { display: 'block' } : { display: 'none' }
-    const name = `editor-${this.props.index}`
+    const { visible, viewData, index } = this.props
+    const style = visible ? { display: 'block' } : { display: 'none' }
+    const name = `editor-${index}`
     // File loaded in View
-    if (this.props.viewData && this.props.viewData.file) {
+    if (viewData && viewData.file) {
       // TODO: Switch view type based on provided type instead of availability of editor data
-      const { file } = this.props.viewData
+      const { file } = viewData
       return (
         <div className={classes['container']} style={style}>
           <Editor
@@ -36,7 +39,9 @@ export default class View extends Component {
     // Empty View
     return (
       <div className={classes['default']}>
-        <span className={classes['default-label']}>Click on a file to open</span>
+        <span className={classes['default-label']}>
+          Empty View
+        </span>
       </div>
     )
   }

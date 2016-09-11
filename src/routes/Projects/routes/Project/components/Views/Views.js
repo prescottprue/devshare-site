@@ -43,8 +43,8 @@ export default class Views extends Component {
   render () {
     if (!this.props.views) {
       return (
-        <div className='View-Default'>
-          <span className='View-Default-Label'>Click on a file to open</span>
+        <div className={classes['view-default']}>
+          <span className={classes['view-default-label']}>Click on a file to open</span>
         </div>
       )
     }
