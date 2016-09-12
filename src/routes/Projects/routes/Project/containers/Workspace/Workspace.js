@@ -105,7 +105,7 @@ export default class Workspace extends Component {
     this.props.devshare
       .project(this.props.project)
       .fileSystem
-      .addFile(path.replace('/', ''), content)
+      .addFile(path, content)
       // .then(file => event({ category: 'Files', action: 'File added' }))
       .catch(error => {
         console.error('error adding file', error)

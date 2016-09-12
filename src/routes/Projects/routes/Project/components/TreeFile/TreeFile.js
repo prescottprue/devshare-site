@@ -1,6 +1,6 @@
 import { map } from 'lodash'
 import React, { PropTypes, Component } from 'react'
-import './TreeFile.scss'
+import classes from './TreeFile.scss'
 
 export default class TreeFile extends Component {
 
@@ -30,32 +30,33 @@ export default class TreeFile extends Component {
   }
 
   handleRightClick = (e) => {
+    console.log('right click:', e)
     e.preventDefault()
-    e.stopPropagation()
+    // e.stopPropagation()
     this.props.onRightClick(this.props.data.path, {x: e.clientX, y: e.clientY})
   }
 
   render () {
     const { users, data } = this.props
+
     let userBlocks = users ? map(users, (user, key) => {
       user.username = key
       const userStyle = { backgroundColor: user.color }
       return (
-        <div key={`Connected-User-${key}`} className='TreeFile-User' style={userStyle}>
+        <div key={`Connected-User-${key}`} className={classes['user']} style={userStyle}>
           {user.username.charAt(0).toUpperCase()}
         </div>
       )
-    }) : <span></span>
-    // const className = active
-    //   ? 'TreeFile active noselect'
-    //   : 'TreeFile noselect'
+    }) : null
+
     const name = data.name || data.path.split('/')[data.path.split('/').length - 1]
+
     return (
       <li onContextMenu={this.handleRightClick}>
-        <div className='TreeFile' onClick={this.onFileClick} data-path={data.path}>
-          <span className='TreeFile-Name'>{name}</span>
+        <div className={classes['container']} onClick={this.onFileClick} data-path={data.path}>
+          <span className={classes['name']}>{name}</span>
         </div>
-        <div className='TreeFile-Users'>{userBlocks}</div>
+        <div className={classes['users']}>{userBlocks}</div>
       </li>
     )
   }

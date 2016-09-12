@@ -19,28 +19,17 @@ import classes from './SideBar.scss'
 
 const fileEntityBlackList = ['.DS_Store', 'node_modules']
 
-// styles
+// Icon styles
 const iconButtonStyle = { width: '50px', height: '50px', padding: '0px' }
 const iconStyle = { width: '100%', height: '100%' }
 const tooltipPosition = 'top-center'
-const projectSelectStyles = {
-  field: {
-    width: '80%',
-    marginLeft: '10%'
-  },
-  label: {
-    fontSize: '1.5rem',
-    fontWeight: '300',
-    textOverflow: 'ellipsis'
-  }
-}
 
 // redux-devsharev3
-import { devshare, helpers } from 'redux-devshare'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import { actions as TabActions } from '../../modules/tabs'
-const { isEmpty, dataToJS } = helpers
+import { devshare, helpers } from 'redux-devshare'
+const { isLoaded, dataToJS } = helpers
 
 @devshare(
   ({ project }) =>
@@ -49,9 +38,8 @@ const { isEmpty, dataToJS } = helpers
     ])
 )
 @connect(
-  ({ devshare, tabs }, { project }) =>
+  ({ devshare }, { project }) =>
     ({
-      tabs: tabs[project.name] ? tabs[project.name].list : [],
       files: map(
         dataToJS(devshare, `files/${project.owner}/${project.name}`),
         (file, key) => Object.assign(file, { key })
@@ -67,8 +55,9 @@ export default class SideBar extends Component {
     projects: PropTypes.array,
     devshare: PropTypes.object,
     project: PropTypes.object.isRequired,
-    tabs: PropTypes.array,
     files: PropTypes.array,
+    tabs: PropTypes.object,
+    openTab: PropTypes.func,
     closeTab: PropTypes.func,
     showProjects: PropTypes.bool,
     onSettingsClick: PropTypes.func.isRequired,
@@ -187,36 +176,13 @@ export default class SideBar extends Component {
     })
   }
 
-  addFile = (path, content) =>
-    this.props.devshare
-      .project(this.props.project)
-      .fileSystem
-      .addFile(path.replace('/', ''), content)
-      // .then(file => event({ category: 'Files', action: 'File added' }))
-      .catch(error => {
-        console.error('error adding file', error)
-        this.error = error.toString
-      })
-
-  addFolder = path =>
-    this.props.devshare
-      .project(this.props.project)
-      .fileSystem
-      .addFolder(path.replace('/', ''))
-      // .then(file => event({ category: 'Files', action: 'Folder added' }))
-
-  addEntity = (type, path, content) =>
-    type === 'folder'
-      ? this.addFolder(path)
-      : this.addFile(path, content)
-
   deleteFile = path =>
     this.props.devshare
       .project(this.props.project)
       .fileSystem
       .file(path)
       .remove()
-      .then(file => event({ category: 'Files', action: 'File deleted' }))
+      // .then(file => event({ category: 'Files', action: 'File deleted' }))
 
   downloadClick = () => {
     console.log('download called', this.props.project)
@@ -271,8 +237,8 @@ export default class SideBar extends Component {
           {
             (projectsMenu && showProjects)
               ? <SelectField
-                style={projectSelectStyles.field}
-                labelStyle={projectSelectStyles.label}
+                style={{width: '80%', marginLeft: '10%'}}
+                labelStyle={{fontSize: '1.5rem', fontWeight: '300', textOverflow: 'ellipsis'}}
                 autoWidth={false}
                 value={project.name}
                 children={projectsMenu}
@@ -282,7 +248,12 @@ export default class SideBar extends Component {
                 label='Save To Account'
                 />
           }
-          <TreeView project={project} files={files} />
+          <TreeView
+            fileStructure={files}
+            onRightClick={this.showContextMenu}
+            project={project}
+            loading={!isLoaded(files)}
+          />
           <input
             type='file'
             ref='fileInput'
@@ -308,7 +279,7 @@ export default class SideBar extends Component {
               tooltip='Download'
               tooltipPosition={tooltipPosition}
               touch
-              disabled={isEmpty(files)}>
+              disabled={!files || files.length < 1}>
               <ArchiveIcon />
             </IconButton>
           </div>

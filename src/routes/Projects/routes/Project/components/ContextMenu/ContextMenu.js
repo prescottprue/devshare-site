@@ -1,19 +1,19 @@
 import React, { PropTypes, Component } from 'react'
 import classes from './ContextMenu.scss'
 
-export class ContextMenu extends Component {
+export default class ContextMenu extends Component {
 
   static propTypes = {
     event: PropTypes.object,
-    onAddFileClick: PropTypes.func,
-    onAddFolderClick: PropTypes.func,
-    onFileDelete: PropTypes.func,
     position: PropTypes.shape({
       x: PropTypes.number,
       y: PropTypes.number
     }),
     path: PropTypes.string,
-    dismiss: PropTypes.func
+    dismiss: PropTypes.func,
+    onAddFileClick: PropTypes.func,
+    onAddFolderClick: PropTypes.func,
+    onFileDelete: PropTypes.func
   }
 
   state = {
@@ -25,62 +25,53 @@ export class ContextMenu extends Component {
   }
 
   componentDidMount () {
-    this.handleRightClick()
+    this.setupRightClick()
   }
 
-  handleNewClick = type => {
-    let parent = this.getParentOfPath(this.props.path)
-    if (type === 'file') {
-      this.props.onAddFileClick(parent)
-    }
-    if (type === 'folder') {
-      this.props.onAddFolderClick(parent)
-    }
-  }
-
-  handleRightClick = () => {
+  setupRightClick = () => {
     this.setState({
       contextMenu: {
         top: this.props.position.y,
         left: this.props.position.x
       }
     })
-    window.addEventListener('click', this.handleWindowClick)
+    window.addEventListener('click', this.windowClick)
     return false
   }
 
-  handleWindowClick = () => {
+  windowClick = () => {
     this.props.dismiss()
-    window.removeEventListener('click', this.handleWindowClick)
+    window.removeEventListener('click', this.windowClick)
   }
 
-  getParentOfPath = path => {
-    return path ? path.substring(0, path.lastIndexOf('/') + 1) : '/'
-  }
+  getParentOfPath = path =>
+    path ? path.substring(0, path.lastIndexOf('/') + 1) : '/'
 
-  handleDeleteClick = (e) => {
+  deleteClick = (e) => {
     e.preventDefault()
     this.props.onFileDelete(this.props.path)
   }
 
   render () {
     const { path } = this.props
-    var contextMenuStyle = {
-      top: this.state.contextMenu.top,
+    const parent = this.getParentOfPath(path)
+    // TODO: find a cleaner way to do this
+    const menuLocation = {
+      top: parseInt(this.state.contextMenu.top) - 63, // Subtract the height of the navbar
       left: this.state.contextMenu.left
     }
 
     return (
-      <ul style={contextMenuStyle} className={classes['container']}>
-        <li onClick={this.handleNewClick.bind(this, 'file')}>
+      <ul style={menuLocation} className={classes['container']}>
+        <li onClick={() => this.onAddFileClick(parent)}>
           Add new file
         </li>
-        <li onClick={this.handleNewClick.bind(this, 'folder')}>
+        <li onClick={() => this.onAddFolderClick(parent)}>
           Add new folder
         </li>
         {
           path &&
-            <li onClick={this.handleDeleteClick}>
+            <li onClick={this.deleteClick}>
               Delete
             </li>
         }
@@ -88,5 +79,3 @@ export class ContextMenu extends Component {
     )
   }
 }
-
-export default ContextMenu

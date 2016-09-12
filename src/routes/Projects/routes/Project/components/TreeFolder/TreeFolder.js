@@ -1,18 +1,21 @@
 import React, { PropTypes, Component } from 'react'
 import { map, merge } from 'lodash'
-import FontIcon from 'material-ui/FontIcon'
+import RightArrow from 'material-ui/svg-icons/navigation/chevron-right'
+import DownArrow from 'material-ui/svg-icons/hardware/keyboard-arrow-down'
+const classnames = require('classnames')
+
 // Components
 import TreeFile from '../TreeFile'
 
 // Styles
-import './TreeFolder.scss'
+import classes from './TreeFolder.scss'
 
-class TreeFolder extends Component {
+export default class TreeFolder extends Component {
 
   static propTypes = {
     index: PropTypes.number.isRequired,
     data: PropTypes.object.isRequired,
-    children: PropTypes.array,
+    children: PropTypes.object,
     onOpenClick: PropTypes.func,
     onClosedClick: PropTypes.func,
     onFileClick: PropTypes.func,
@@ -28,16 +31,13 @@ class TreeFolder extends Component {
   }
 
   render () {
-    let wrapperClass = (this.state.isCollapsed) ? 'TreeFolder collapsed noselect' : 'TreeFolder noselect'
-    // TreeFolder-Info
-    const iconSize = '1.2rem'
-    // let iconClass = (this.state.isCollapsed)
-    // ? 'octicon octicon-chevron-right '
-    // : 'octicon octicon-chevron-down TreeFolder-Icon'
-    let children
-    if (this.props.children) {
+    const { data, onFileClick, onRightClick, children } = this.props
+    const { isCollapsed } = this.state
+
+    let childList
+    if (children) {
       let i = 0
-      children = map(this.props.children, (entry, key) => {
+      childList = map(children, (entry, key) => {
         if (!entry.meta) {
           let firstChildPath = entry[Object.keys(entry)[0]].meta.path
           let childPathSplit = firstChildPath.split('/')
@@ -48,17 +48,17 @@ class TreeFolder extends Component {
           }
         }
         if (entry.meta && (entry.meta.entityType === 'folder')) {
-          let children = merge({}, entry)
-          delete children.key; delete children.meta
+          let itemChildren = merge({}, entry)
+          delete itemChildren.key; delete itemChildren.meta
           return (
             <TreeFolder
               key={`child-Folder-${i}-${entry.meta.name}`}
               index={i}
               data={entry.meta}
               isCollapsed={entry.isCollapsed}
-              children={children}
-              onFileClick={this.props.onFileClick}
-              onRightClick={this.props.onRightClick}
+              children={itemChildren}
+              onFileClick={onFileClick}
+              onRightClick={onRightClick}
             />
           )
         }
@@ -68,55 +68,62 @@ class TreeFolder extends Component {
             index={i}
             data={entry.meta}
             active={entry.active}
-            onClick={this.props.onFileClick}
-            onRightClick={this.props.onRightClick}
+            onClick={onFileClick}
+            onRightClick={onRightClick}
             users={entry.users}
           />
         )
       })
     }
-    const name = this.props.data.name || this.props.data.path
+
+    const name = data.name || data.path
+    const containerClass = classnames(
+      classes['container'],
+      isCollapsed ? 'collapsed noselect' : 'noselect'
+    )
+
     return (
-      <li data-path={this.props.data.path} onContextMenu={this.handleRightClick}>
-        <div className={wrapperClass} onClick={this._onFolderClick}>
-          <FontIcon className='material-icons'
-            style={{ 'fontSize': iconSize }}>
-            {!this.state.isCollapsed ? 'keyboard_arrow_down' : 'keyboard_arrow_right'}
-          </FontIcon>
-          <span className='TreeFolder-Name'>{name}</span>
+      <li data-path={data.path} onContextMenu={this.handleRightClick}>
+        <div className={containerClass} onClick={this._onFolderClick}>
+          {
+            isCollapsed
+              ? <RightArrow />
+              : <DownArrow />
+          }
+          <span className={classes['name']}>
+            {name}
+          </span>
         </div>
-        {!this.state.isCollapsed &&
-          <ol className='TreeFolder-Children'>
-            {children}
-          </ol>
+        {
+          !isCollapsed &&
+            <ol className={classes['children']}>
+              {childList}
+            </ol>
         }
       </li>
     )
   }
-  _onFolderClick = (event) => {
-    if (event.button !== 0) {
+
+  _onFolderClick = (e) => {
+    if (e.button !== 0) {
       return
     }
-    // If modified event
-    if (event.metaKey || event.altKey || event.ctrlKey || event.shiftKey) {
+    // If modified e
+    if (e.metaKey || e.altKey || e.ctrlKey || e.shiftKey) {
       return
     }
     // var el = event.currentTarget
-    event.preventDefault()
+    e.preventDefault()
     this.setState({
       isCollapsed: !this.state.isCollapsed
     })
     if (this.props) {
       if (this.props.onOpenClick && !this.state.isCollapsed) {
-        // console.log('open folder clicked');
         this.props.onOpenClick()
       }
       if (this.props.onClosedClick && this.state.isCollapsed) {
-        // console.log('closed folder clicked');
         this.props.onClosedClick()
       }
     }
   }
 }
-
-export default TreeFolder
