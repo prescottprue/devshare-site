@@ -36,7 +36,6 @@ export default class ContextMenu extends Component {
       }
     })
     window.addEventListener('click', this.windowClick)
-    return false
   }
 
   windowClick = () => {
@@ -44,17 +43,22 @@ export default class ContextMenu extends Component {
     window.removeEventListener('click', this.windowClick)
   }
 
-  getParentOfPath = path =>
-    path ? path.substring(0, path.lastIndexOf('/') + 1) : '/'
-
   deleteClick = (e) => {
     e.preventDefault()
     this.props.onFileDelete(this.props.path)
   }
 
   render () {
-    const { path } = this.props
-    const parent = this.getParentOfPath(path)
+    const {
+      path,
+      onAddFileClick,
+      onAddFolderClick
+    } = this.props
+
+    const parent = path
+      ? path.substring(0, path.lastIndexOf('/') + 1)
+      : '/'
+
     // TODO: find a cleaner way to do this
     const menuLocation = {
       top: parseInt(this.state.contextMenu.top) - 63, // Subtract the height of the navbar
@@ -63,10 +67,10 @@ export default class ContextMenu extends Component {
 
     return (
       <ul style={menuLocation} className={classes['container']}>
-        <li onClick={() => this.onAddFileClick(parent)}>
+        <li onClick={() => onAddFileClick(parent)}>
           Add new file
         </li>
-        <li onClick={() => this.onAddFolderClick(parent)}>
+        <li onClick={() => onAddFolderClick(parent)}>
           Add new folder
         </li>
         {

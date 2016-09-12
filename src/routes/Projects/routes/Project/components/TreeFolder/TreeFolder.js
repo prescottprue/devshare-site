@@ -24,12 +24,6 @@ export default class TreeFolder extends Component {
 
   state = { isCollapsed: true }
 
-  handleRightClick = (e) => {
-    e.preventDefault()
-    e.stopPropagation()
-    this.props.onRightClick(this.props.data.path, { x: e.clientX, y: e.clientY })
-  }
-
   render () {
     const { data, onFileClick, onRightClick, children } = this.props
     const { isCollapsed } = this.state
@@ -83,7 +77,7 @@ export default class TreeFolder extends Component {
     )
 
     return (
-      <li data-path={data.path} onContextMenu={this.handleRightClick}>
+      <li data-path={data.path} onContextMenu={this._onRightClick}>
         <div className={containerClass} onClick={this._onFolderClick}>
           {
             isCollapsed
@@ -104,26 +98,28 @@ export default class TreeFolder extends Component {
     )
   }
 
+  _onRightClick = (e) => {
+    e.preventDefault()
+    e.stopPropagation()
+    this.props.onRightClick(this.props.data.path, { x: e.clientX, y: e.clientY })
+  }
+
   _onFolderClick = (e) => {
-    if (e.button !== 0) {
-      return
-    }
-    // If modified e
-    if (e.metaKey || e.altKey || e.ctrlKey || e.shiftKey) {
-      return
-    }
+    if (e.button !== 0) return
+
+    // If modified event
+    if (e.metaKey || e.altKey || e.ctrlKey || e.shiftKey) return
+
     // var el = event.currentTarget
     e.preventDefault()
     this.setState({
       isCollapsed: !this.state.isCollapsed
     })
-    if (this.props) {
-      if (this.props.onOpenClick && !this.state.isCollapsed) {
-        this.props.onOpenClick()
-      }
-      if (this.props.onClosedClick && this.state.isCollapsed) {
-        this.props.onClosedClick()
-      }
+    if (this.props.onOpenClick && !this.state.isCollapsed) {
+      this.props.onOpenClick()
+    }
+    if (this.props.onClosedClick && this.state.isCollapsed) {
+      this.props.onClosedClick()
     }
   }
 }

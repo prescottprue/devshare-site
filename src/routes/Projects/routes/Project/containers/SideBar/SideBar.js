@@ -86,7 +86,7 @@ export default class SideBar extends Component {
     this.setState({
       contextMenu: {
         open: true,
-        path: path,
+        path,
         position
       }
     })
@@ -99,10 +99,6 @@ export default class SideBar extends Component {
         position
       }
     })
-
-  handleFileUploadClick = (e) => {
-    this.refs.fileInput.click()
-  }
 
   handleFileDrag = (e) => {
     e.preventDefault()
@@ -148,12 +144,6 @@ export default class SideBar extends Component {
     })
   }
 
-  handleRightClick = (e) => {
-    e.preventDefault()
-    e.stopPropagation()
-    this.showContextMenu(null, { x: e.clientX, y: e.clientY })
-  }
-
   readAndSaveFileEntry = (entry) => {
     let parent = this
     // TODO: Use bind instead of parent var
@@ -184,8 +174,7 @@ export default class SideBar extends Component {
       .remove()
       // .then(file => event({ category: 'Files', action: 'File deleted' }))
 
-  downloadClick = () => {
-    console.log('download called', this.props.project)
+  downloadClick = () =>
     this.props.devshare
       .project(this.props.project)
       .fileSystem
@@ -195,7 +184,6 @@ export default class SideBar extends Component {
         console.error('error downloading files', error)
         this.error = error.toString()
       })
-  }
 
   cloneClick = () => {
     // TODO: Open clone dialog
@@ -231,7 +219,7 @@ export default class SideBar extends Component {
         onDragOver={this.handleFileDrag}
         onDragLeave={this.handleFileDragLeave}
         onDrop={this.handleFileDrop}
-        onContextMenu={this.handleRightClick}
+        onContextMenu={this._rightClick}
       >
         <div className={classes['dropzone']}>
           {
@@ -297,7 +285,7 @@ export default class SideBar extends Component {
             }>
               <MenuItem
                 primaryText='Upload files'
-                onClick={this.handleFileUploadClick}
+                onClick={this._fileUpload}
               />
               <MenuItem
                 primaryText='Add file'
@@ -344,4 +332,15 @@ export default class SideBar extends Component {
       </div>
     )
   }
+
+  _rightClick = (e) => {
+    e.preventDefault()
+    e.stopPropagation()
+    this.showContextMenu(null, { x: e.clientX, y: e.clientY })
+  }
+
+  _fileUpload = (e) => {
+    this.refs.fileInput.click()
+  }
+
 }

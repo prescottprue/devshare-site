@@ -29,10 +29,9 @@ export default class TreeFile extends Component {
     }
   }
 
-  handleRightClick = (e) => {
-    console.log('right click:', e)
+  rightClick = (e) => {
     e.preventDefault()
-    // e.stopPropagation()
+    e.stopPropagation() // keep click from running sidebar context menu click
     this.props.onRightClick(this.props.data.path, {x: e.clientX, y: e.clientY})
   }
 
@@ -52,11 +51,18 @@ export default class TreeFile extends Component {
     const name = data.name || data.path.split('/')[data.path.split('/').length - 1]
 
     return (
-      <li onContextMenu={this.handleRightClick}>
-        <div className={classes['container']} onClick={this.onFileClick} data-path={data.path}>
-          <span className={classes['name']}>{name}</span>
+      <li onContextMenu={this.rightClick}>
+        <div
+          className={classes['container']}
+          onClick={this.onFileClick}
+          data-path={data.path}>
+          <span className={classes['name']}>
+            {name}
+          </span>
         </div>
-        <div className={classes['users']}>{userBlocks}</div>
+        <div className={classes['users']}>
+          {userBlocks}
+        </div>
       </li>
     )
   }
