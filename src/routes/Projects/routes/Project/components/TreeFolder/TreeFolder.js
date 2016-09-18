@@ -1,8 +1,8 @@
 import React, { PropTypes, Component } from 'react'
-import { map, merge } from 'lodash'
+import classnames from 'classnames'
+import { map } from 'lodash'
 import RightArrow from 'material-ui/svg-icons/navigation/chevron-right'
 import DownArrow from 'material-ui/svg-icons/hardware/keyboard-arrow-down'
-const classnames = require('classnames')
 
 // Components
 import TreeFile from '../TreeFile'
@@ -13,7 +13,6 @@ import classes from './TreeFolder.scss'
 export default class TreeFolder extends Component {
 
   static propTypes = {
-    index: PropTypes.number.isRequired,
     data: PropTypes.object.isRequired,
     children: PropTypes.object,
     onOpenClick: PropTypes.func,
@@ -30,7 +29,6 @@ export default class TreeFolder extends Component {
 
     let childList
     if (children) {
-      let i = 0
       childList = map(children, (entry, key) => {
         if (!entry.meta) {
           let firstChildPath = entry[Object.keys(entry)[0]].meta.path
@@ -42,12 +40,11 @@ export default class TreeFolder extends Component {
           }
         }
         if (entry.meta && (entry.meta.entityType === 'folder')) {
-          let itemChildren = merge({}, entry)
+          let itemChildren = Object.assign({}, entry)
           delete itemChildren.key; delete itemChildren.meta
           return (
             <TreeFolder
-              key={`child-Folder-${i}-${entry.meta.name}`}
-              index={i}
+              key={`child-Folder-${key}-${entry.meta.name}`}
               data={entry.meta}
               isCollapsed={entry.isCollapsed}
               children={itemChildren}
@@ -58,8 +55,7 @@ export default class TreeFolder extends Component {
         }
         return (
           <TreeFile
-            key={`child-File-${i}-${entry.meta.name || entry.meta.path.split('/')[0]}`}
-            index={i}
+            key={`child-File-${key}-${entry.meta.name || entry.meta.path.split('/')[0]}`}
             data={entry.meta}
             active={entry.active}
             onClick={onFileClick}

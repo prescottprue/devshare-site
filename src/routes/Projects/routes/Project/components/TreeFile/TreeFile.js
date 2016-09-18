@@ -6,7 +6,6 @@ export default class TreeFile extends Component {
 
   static propTypes = {
     name: PropTypes.string,
-    index: PropTypes.number.isRequired,
     data: PropTypes.object.isRequired,
     active: PropTypes.bool,
     onClick: PropTypes.func,
@@ -38,7 +37,7 @@ export default class TreeFile extends Component {
   render () {
     const { users, data } = this.props
 
-    let userBlocks = users ? map(users, (user, key) => {
+    const userBlocks = users ? map(users, (user, key) => {
       user.username = key
       const userStyle = { backgroundColor: user.color }
       return (

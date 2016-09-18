@@ -34,8 +34,7 @@ export default function tabs (state = initialState, { type, project, payload, ti
     case TAB_CLOSE:
       return state.deleteIn([`${project.owner}/${project.name}`, 'list', index])
     case SET_ACTIVE_TAB:
-      const listLength = state.getIn([`${project.owner}/${project.name}`, 'list']).toJS().length
-      return state.setIn([`${project.owner}/${project.name}`, 'currentIndex'], index || listLength - 1)
+      return state.setIn([`${project.owner}/${project.name}`, 'currentIndex'], index)
     default:
       return state
   }

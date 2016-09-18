@@ -1,46 +1,39 @@
 import React, { PropTypes, Component } from 'react'
 import Tab from '../Tab/Tab'
-
 import classes from './Tabs.scss'
 
-class Tabs extends Component {
-  constructor (props) {
-    super(props)
-    this.handleClose = this.handleClose.bind(this)
-    this.handleSelect = this.handleSelect.bind(this)
-  }
+export default class Tabs extends Component {
   static propTypes = {
     currentIndex: PropTypes.number,
     list: PropTypes.array,
-    onSelect: PropTypes.func,
-    onClose: PropTypes.func
+    onSelect: PropTypes.func.isRequired,
+    onClose: PropTypes.func.isRequired
   };
-  handleClose (ind) {
-    if (this.props && this.props.onClose) {
-      this.props.onClose(ind)
-    }
-  }
-  handleSelect (ind) {
-    if (this.props && this.props.onSelect) {
-      this.props.onSelect(ind)
-    }
-  }
+
   render () {
+    const {
+      list,
+      currentIndex,
+      onSelect,
+      onClose
+    } = this.props
+
     let tabs = []
-    if (this.props && this.props.list) {
-      tabs = this.props.list.map((tab, i) => {
+    if (list) {
+      tabs = list.map((tab, i) => {
         return (
           <Tab
             key={`Tab-${i}`}
             index={i}
             title={tab.title || tab.name || 'unamed file'}
-            active={this.props.currentIndex === i}
-            onSelect={this.handleSelect}
-            onClose={this.handleClose}
+            active={currentIndex === i}
+            onSelect={onSelect}
+            onClose={onClose}
           />
         )
       })
     }
+
     return (
       <ul className={classes['container']}>
         {tabs}
@@ -48,5 +41,3 @@ class Tabs extends Component {
     )
   }
 }
-
-export default Tabs

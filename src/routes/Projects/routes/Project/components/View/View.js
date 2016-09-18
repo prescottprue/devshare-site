@@ -18,6 +18,7 @@ export default class View extends Component {
     const { visible, viewData, index } = this.props
     const style = visible ? { display: 'block' } : { display: 'none' }
     const name = `editor-${index}`
+
     // File loaded in View
     if (viewData && viewData.file) {
       // TODO: Switch view type based on provided type instead of availability of editor data

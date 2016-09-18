@@ -23,7 +23,7 @@ export default class Pane extends Component {
   static propTypes = {
     tabs: PropTypes.object,
     project: PropTypes.object,
-    openTab: PropTypes.func.isRequired,
+    navigateToTab: PropTypes.func.isRequired,
     closeTab: PropTypes.func.isRequired
   }
 
@@ -31,7 +31,7 @@ export default class Pane extends Component {
     const {
       project,
       closeTab,
-      openTab,
+      navigateToTab,
       tabs: { list, currentIndex }
     } = this.props
 
@@ -41,7 +41,7 @@ export default class Pane extends Component {
           list={list}
           currentIndex={currentIndex}
           onClose={(i) => closeTab(project, i)}
-          onSelect={(i) => openTab(project, i)}
+          onSelect={(i) => navigateToTab(project, i)}
         />
         <Views
           views={list}

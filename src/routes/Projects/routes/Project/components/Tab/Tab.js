@@ -1,10 +1,9 @@
 import React, { PropTypes, Component } from 'react'
 import CloseIcon from 'material-ui/svg-icons/navigation/close'
-
+import classnames from 'classnames'
 import classes from './Tab.scss'
-const classnames = require('classnames')
 
-class Tab extends Component {
+export default class Tab extends Component {
   static propTypes = {
     title: PropTypes.string.isRequired,
     index: PropTypes.number.isRequired,
@@ -62,5 +61,3 @@ class Tab extends Component {
     return el
   }
 }
-
-export default Tab
