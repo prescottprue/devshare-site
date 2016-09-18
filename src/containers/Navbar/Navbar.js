@@ -10,7 +10,7 @@ import FlatButton from 'material-ui/FlatButton'
 import Avatar from 'material-ui/Avatar'
 
 const stockPhotoUrl = 'https://s3.amazonaws.com/kyper-cdn/img/User.png'
-const originSettings = { horizontal: 'left', vertical: 'bottom' }
+const originSettings = { horizontal: 'right', vertical: 'top' }
 const buttonStyle = { color: 'white', textDecoration: 'none' }
 const avatarSize = 50
 
@@ -78,7 +78,7 @@ export class Navbar extends Component {
     const rightMenu = account && account.email ? (
       <IconMenu
         iconButtonElement={iconButton}
-        targetOrigin={originSettings}
+        targetOrigin={{ horizontal: 'right', vertical: 'bottom' }}
         anchorOrigin={originSettings}
         animated={false}
       >

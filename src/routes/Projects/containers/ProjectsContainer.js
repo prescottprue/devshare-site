@@ -5,6 +5,7 @@ import { map } from 'lodash'
 import ProjectTile from '../components/ProjectTile/ProjectTile'
 import NewProjectTile from '../components/NewProjectTile/NewProjectTile'
 import NewProjectDialog from '../components/NewProjectDialog/NewProjectDialog'
+import SharingDialog from 'components/SharingDialog/SharingDialog'
 import CircularProgress from 'material-ui/CircularProgress'
 import classes from './ProjectsContainer.scss'
 
@@ -51,10 +52,11 @@ export class Projects extends Component {
 
   toggleModal = (name, project) => {
     let newState = {}
-    newState[`${name}Modal`] = !this.state[`${name}Modal`] || false
+    newState[`${name}Modal`] = !this.state[`${name}Modal`]
     if (project) {
-      newState.project = project
+      newState.currentProject = project
     }
+    console.log('new state:', newState)
     this.setState(newState)
   }
 
@@ -85,8 +87,8 @@ export class Projects extends Component {
     // TODO: Look into moving this into its own layer
     if (this.props.children) return this.props.children
 
-    const { projects, account, params: { username } } = this.props
-    const { newProjectModal } = this.state
+    const { projects, account, params: { username }, devshare } = this.props
+    const { newProjectModal, addCollabModal, currentProject } = this.state
 
     if (!isLoaded(projects)) {
       return (
@@ -111,7 +113,7 @@ export class Projects extends Component {
         key={`${project.name}-Collab-${i}`}
         project={project}
         onCollabClick={this.collabClick}
-        onAddCollabClick={() => this.toggleModal('sharing', project)}
+        onAddCollabClick={() => this.toggleModal('addCollab', project)}
         onSelect={this.openProject}
         onDelete={this.deleteProject}
       />
@@ -123,25 +125,39 @@ export class Projects extends Component {
       projectsList.unshift((
         <NewProjectTile
           key='Project-New'
-          onClick={this.toggleModal.bind(this, 'newProject')}
+          onClick={() => this.toggleModal('newProject')}
         />
       ))
     }
 
     return (
       <div className={classes['container']}>
-        <div className={classes['tiles']}>
-          {projectsList}
-        </div>
+        {
+          addCollabModal
+          ? (
+            <SharingDialog
+              project={currentProject}
+              open={addCollabModal}
+              searchUsers={devshare.users().search}
+              onAddCollab={devshare.project(currentProject).addCollaborator}
+              onRemoveCollab={devshare.project(currentProject).removeCollaborator}
+              onRequestClose={() => this.toggleModal('addCollab')}
+            />
+          ) : null
+        }
         {
           newProjectModal
           ? (
             <NewProjectDialog
               open={newProjectModal}
               onCreateClick={this.newSubmit}
+              onRequestClose={() => this.toggleModal('newProject')}
             />
           ) : null
         }
+        <div className={classes['tiles']}>
+          {projectsList}
+        </div>
       </div>
     )
   }

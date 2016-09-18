@@ -4,7 +4,7 @@ import { toArray } from 'lodash'
 
 import classes from './Project.scss'
 import SettingsDialog from '../../components/SettingsDialog/SettingsDialog'
-import SharingDialog from '../../components/SharingDialog/SharingDialog'
+import SharingDialog from 'components/SharingDialog/SharingDialog'
 import CircularProgress from 'material-ui/CircularProgress'
 // redux-devsharev3
 import { connect } from 'react-redux'

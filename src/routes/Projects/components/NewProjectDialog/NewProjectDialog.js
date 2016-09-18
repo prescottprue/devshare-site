@@ -8,7 +8,8 @@ class NewProjectDialog extends Component {
 
   static propTypes = {
     open: PropTypes.bool,
-    onCreateClick: PropTypes.func
+    onCreateClick: PropTypes.func.isRequired,
+    onRequestClose: PropTypes.func.isRequired
   }
 
   state = { open: this.props.open || false }
@@ -51,6 +52,9 @@ class NewProjectDialog extends Component {
     this.setState({
       open: false
     })
+    if (this.props.onRequestClose) {
+      this.props.onRequestClose()
+    }
   }
 
   render () {

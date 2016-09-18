@@ -50,6 +50,7 @@ export default class SharingDialog extends Component {
           )
         })
       )
+      // TODO: Show snack for error
       .catch(error => this.setState({ error }))
 
   selectNewCollab = username => {
