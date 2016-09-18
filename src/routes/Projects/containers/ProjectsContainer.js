@@ -5,7 +5,6 @@ import { map } from 'lodash'
 import ProjectTile from '../components/ProjectTile/ProjectTile'
 import NewProjectTile from '../components/NewProjectTile/NewProjectTile'
 import NewProjectDialog from '../components/NewProjectDialog/NewProjectDialog'
-import SharingDialog from '../components/SharingDialog/SharingDialog'
 import CircularProgress from 'material-ui/CircularProgress'
 import classes from './ProjectsContainer.scss'
 
@@ -63,6 +62,7 @@ export class Projects extends Component {
       .add({ name, owner: this.props.account.username })
       .then(() => this.toggleModal('newProject'))
       .catch(err => {
+        // TODO: Show Snackbar
         console.error('error creating new project', err)
       })
 
@@ -78,17 +78,12 @@ export class Projects extends Component {
   collabClick = user =>
     this.context.router.push(`/${user.username}`)
 
-  addCollabClick = currentProject => {
-    this.setState({ currentProject })
-    this.toggleModal('addCollab')
-  }
-
   render () {
     // TODO: Look into moving this into its own layer
     if (this.props.children) return this.props.children
 
     const { projects, account, params: { username } } = this.props
-    const { newProjectModal, addCollabModal, currentProject } = this.state
+    const { newProjectModal } = this.state
 
     if (!isLoaded(projects)) {
       return (
@@ -141,16 +136,6 @@ export class Projects extends Component {
             <NewProjectDialog
               open={newProjectModal}
               onCreateClick={this.newSubmit}
-            />
-          ) : null
-        }
-        {
-          (currentProject && addCollabModal)
-          ? (
-            <SharingDialog
-              projectKey={`${currentProject.owner.username}/${currentProject.name}`}
-              open={addCollabModal}
-              onRequestClose={this.toggleModal.bind(this, 'addCollab')}
             />
           ) : null
         }

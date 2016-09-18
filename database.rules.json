@@ -14,7 +14,7 @@
       ".indexOn": ["name", "owner"]
     },
     "users": {
-      ".indexOn": ["uid"]
+      ".indexOn": ["uid", "username"]
     }
   }
 }

@@ -1,5 +1,4 @@
 import React, { Component, PropTypes } from 'react'
-import { users } from 'devshare'
 
 import FlatButton from 'material-ui/FlatButton'
 import Dialog from 'material-ui/Dialog'
@@ -10,6 +9,7 @@ import PersonIcon from 'material-ui/svg-icons/social/person'
 import RemoveIcon from 'material-ui/svg-icons/content/remove-circle'
 import Colors from 'material-ui/styles/colors'
 import classes from './SharingDialog.scss'
+import { map } from 'lodash'
 
 export default class SharingDialog extends Component {
 
@@ -18,52 +18,47 @@ export default class SharingDialog extends Component {
   }
 
   static propTypes = {
-    projects: PropTypes.object,
-    projectKey: PropTypes.string.isRequired,
+    project: PropTypes.object.isRequired,
     open: PropTypes.bool,
     error: PropTypes.object,
     onRequestClose: PropTypes.func,
-    addCollaborator: PropTypes.func.isRequired,
-    removeCollaborator: PropTypes.func.isRequired
+    searchUsers: PropTypes.func.isRequired,
+    onAddCollab: PropTypes.func.isRequired,
+    onRemoveCollab: PropTypes.func.isRequired
   }
 
   componentDidMount () {
-    // const project = this.props.projects[this.props.projectKey]
-    // this.setState({
-    //   collaborators: project ? project.collaborators : []
-    // })
+    this.setState({
+      collaborators: this.props.project ? this.props.project.collaborators : []
+    })
   }
 
   componentWillReceiveProps (nextProps) {
-    // console.log('component recieve props', nextProps)
     if (nextProps.open) {
       this.setState({
         open: nextProps.open
       })
     }
-
-    if (nextProps.projectKey) {
-      const project = nextProps.projects[nextProps.projectKey]
-      this.setState({
-        project,
-        collaborators: project ? project.collaborators : []
-      })
-    }
   }
 
   searchAccounts = q =>
-    users()
-      .search(q)
-      .then(matchingUsers => this.setState({ matchingUsers }))
+    this.props.searchUsers(q)
+      .then(matchingUsers =>
+        this.setState({
+          matchingUsers: map(matchingUsers, (user, key) =>
+            Object.assign(user, { key })
+          )
+        })
+      )
       .catch(error => this.setState({ error }))
 
   selectNewCollab = username => {
-    this.props.addCollaborator(this.state.project, username)
+    this.props.onAddCollab(username)
     this.setState({ searchText: null })
   }
 
   removeCollab = ind => {
-    this.props.removeCollaborator(this.state.project, this.state.collaborators[ind].username)
+    this.props.onRemoveCollab(this.state.collaborators[ind].username)
     this.setState({
       collaborators: this.state.collaborators.splice(ind, 1)
     })
@@ -77,10 +72,12 @@ export default class SharingDialog extends Component {
   }
 
   render () {
+    const { project } = this.props
+
     const collabsList = this.state.collaborators ? this.state.collaborators.map((collaborator, i) => {
       const { image, username } = collaborator
       return (
-        <div key={`${this.props.projectKey}-Collab-${i}`}>
+        <div key={`${project.name}-Collab-${i}`} className={classes['container']}>
           <ListItem
             leftAvatar={
               <Avatar
@@ -123,13 +120,14 @@ export default class SharingDialog extends Component {
         title='Sharing'
         actions={actions}
         modal={false}
-        bodyClassName={classes['body']}
-        titleClassName={classes['title']}
-        contentClassName={classes['container']}>
+        bodyClassName='SharingDialog-Content'
+        titleClassName='SharingDialog-Content-Title'
+        contentClassName='SharingDialog'
+      >
         {
           this.props.error
           ? (
-            <div className={classes['Error']}>
+            <div className='SharingDialog-Error'>
               <span>{this.props.error}</span>
             </div>
           )
@@ -143,7 +141,7 @@ export default class SharingDialog extends Component {
             </List>
             )
             : (
-            <div className={classes['No-Collabs']}>
+            <div className='SharingDialog-No-Collabs'>
               <span>No current collaborators</span>
             </div>
             )

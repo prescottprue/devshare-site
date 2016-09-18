@@ -21,7 +21,7 @@ const { isLoaded, dataToJS } = helpers
 )
 @connect(
   // Map state to props
-  ({devshare}, { params }) => ({
+  ({ devshare }, { params }) => ({
     projects: toArray(dataToJS(devshare, `projects/${params.username}`)),
     project: dataToJS(devshare, `projects/${params.username}/${params.projectname}`)
   })
@@ -37,8 +37,11 @@ export default class Project extends Component {
     projects: PropTypes.array,
     project: PropTypes.object,
     auth: PropTypes.object,
-    params: PropTypes.object,
-    children: PropTypes.object
+    params: PropTypes.object.isRequired,
+    children: PropTypes.object,
+    devshare: PropTypes.shape({
+      project: PropTypes.func.isRequired
+    })
   }
 
   state = {
@@ -53,6 +56,12 @@ export default class Project extends Component {
     }
   }
 
+  addCollaborator = username =>
+    this.props.devshare.project(this.props.project).addCollaborator(username)
+
+  removeCollaborator = username =>
+    this.props.devshare.project(this.props.project).removeCollaborator(username)
+
   toggleDialog = (name) => {
     const newState = {}
     newState[`${name}Open`] = !this.state[`${name}Open`]
@@ -60,7 +69,7 @@ export default class Project extends Component {
   }
 
   render () {
-    const { projects, project, params } = this.props
+    const { projects, project, params, devshare } = this.props
     const { settingsOpen, sharingOpen, vimEnabled } = this.state
 
     if (!isLoaded(project)) {
@@ -97,9 +106,9 @@ export default class Project extends Component {
           sharingOpen &&
           (
             <SharingDialog
-              projectKey={`${project.owner.username}/${name}`}
+              project={project}
               open={sharingOpen}
-              onUserSearch={this.searchUsers}
+              searchUsers={devshare.users().search}
               onSave={this.saveSettings}
               onAddCollab={this.addCollaborator}
               onRemoveCollab={this.removeCollaborator}
