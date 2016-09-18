@@ -7,7 +7,7 @@ import AutoComplete from 'material-ui/AutoComplete'
 import Avatar from 'material-ui/Avatar'
 import PersonIcon from 'material-ui/svg-icons/social/person'
 import RemoveIcon from 'material-ui/svg-icons/content/remove-circle'
-import Colors from 'material-ui/styles/colors'
+import { red500, red800 } from 'material-ui/styles/colors'
 import classes from './SharingDialog.scss'
 import { map } from 'lodash'
 
@@ -54,7 +54,7 @@ export default class SharingDialog extends Component {
 
   selectNewCollab = username => {
     this.props.onAddCollab(username)
-    this.setState({ searchText: null })
+    this.setState({ searchText: '' })
   }
 
   removeCollab = ind => {
@@ -65,18 +65,18 @@ export default class SharingDialog extends Component {
   }
 
   close = () => {
-    this.setState({
-      searchText: null
-    })
+    this.setState({ searchText: '' })
     this.props.onRequestClose()
   }
 
   render () {
-    const { project } = this.props
+    const { project, error, onRequestClose } = this.props
+    const { collaborators, matchingUsers, searchText } = this.state
 
-    const collabsList = this.state.collaborators ? this.state.collaborators.map((collaborator, i) => {
-      const { image, username } = collaborator
-      return (
+    console.log('collaborators', collaborators)
+
+    const collabsList = collaborators
+      ? collaborators.map(({ image, username }, i) =>
         <div key={`${project.name}-Collab-${i}`} className={classes['container']}>
           <ListItem
             leftAvatar={
@@ -87,9 +87,9 @@ export default class SharingDialog extends Component {
             }
             rightIcon={
               <RemoveIcon
-                color={Colors.red500}
-                hoverColor={Colors.red800}
-                onClick={this.removeCollab.bind(this, i)}
+                color={red500}
+                hoverColor={red800}
+                onClick={() => this.removeCollab(i)}
               />
             }
             primaryText={username}
@@ -97,19 +97,19 @@ export default class SharingDialog extends Component {
           />
         </div>
       )
-    }) : null
+      : null
 
     const actions = [
       <FlatButton
         label='Close'
         secondary
-        onClick={this.props.onRequestClose}
-        onTouchTap={this.props.onRequestClose}
+        onClick={onRequestClose}
+        onTouchTap={onRequestClose}
       />
     ]
 
-    const matchingUsernames = this.state.matchingUsers
-      ? this.state.matchingUsers.map(account =>
+    const matchingUsernames = matchingUsers
+      ? matchingUsers.map(account =>
           account.username ? account.username : account
         )
       : []
@@ -120,15 +120,15 @@ export default class SharingDialog extends Component {
         title='Sharing'
         actions={actions}
         modal={false}
-        bodyClassName='SharingDialog-Content'
-        titleClassName='SharingDialog-Content-Title'
-        contentClassName='SharingDialog'
+        bodyClassName={classes['body']}
+        titleClassName={classes['title']}
+        contentClassName={classes['container']}
       >
         {
-          this.props.error
+          error
           ? (
-            <div className='SharingDialog-Error'>
-              <span>{this.props.error}</span>
+            <div className={classes['error']}>
+              <span>{error}</span>
             </div>
           )
           : null
@@ -141,18 +141,18 @@ export default class SharingDialog extends Component {
             </List>
             )
             : (
-            <div className='SharingDialog-No-Collabs'>
+            <div className={classes['no-collabs']}>
               <span>No current collaborators</span>
             </div>
             )
         }
-        <div className='SharingDialog-AutoComplete-Container'>
+        <div className={classes['search-container']}>
           <AutoComplete
-            className='SharingDialog-Autocomplete'
+            className={classes['search']}
             hintText='Search users to add'
             floatingLabelText='Search users to add'
             fullWidth
-            searchText={this.state.searchText}
+            searchText={searchText}
             dataSource={matchingUsernames}
             onUpdateInput={this.searchAccounts}
             onNewRequest={this.selectNewCollab}

@@ -49,9 +49,12 @@ export class Projects extends Component {
     newProjectModal: false
   }
 
-  toggleModal = name => {
+  toggleModal = (name, project) => {
     let newState = {}
     newState[`${name}Modal`] = !this.state[`${name}Modal`] || false
+    if (project) {
+      newState.project = project
+    }
     this.setState(newState)
   }
 
@@ -108,7 +111,7 @@ export class Projects extends Component {
         key={`${project.name}-Collab-${i}`}
         project={project}
         onCollabClick={this.collabClick}
-        onAddCollabClick={this.addCollabClick.bind(this, project)}
+        onAddCollabClick={() => this.toggleModal('sharing', project)}
         onSelect={this.openProject}
         onDelete={this.deleteProject}
       />

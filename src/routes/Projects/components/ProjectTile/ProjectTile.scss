@@ -71,7 +71,8 @@
   -moz-box-sizing: border-box;    /* Firefox, other Gecko */
   box-sizing: border-box;         /* Opera/IE 8+ */
   display: flex;
-  margin: .4rem;
+  margin-left: .4rem;
+  margin-right: .4rem;
   overflow: hidden;
   cursor: pointer;
   -webkit-filter: grayscale(1);

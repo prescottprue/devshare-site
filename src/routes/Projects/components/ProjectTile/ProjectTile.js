@@ -2,6 +2,7 @@ import React, {Component, PropTypes} from 'react'
 import Paper from 'material-ui/Paper'
 import Avatar from 'material-ui/Avatar'
 import Popover from 'material-ui/Popover'
+import PersonIcon from 'material-ui/svg-icons/social/person'
 import PersonAddIcon from 'material-ui/svg-icons/social/person-add'
 import SettingsIcon from 'material-ui/svg-icons/action/settings'
 import ProjectSettingsDialog from '../ProjectSettingsDialog/ProjectSettingsDialog'
@@ -97,13 +98,11 @@ export default class ProjectTile extends Component {
               className={classes['collaborator-avatar']}
               src={avatarUrl || null}
               icon={
-                avatarUrl
-                  ? null
-                  : (
-                  <Avatar hoverColor={hoverColor}>
-                    {username.charAt(0).toUpperCase()}
-                  </Avatar>
-                  )
+                !username
+                  ? <PersonIcon
+                    hoverColor={hoverColor}
+                    />
+                  : null
               }
               size={avatarSize}
             />
