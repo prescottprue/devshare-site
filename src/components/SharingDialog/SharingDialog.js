@@ -11,6 +11,11 @@ import { red500, red800 } from 'material-ui/styles/colors'
 import classes from './SharingDialog.scss'
 import { map } from 'lodash'
 
+// redux/devshare
+// import { connect } from 'react-redux'
+// import { devshare, helpers } from 'redux-devshare'
+// const { pathToJS, dataToJS, isLoaded, isEmpty } = helpers
+
 export default class SharingDialog extends Component {
 
   state = {
@@ -73,8 +78,6 @@ export default class SharingDialog extends Component {
   render () {
     const { project, error, onRequestClose } = this.props
     const { collaborators, matchingUsers, searchText } = this.state
-
-    console.log('collaborators', collaborators)
 
     const collabsList = collaborators
       ? collaborators.map(({ image, username }, i) =>

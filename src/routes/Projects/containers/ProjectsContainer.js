@@ -1,5 +1,5 @@
 import React, { Component, PropTypes } from 'react'
-import { map } from 'lodash'
+import { toArray } from 'lodash'
 
 // Components
 import ProjectTile from '../components/ProjectTile/ProjectTile'
@@ -18,13 +18,12 @@ const { pathToJS, dataToJS, isLoaded, isEmpty } = helpers
 @devshare(
   ({ params }) =>
     ([
-      `projects/${params.username}`
+      `projects/${params.username}#populate=collaborators:users`
     ])
 )
 @connect(
   ({ devshare }, { params }) => ({
-    projects: map(dataToJS(devshare, `projects/${params.username}`), (project, key) =>
-      Object.assign({}, project, { key })),
+    projects: toArray(dataToJS(devshare, `projects/${params.username}`)),
     account: pathToJS(devshare, 'profile'),
     auth: pathToJS(devshare, 'auth')
   })
@@ -56,16 +55,13 @@ export class Projects extends Component {
     if (project) {
       newState.currentProject = project
     }
-    console.log('new state:', newState)
     this.setState(newState)
   }
 
-  // TODO: Add through devshare projects method
   newSubmit = name =>
     this.props.devshare
       .projects()
       .add({ name, owner: this.props.account.username })
-      .then(() => this.toggleModal('newProject'))
       .catch(err => {
         // TODO: Show Snackbar
         console.error('error creating new project', err)
@@ -80,10 +76,12 @@ export class Projects extends Component {
   openProject = project =>
     this.context.router.push(`/${this.props.params.username}/${project.name}`)
 
-  collabClick = user =>
+  collabClick = user => {
     this.context.router.push(`/${user.username}`)
+  }
 
   render () {
+    // console.log('projects container render:', this.props)
     // TODO: Look into moving this into its own layer
     if (this.props.children) return this.props.children
 

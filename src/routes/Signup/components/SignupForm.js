@@ -23,7 +23,7 @@ const SignupForm = ({ handleSubmit, submitting }) => {
         <Field name='email' component={TextField} label='Email' />
       </div>
       <div>
-        <Field name='password' component={TextField} label='Password' />
+        <Field name='password' component={TextField} label='Password' type='password' />
       </div>
       <div className={classes['submit']}>
         <RaisedButton

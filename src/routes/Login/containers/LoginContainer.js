@@ -46,9 +46,10 @@ export default class Login extends Component {
     })
     this.props.devshare
       .login(loginData)
-      .then((account) =>
-        this.context.router.push(`${account.username}`)
-      )
+      .then((account) => {
+        console.log('account:', account)
+        this.context.router.push(`/${account.username}`)
+      })
   }
 
   googleLogin = () =>

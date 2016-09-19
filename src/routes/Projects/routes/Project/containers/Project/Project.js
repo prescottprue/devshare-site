@@ -112,7 +112,7 @@ export default class Project extends Component {
               onSave={this.saveSettings}
               onAddCollab={this.addCollaborator}
               onRemoveCollab={this.removeCollaborator}
-              onRequestClose={() => { this.toggleDialog('sharing') }}
+              onRequestClose={() => this.toggleDialog('sharing')}
             />
           )
         }

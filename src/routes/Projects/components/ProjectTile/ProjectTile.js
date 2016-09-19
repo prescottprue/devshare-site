@@ -26,7 +26,12 @@ export default class ProjectTile extends Component {
     onDelete: PropTypes.func
   }
 
-  state = { vimEnabled: false, settingsOpen: false, dropdownOpen: false, deleteOpen: false }
+  state = {
+    vimEnabled: false,
+    settingsOpen: false,
+    dropdownOpen: false,
+    deleteOpen: false
+  }
 
   handleSelect = e => {
     e.preventDefault()
