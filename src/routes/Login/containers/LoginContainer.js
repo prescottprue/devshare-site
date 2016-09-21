@@ -77,7 +77,9 @@ export default class Login extends Component {
         <div className={classes['or']}>
           or
         </div>
-        <GoogleButton onClick={this.googleLogin} />
+        <div className={classes['providers']}>
+          <GoogleButton onClick={this.googleLogin} />
+        </div>
         <div className={classes['signup']}>
           <span className={classes['signup-label']}>
             Need an account?

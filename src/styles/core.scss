@@ -36,4 +36,7 @@
   *:after {
     box-sizing: inherit;
   }
+  [type=button]{
+    -webkit-appearance: none !important;
+  }
 }

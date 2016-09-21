@@ -86,6 +86,9 @@ export default class Signup extends Component {
         <Paper className={classes['panel']}>
           <SignupForm onSubmit={this.handleSignup} />
         </Paper>
+        <div className={classes['or']}>
+          or
+        </div>
         <div className={classes['providers']}>
           <GoogleButton onClick={this.googleLogin} />
         </div>

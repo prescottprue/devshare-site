@@ -99,18 +99,23 @@ export default class ProjectTile extends Component {
             key={`${name}-Collab-${i}`}
             className={classes['collaborator']}
             onClick={this.collaboratorClick.bind(this, user)}>
-            <Avatar
-              className={classes['collaborator-avatar']}
-              src={avatarUrl || null}
-              icon={
-                !username
-                  ? <PersonIcon
-                    hoverColor={hoverColor}
-                    />
-                  : null
-              }
-              size={avatarSize}
-            />
+            {
+              !username
+              ? (
+                <Avatar
+                  className={classes['collaborator-avatar']}
+                  src={avatarUrl || null}
+                  icon={<PersonIcon hoverColor={hoverColor} />}
+                  size={avatarSize}
+                />
+              )
+              : (
+                <Avatar className={classes['collaborator-avatar']} size={avatarSize}>
+                  {username.charAt(0).toUpperCase()}
+                </Avatar>
+              )
+            }
+
           </div>
         )
       })
@@ -121,6 +126,7 @@ export default class ProjectTile extends Component {
       collaboratorsList.push((
         <div key={`${name}-Add-Collab`} onClick={this.addClick}>
           <Avatar
+            className={classes['collaborator-avatar']}
             icon={
               <PersonAddIcon
                 style={personIconStyle}

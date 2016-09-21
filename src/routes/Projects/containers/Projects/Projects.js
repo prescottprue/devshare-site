@@ -2,12 +2,12 @@ import React, { Component, PropTypes } from 'react'
 import { toArray } from 'lodash'
 
 // Components
-import ProjectTile from '../components/ProjectTile/ProjectTile'
-import NewProjectTile from '../components/NewProjectTile/NewProjectTile'
-import NewProjectDialog from '../components/NewProjectDialog/NewProjectDialog'
+import ProjectTile from '../../components/ProjectTile/ProjectTile'
+import NewProjectTile from '../../components/NewProjectTile/NewProjectTile'
+import NewProjectDialog from '../../components/NewProjectDialog/NewProjectDialog'
 import SharingDialog from 'components/SharingDialog/SharingDialog'
 import CircularProgress from 'material-ui/CircularProgress'
-import classes from './ProjectsContainer.scss'
+import classes from './Projects.scss'
 
 // redux/devshare
 import { connect } from 'react-redux'
@@ -18,13 +18,22 @@ const { pathToJS, dataToJS, isLoaded, isEmpty } = helpers
 @devshare(
   ({ params }) =>
     ([
-      `projects/${params.username}`
+      `projects/${params.username}`,
+      // TODO: Use population instead of loading whole usernames list
+      'usernames'
       // `projects/${params.username}#populate=collaborators:users`,
     ])
 )
 @connect(
   ({ devshare }, { params }) => ({
-    projects: toArray(dataToJS(devshare, `projects/${params.username}`)),
+    projects: toArray(dataToJS(devshare, `projects/${params.username}`))
+    .map(project =>
+      (project.collaborators && dataToJS(devshare, 'usernames'))
+        ? Object.assign(project, {
+          collaborators: project.collaborators.map(id => ({ username: dataToJS(devshare, 'usernames')[id] }))
+        })
+        : project
+    ),
     account: pathToJS(devshare, 'profile'),
     auth: pathToJS(devshare, 'auth')
   })
