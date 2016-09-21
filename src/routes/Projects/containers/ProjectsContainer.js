@@ -18,7 +18,8 @@ const { pathToJS, dataToJS, isLoaded, isEmpty } = helpers
 @devshare(
   ({ params }) =>
     ([
-      `projects/${params.username}#populate=collaborators:users`
+      `projects/${params.username}`
+      // `projects/${params.username}#populate=collaborators:users`,
     ])
 )
 @connect(
