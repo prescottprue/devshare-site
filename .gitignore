@@ -9,4 +9,4 @@ coverage
 
 .idea/
 
-functions/serviceAccount.json
+src/config.js

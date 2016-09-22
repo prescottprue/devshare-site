@@ -6,6 +6,8 @@ import { reduxDevshare } from 'redux-devshare'
 import config from '../config'
 
 export default (initialState = {}, history) => {
+  window.version = config.version
+
   // ======================================================
   // Middleware Configuration
   // ======================================================

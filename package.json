@@ -17,11 +17,12 @@
     "dev:no-debug": "npm run dev -- --no_debug",
     "test": "better-npm-run test",
     "test:dev": "npm run test -- --watch",
-    "deploy": "better-npm-run deploy",
-    "deploy:dev": "better-npm-run deploy:dev",
-    "deploy:prod": "better-npm-run deploy:prod",
+    "config": "better-npm-run config",
+    "build": "better-npm-run build",
+    "build:dev": "better-npm-run build:dev",
+    "build:prod": "better-npm-run build:prod",
     "codecov": "cat coverage/*/lcov.info | codecov",
-    "fb": "node ./build/deploy"
+    "fb": "node ./build/build"
   },
   "betterScripts": {
     "compile": {
@@ -37,21 +38,21 @@
         "DEBUG": "app:*"
       }
     },
-    "deploy": {
+    "build": {
       "command": "npm run clean && npm run compile",
       "env": {
         "DEBUG": "app:*"
       }
     },
-    "deploy:dev": {
-      "command": "npm run deploy",
+    "build:dev": {
+      "command": "npm run build",
       "env": {
         "NODE_ENV": "development",
         "DEBUG": "app:*"
       }
     },
-    "deploy:prod": {
-      "command": "npm run deploy",
+    "build:prod": {
+      "command": "npm run build",
       "env": {
         "NODE_ENV": "production",
         "DEBUG": "app:*"
@@ -67,6 +68,12 @@
       "command": "babel-node ./node_modules/karma/bin/karma start build/karma.conf",
       "env": {
         "NODE_ENV": "test",
+        "DEBUG": "app:*"
+      }
+    },
+    "config": {
+      "command": "babel-node build/config",
+      "env": {
         "DEBUG": "app:*"
       }
     }
