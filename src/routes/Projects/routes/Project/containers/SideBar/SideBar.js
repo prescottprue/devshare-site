@@ -177,7 +177,6 @@ export default class SideBar extends Component {
   downloadClick = () =>
     this.props.devshare
       .project(this.props.project)
-      .fileSystem
       .download()
       .then(res => console.log('download successful:', res))
       .catch(error => {

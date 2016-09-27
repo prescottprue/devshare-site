@@ -2,12 +2,12 @@ import React, { Component, PropTypes } from 'react'
 import { toArray } from 'lodash'
 
 // Components
-import ProjectTile from '../../components/ProjectTile/ProjectTile'
-import NewProjectTile from '../../components/NewProjectTile/NewProjectTile'
-import NewProjectDialog from '../../components/NewProjectDialog/NewProjectDialog'
+import ProjectTile from '../components/ProjectTile/ProjectTile'
+import NewProjectTile from '../components/NewProjectTile/NewProjectTile'
+import NewProjectDialog from '../components/NewProjectDialog/NewProjectDialog'
 import SharingDialog from 'components/SharingDialog/SharingDialog'
 import CircularProgress from 'material-ui/CircularProgress'
-import classes from './Projects.scss'
+import classes from './ProjectsContainer.scss'
 
 // redux/devshare
 import { connect } from 'react-redux'
@@ -91,7 +91,6 @@ export class Projects extends Component {
   }
 
   render () {
-    // console.log('projects container render:', this.props)
     // TODO: Look into moving this into its own layer
     if (this.props.children) return this.props.children
 

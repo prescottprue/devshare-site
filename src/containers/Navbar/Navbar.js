@@ -12,12 +12,12 @@ import Avatar from 'material-ui/Avatar'
 const stockPhotoUrl = 'https://s3.amazonaws.com/kyper-cdn/img/User.png'
 const originSettings = { horizontal: 'right', vertical: 'top' }
 const buttonStyle = { color: 'white', textDecoration: 'none' }
-const avatarSize = 50
+const avatarSize = 62
 
 const avatarStyles = {
-  icon: { width: avatarSize, height: avatarSize },
-  button: { marginRight: '1.5rem', width: avatarSize, height: avatarSize },
-  wrapper: { marginTop: 45 - avatarSize }
+  icon: { width: '100%', height: '100%' },
+  button: { marginRight: '.25rem', width: avatarSize, height: avatarSize },
+  wrapper: { marginTop: '0px' }
 }
 // redux/devshare
 import { connect } from 'react-redux'

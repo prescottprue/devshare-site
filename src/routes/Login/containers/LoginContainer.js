@@ -35,21 +35,14 @@ export default class Login extends Component {
   }
 
   state = {
-    snackCanOpen: false,
-    isLoading: false
+    snackCanOpen: false
   }
 
   handleLogin = loginData => {
-    this.setState({
-      snackCanOpen: true,
-      isLoading: true
-    })
+    this.setState({ snackCanOpen: true })
     this.props.devshare
       .login(loginData)
-      .then((account) => {
-        console.log('account:', account)
-        this.context.router.push(`/${account.username}`)
-      })
+      .then(account => this.context.router.push(`/${account.username}`))
   }
 
   googleLogin = () =>
