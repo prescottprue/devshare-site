@@ -63,10 +63,11 @@ export default class WorkspacePopover extends Component {
   }
 
   render () {
-    const { initialPath, type } = this.props
+    const { initialPath, type, workspaceElement } = this.props
+
     return (
       <Popover className={classes['container']} open={this.state.activePopover === 'pop'}
-        anchorEl={this.props.workspaceElement}
+        anchorEl={workspaceElement}
         anchorOrigin={originSettings}
         targetOrigin={originSettings}
         onRequestClose={this.closePopover.bind(this, 'pop')} >

@@ -10,8 +10,7 @@ export default class View extends Component {
     }),
     visible: PropTypes.bool.isRequired,
     index: PropTypes.number.isRequired,
-    project: PropTypes.object.isRequired,
-    vimEnabled: PropTypes.bool
+    project: PropTypes.object.isRequired
   }
 
   render () {
@@ -32,7 +31,6 @@ export default class View extends Component {
             mode={file.fileType || 'javascript'}
             filePath={file.path}
             project={this.props.project}
-            vimEnabled={this.props.vimEnabled}
           />
         </div>
       )

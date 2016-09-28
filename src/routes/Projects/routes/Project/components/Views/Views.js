@@ -7,13 +7,13 @@ export default class Views extends Component {
   static propTypes = {
     views: PropTypes.array,
     currentIndex: PropTypes.number,
-    project: PropTypes.object.isRequired,
-    vimEnabled: PropTypes.bool
+    project: PropTypes.object.isRequired
   }
 
   buildViews = () => {
     const currentIndex = this.props.currentIndex || 0
-    const { views, project, vimEnabled } = this.props
+    const { views, project } = this.props
+
     return views.map((view, i) => {
       if (i === currentIndex) {
         return (
@@ -23,7 +23,6 @@ export default class Views extends Component {
             viewData={view}
             project={project}
             visible
-            vimEnabled={vimEnabled}
           />
         )
       }
@@ -34,7 +33,6 @@ export default class Views extends Component {
           viewData={view}
           project={project}
           visible={false}
-          vimEnabled={vimEnabled}
         />
       )
     })
@@ -44,7 +42,9 @@ export default class Views extends Component {
     if (!this.props.views) {
       return (
         <div className={classes['view-default']}>
-          <span className={classes['view-default-label']}>Click on a file to open</span>
+          <span className={classes['view-default-label']}>
+            Click on a file to open
+          </span>
         </div>
       )
     }

@@ -177,7 +177,11 @@ export default class ProjectTile extends Component {
                 />
               </List>
             </Popover>
-            <SettingsIcon className={classes['settings']} onClick={this.toggleDropdown} hoverColor={hoverColor} />
+            <SettingsIcon
+              className={classes['settings']}
+              onClick={this.toggleDropdown}
+              hoverColor={hoverColor}
+            />
           </div>
           <span className={classes['owner']}>
             {owner || 'No Owner'}

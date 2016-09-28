@@ -3,7 +3,7 @@ import { Link } from 'react-router'
 import GoogleButton from 'react-google-button'
 
 // Components
-import SignupForm from '../components/SignupForm'
+import SignupForm from '../components/SignupForm/SignupForm'
 import Paper from 'material-ui/Paper'
 import CircularProgress from 'material-ui/CircularProgress'
 import Snackbar from 'material-ui/Snackbar'

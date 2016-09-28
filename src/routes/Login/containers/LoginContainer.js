@@ -4,7 +4,7 @@ import GoogleButton from 'react-google-button'
 import Paper from 'material-ui/Paper'
 import CircularProgress from 'material-ui/CircularProgress'
 import Snackbar from 'material-ui/Snackbar'
-import LoginForm from '../components/LoginForm'
+import LoginForm from '../components/LoginForm/LoginForm'
 
 // styles
 import classes from './LoginContainer.scss'

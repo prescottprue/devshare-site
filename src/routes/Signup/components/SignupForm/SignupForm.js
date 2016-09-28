@@ -1,5 +1,5 @@
 import React, { PropTypes } from 'react'
-import TextField from '../../../components/TextField'
+import TextField from 'components/TextField'
 import RaisedButton from 'material-ui/RaisedButton'
 import { Field, reduxForm } from 'redux-form'
 
@@ -13,17 +13,30 @@ const validate = values => {
   return errors
 }
 
-const SignupForm = ({ handleSubmit, submitting }) => {
+export const SignupForm = ({ handleSubmit, submitting }) => {
   return (
     <form className={classes['container']} onSubmit={handleSubmit}>
       <div>
-        <Field name='username' component={TextField} label='Username' />
+        <Field
+          name='username'
+          component={TextField}
+          label='Username'
+        />
       </div>
       <div>
-        <Field name='email' component={TextField} label='Email' />
+        <Field
+          name='email'
+          component={TextField}
+          label='Email'
+        />
       </div>
       <div>
-        <Field name='password' component={TextField} label='Password' type='password' />
+        <Field
+          name='password'
+          component={TextField}
+          label='Password'
+          type='password'
+        />
       </div>
       <div className={classes['submit']}>
         <RaisedButton

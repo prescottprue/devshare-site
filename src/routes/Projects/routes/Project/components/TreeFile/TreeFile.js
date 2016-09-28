@@ -14,16 +14,13 @@ export default class TreeFile extends Component {
   }
 
   onFileClick = (e) => {
-    if (e.button !== 0) {
-      return
-    }
+    if (e.button !== 0) return
+
     // If modified event
-    if (e.metaKey || e.altKey || e.ctrlKey || e.shiftKey) {
-      return
-    }
-    // var el = e.currentTarget
+    if (e.metaKey || e.altKey || e.ctrlKey || e.shiftKey) return
+
     e.preventDefault()
-    if (this.props && this.props.onClick) {
+    if (this.props.onClick) {
       this.props.onClick(this.props.data)
     }
   }
@@ -35,7 +32,7 @@ export default class TreeFile extends Component {
   }
 
   render () {
-    const { users, data } = this.props
+    const { users, data: { name, path } } = this.props
 
     const userBlocks = users ? map(users, (user, key) => {
       user.username = key
@@ -47,16 +44,16 @@ export default class TreeFile extends Component {
       )
     }) : null
 
-    const name = data.name || data.path.split('/')[data.path.split('/').length - 1]
+    const fileName = name || path.split('/')[path.split('/').length - 1]
 
     return (
       <li onContextMenu={this.rightClick}>
         <div
           className={classes['container']}
           onClick={this.onFileClick}
-          data-path={data.path}>
+          data-path={path}>
           <span className={classes['name']}>
-            {name}
+            {fileName}
           </span>
         </div>
         <div className={classes['users']}>

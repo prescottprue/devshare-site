@@ -18,21 +18,16 @@ export default class Tabs extends Component {
       onClose
     } = this.props
 
-    let tabs = []
-    if (list) {
-      tabs = list.map((tab, i) => {
-        return (
-          <Tab
-            key={`Tab-${i}`}
-            index={i}
-            title={tab.title || tab.name || 'unamed file'}
-            active={currentIndex === i}
-            onSelect={onSelect}
-            onClose={onClose}
-          />
-        )
-      })
-    }
+    const tabs = list ? list.map((tab, i) => (
+      <Tab
+        key={`Tab-${i}`}
+        index={i}
+        title={tab.title || tab.name || 'unamed file'}
+        active={currentIndex === i}
+        onSelect={onSelect}
+        onClose={onClose}
+      />
+    )) : []
 
     return (
       <ul className={classes['container']}>

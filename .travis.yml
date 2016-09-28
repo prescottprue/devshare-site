@@ -6,7 +6,7 @@ node_js:
 cache:
   bundler: true
   directories:
-  - node_modules # NPM packages
+    - node_modules # NPM packages
 
 install:
   - npm set progress=false
@@ -14,7 +14,7 @@ install:
   - npm install
 
 script:
-  - ./build/dist.sh
+  - npm run config
   - npm run lint:fix
   - npm run test
   - npm run build:prod

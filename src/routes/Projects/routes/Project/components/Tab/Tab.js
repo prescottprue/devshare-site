@@ -12,15 +12,15 @@ export default class Tab extends Component {
     onClose: PropTypes.func
   };
 
-  handleCloseClick = event => {
-    this._handleClick()
+  handleCloseClick = e => {
+    this._handleClick(e)
     if (this.props.onClose) {
       this.props.onClose(this.props.index)
     }
   }
 
-  handleTabClick = event => {
-    this._handleClick()
+  handleTabClick = e => {
+    this._handleClick(e)
     if (this.props.onSelect) {
       this.props.onSelect(this.props.index)
     }
@@ -46,7 +46,7 @@ export default class Tab extends Component {
   }
 
   // Handle event after click
-  _handleClick = () => {
+  _handleClick = (event) => {
     if (event.button !== 0) {
       return
     }

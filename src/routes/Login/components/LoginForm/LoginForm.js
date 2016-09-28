@@ -1,10 +1,13 @@
 import React, { PropTypes } from 'react'
 import { Link } from 'react-router'
-import TextField from '../../../components/TextField'
-import RaisedButton from 'material-ui/RaisedButton'
-import Checkbox from 'material-ui/Checkbox'
 import { Field, reduxForm } from 'redux-form'
 
+// Components
+import RaisedButton from 'material-ui/RaisedButton'
+import Checkbox from 'material-ui/Checkbox'
+import TextField from 'components/TextField'
+
+// Styles
 import classes from './LoginForm.scss'
 
 const validate = values => {
@@ -14,7 +17,7 @@ const validate = values => {
   return errors
 }
 
-const LoginForm = props => {
+export const LoginForm = props => {
   const { handleSubmit, submitting } = props
   return (
     <form className={classes['container']} onSubmit={handleSubmit}>

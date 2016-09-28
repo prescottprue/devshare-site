@@ -1,7 +1,6 @@
 import React, {Component, PropTypes} from 'react'
 import Paper from 'material-ui/Paper'
 import ContentAddCircle from 'material-ui/svg-icons/content/add-circle'
-
 import classes from './NewProjectTile.scss'
 
 const iconSize = '6rem'

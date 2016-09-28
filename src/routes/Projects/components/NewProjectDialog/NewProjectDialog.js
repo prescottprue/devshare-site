@@ -2,9 +2,9 @@ import React, {Component, PropTypes} from 'react'
 import Dialog from 'material-ui/Dialog'
 import TextField from 'material-ui/TextField'
 import FlatButton from 'material-ui/FlatButton'
-import './NewProjectDialog.scss'
+import classes from './NewProjectDialog.scss'
 
-class NewProjectDialog extends Component {
+export default class NewProjectDialog extends Component {
 
   static propTypes = {
     open: PropTypes.bool,
@@ -42,7 +42,7 @@ class NewProjectDialog extends Component {
         error: 'Name is required'
       })
     }
-    if (this.props && this.props.onCreateClick) {
+    if (this.props.onCreateClick) {
       this.props.onCreateClick(this.state.name)
       this.close()
     }
@@ -77,13 +77,13 @@ class NewProjectDialog extends Component {
         actions={actions}
         open={this.state.open}
         onRequestClose={this.close}
-        contentClassName='NewProjectDialog'>
-        <div className='NewProjectDialog-Inputs'>
+        contentClassName={classes['container']}>
+        <div className={classes['inputs']}>
           <TextField
             hintText='exampleProject'
             floatingLabelText='Project Name'
             ref='projectNameField'
-            onChange={this.handleInputChange.bind(this, 'name')}
+            onChange={(e) => this.handleInputChange('name', e)}
             errorText={this.state.error || null}
           />
         </div>
@@ -91,5 +91,3 @@ class NewProjectDialog extends Component {
     )
   }
 }
-
-export default NewProjectDialog
