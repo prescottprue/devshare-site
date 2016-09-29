@@ -6,7 +6,7 @@ import preview from '../assets/devShareEdit.gif'
 
 // Components
 import RaisedButton from 'material-ui/RaisedButton'
-import Theme from '../../../theme'
+import Theme from 'theme'
 import GroupIcon from 'material-ui/svg-icons/social/group'
 import CloudDownload from 'material-ui/svg-icons/file/cloud-download'
 import StartIcon from 'material-ui/svg-icons/content/create'
@@ -29,7 +29,7 @@ const buttonLabelStyle = {
   fontSize: '1.5rem'
 }
 
-export class Home extends Component {
+export default class Home extends Component {
   trackEvent = () => {
     // event({ category: 'Projects', action: 'Create Anonymous' })
   }
@@ -53,19 +53,17 @@ export class Home extends Component {
       }
     ]
 
-    const meInThreeElements = map(meInThree, (content, key) => {
-      return (
-        <div className={classes['features-item']} key={key} >
-          {content.icon}
-          <div className={classes['features-title']}>
-            {content.title}
-          </div>
-          <div className={classes['features-desc']}>
-            {content.desc}
-          </div>
+    const meInThreeElements = map(meInThree, (content, key) => (
+      <div className={classes['features-item']} key={key} >
+        {content.icon}
+        <div className={classes['features-title']}>
+          {content.title}
         </div>
-      )
-    })
+        <div className={classes['features-desc']}>
+          {content.desc}
+        </div>
+      </div>
+    ))
 
     return (
       <div className={classes['container']} style={{ color: Theme.palette.primary2Color }}>
@@ -73,11 +71,15 @@ export class Home extends Component {
           <div className={classes['hero']}>
             <div className={classes['logo']}>
               <img src={logo} alt='Devshare' />
-              <span className={classes['brand']}>devShare</span>
+              <span className={classes['brand']}>
+                devShare
+              </span>
             </div>
-            <span className={classes['name']}>Build together</span>
+            <span className={classes['name']}>
+              Build together
+            </span>
             <span className={classes['description']}>
-            real-time, full-project code editing in browser
+              real-time, full-project code editing in browser
             </span>
             <RaisedButton
               primary
@@ -87,7 +89,9 @@ export class Home extends Component {
               containerElement={<Link to={`/anon/${'asdfas'}`} />}
               onClick={this.trackEvent}
             />
-            <span className={classes['muted']}>No sign up required</span>
+            <span className={classes['muted']}>
+              No sign up required
+            </span>
             <div className={classes['preview']}>
               <Paper style={{marginBottom: -10}} zDepth={1}>
                 <img className={classes['preview-img']} src={preview} />
@@ -95,14 +99,10 @@ export class Home extends Component {
             </div>
           </div>
           <div className={classes['features']}>
-          {meInThreeElements}
-          </div>
-          <div className={classes['footer']}>
-            Made by <a target='_blank' href='http://kyper.io'>Kyper</a>
+            {meInThreeElements}
           </div>
         </div>
       </div>
     )
   }
 }
-export default Home

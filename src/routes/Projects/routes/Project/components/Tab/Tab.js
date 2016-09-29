@@ -38,9 +38,8 @@ export default class Tab extends Component {
         <div className={classes['close']} onClick={this.handleCloseClick}>
           <CloseIcon style={iconStyle} />
         </div>
-        {/* TODO: Make tab indicator :after css class*/}
-        <div className={classes['indicator']}>
-        </div>
+        {/* TODO: Make tab indicator :after css class */}
+        <div className={classes['indicator']} />
       </li>
     )
   }

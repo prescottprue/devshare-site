@@ -141,8 +141,7 @@ export default class Editor extends Component {
 
   render () {
     return (
-      <div className={classes['container']} id={this.props.name}>
-      </div>
+      <div className={classes['container']} id={this.props.name} />
     )
   }
 }
