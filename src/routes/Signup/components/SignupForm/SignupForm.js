@@ -6,7 +6,7 @@ import { Field, reduxForm } from 'redux-form'
 import classes from './SignupForm.scss'
 const buttonStyle = { width: '100%' }
 
-const validate = values => {
+export const validate = values => {
   const errors = {}
   if (!values.email) errors.email = 'Required'
   if (!values.password) errors.password = 'Required'
@@ -18,22 +18,22 @@ export const SignupForm = ({ handleSubmit, submitting }) => {
     <form className={classes['container']} onSubmit={handleSubmit}>
       <div>
         <Field
-          name='username'
           component={TextField}
+          name='username'
           label='Username'
         />
       </div>
       <div>
         <Field
-          name='email'
           component={TextField}
+          name='email'
           label='Email'
         />
       </div>
       <div>
         <Field
-          name='password'
           component={TextField}
+          name='password'
           label='Password'
           type='password'
         />
@@ -50,6 +50,7 @@ export const SignupForm = ({ handleSubmit, submitting }) => {
     </form>
   )
 }
+
 SignupForm.propTypes = {
   handleSubmit: PropTypes.func,
   submitting: PropTypes.bool

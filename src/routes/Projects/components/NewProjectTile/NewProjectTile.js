@@ -9,7 +9,6 @@ const color = '#979797'
 const hoverColor = '#616161'
 
 export default class NewProjectTile extends Component {
-
   static propTypes = {
     onClick: PropTypes.func
   }

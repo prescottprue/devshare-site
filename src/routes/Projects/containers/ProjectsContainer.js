@@ -80,15 +80,15 @@ export class Projects extends Component {
   // TODO: Delete through devshare projects method
   deleteProject = ({ name }) =>
     this.props.devshare
-      .remove(`projects/${this.props.params.username}/${name}`)
+      .project(this.props.params.username, name)
+      .delete()
 
   // TODO: Open based on project info instead of route param
   openProject = project =>
     this.context.router.push(`/${this.props.params.username}/${project.name}`)
 
-  collabClick = user => {
+  collabClick = user =>
     this.context.router.push(`/${user.username}`)
-  }
 
   render () {
     // TODO: Look into moving this into its own layer

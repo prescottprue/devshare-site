@@ -11,3 +11,9 @@
     width: 100%;
   }
 }
+.buttons {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
