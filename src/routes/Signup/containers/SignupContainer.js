@@ -9,7 +9,6 @@ import RaisedButton from 'material-ui/RaisedButton'
 import CircularProgress from 'material-ui/CircularProgress'
 import Snackbar from 'material-ui/Snackbar'
 import GithubIcon from 'react-icons/lib/go/mark-github'
-import GoogleIcon from 'react-icons/lib/fa/google'
 import FontIcon from 'material-ui/FontIcon'
 
 import classes from './SignupContainer.scss'
