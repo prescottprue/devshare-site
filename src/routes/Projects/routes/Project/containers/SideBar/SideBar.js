@@ -8,16 +8,22 @@ import MenuItem from 'material-ui/MenuItem'
 import IconButton from 'material-ui/IconButton'
 import IconMenu from 'material-ui/IconMenu'
 import AddIcon from 'material-ui/svg-icons/content/add-circle'
+import ContentAdd from 'material-ui/svg-icons/content/add'
 import SettingsIcon from 'material-ui/svg-icons/action/settings'
 import GroupIcon from 'material-ui/svg-icons/social/group'
 import CopyIcon from 'material-ui/svg-icons/content/content-copy'
 import ArchiveIcon from 'material-ui/svg-icons/content/archive'
+import FolderOpenIcon from 'material-ui/svg-icons/file/folder-open'
+import FolderClosedIcon from 'material-ui/svg-icons/file/folder'
 import RaisedButton from 'material-ui/RaisedButton'
+import Media from 'react-media'
+import FloatingActionButton from 'material-ui/FloatingActionButton'
 
 const classnames = require('classnames')
 import classes from './SideBar.scss'
 
 const fileEntityBlackList = ['.DS_Store', 'node_modules']
+const isDesktop = { minWidth: '700px' }
 
 // Icon styles
 const iconButtonStyle = { width: '50px', height: '50px', padding: '0px' }
@@ -68,6 +74,7 @@ export default class SideBar extends Component {
 
   state = {
     filesOver: false,
+    treeOpen: false,
     contextMenu: {
       path: '',
       open: false,
@@ -200,7 +207,7 @@ export default class SideBar extends Component {
       onShowPopover
     } = this.props
 
-    const { contextMenu, filesOver } = this.state
+    const { contextMenu, filesOver, treeOpen } = this.state
 
     const projectsMenu = isArray(projects) && projects.length > 0
       ? projects.map((project, i) =>
@@ -235,12 +242,17 @@ export default class SideBar extends Component {
                 label='Save To Account'
                 />
           }
-          <TreeView
-            fileStructure={files}
-            onRightClick={this.showContextMenu}
-            project={project}
-            loading={!isLoaded(files)}
-          />
+          <Media query={isDesktop}>
+            {
+              matches => matches &&
+                <TreeView
+                  fileStructure={files}
+                  onRightClick={this.showContextMenu}
+                  project={project}
+                  loading={!isLoaded(files)}
+                />
+            }
+          </Media>
           <input
             type='file'
             ref='fileInput'
@@ -248,72 +260,94 @@ export default class SideBar extends Component {
             onChange={this.handleFileUpload}
             multiple
           />
-          <div className={classes['buttons']}>
-            <IconButton
-              style={iconButtonStyle}
-              iconStyle={iconStyle}
-              onClick={this.cloneClick}
-              tooltip='Clone'
-              tooltipPosition={tooltipPosition}
-              touch
-              disabled>
-              <CopyIcon />
-            </IconButton>
-            <IconButton
-              style={iconButtonStyle}
-              iconStyle={iconStyle}
-              onClick={this.downloadClick}
-              tooltip='Download'
-              tooltipPosition={tooltipPosition}
-              touch
-              disabled={!files || files.length < 1}>
-              <ArchiveIcon />
-            </IconButton>
-          </div>
-          <div className={classes['buttons']}>
-            <IconMenu
-              iconButtonElement={
-                <IconButton
-                  style={iconButtonStyle}
-                  iconStyle={iconStyle}
-                  tooltip='Add'
-                  tooltipPosition={tooltipPosition}
-                  touch >
-                  <AddIcon />
-                </IconButton>
-            }>
-              <MenuItem
-                primaryText='Upload files'
-                onClick={this._fileUpload}
-              />
-              <MenuItem
-                primaryText='Add file'
-                onClick={() => { onShowPopover('file') }}
-              />
-              <MenuItem
-                primaryText='Add folder'
-                onClick={() => { onShowPopover('folder') }}
-              />
-            </IconMenu>
-            <IconButton
-              style={iconButtonStyle}
-              iconStyle={iconStyle}
-              onClick={onSharingClick}
-              tooltip='Sharing'
-              tooltipPosition={tooltipPosition}
-              touch >
-              <GroupIcon />
-            </IconButton>
-            <IconButton
-              style={iconButtonStyle}
-              iconStyle={iconStyle}
-              onClick={onSettingsClick}
-              tooltip='Settings'
-              tooltipPosition={tooltipPosition}
-              touch >
-              <SettingsIcon />
-            </IconButton>
-          </div>
+          <Media query={isDesktop}>
+            {
+              matches => matches ?
+                <div>
+                  <div className={classes['buttons']}>
+                    <IconButton
+                      style={iconButtonStyle}
+                      iconStyle={iconStyle}
+                      onClick={this.cloneClick}
+                      tooltip='Clone'
+                      tooltipPosition={tooltipPosition}
+                      touch
+                      disabled>
+                      <CopyIcon />
+                    </IconButton>
+                    <IconButton
+                      style={iconButtonStyle}
+                      iconStyle={iconStyle}
+                      onClick={this.downloadClick}
+                      tooltip='Download'
+                      tooltipPosition={tooltipPosition}
+                      touch
+                      disabled={!files || files.length < 1}>
+                      <ArchiveIcon />
+                    </IconButton>
+                  </div>
+                  <div className={classes['buttons']}>
+                    <IconMenu
+                      iconButtonElement={
+                        <IconButton
+                          style={iconButtonStyle}
+                          iconStyle={iconStyle}
+                          tooltip='Add'
+                          tooltipPosition={tooltipPosition}
+                          touch >
+                          <AddIcon />
+                        </IconButton>
+                    }>
+                      <MenuItem
+                        primaryText='Upload files'
+                        onClick={this._fileUpload}
+                      />
+                      <MenuItem
+                        primaryText='Add file'
+                        onClick={() => { onShowPopover('file') }}
+                      />
+                      <MenuItem
+                        primaryText='Add folder'
+                        onClick={() => { onShowPopover('folder') }}
+                      />
+                    </IconMenu>
+                    <IconButton
+                      style={iconButtonStyle}
+                      iconStyle={iconStyle}
+                      onClick={onSharingClick}
+                      tooltip='Sharing'
+                      tooltipPosition={tooltipPosition}
+                      touch >
+                      <GroupIcon />
+                    </IconButton>
+                    <IconButton
+                      style={iconButtonStyle}
+                      iconStyle={iconStyle}
+                      onClick={onSettingsClick}
+                      tooltip='Settings'
+                      tooltipPosition={tooltipPosition}
+                      touch >
+                      <SettingsIcon />
+                    </IconButton>
+                  </div>
+                </div>
+                : (
+                  <div>
+                    <FloatingActionButton style={{ position: 'absolute', left: 5, bottom: 0 }} onClick={() => this.setState({ treeOpen: !treeOpen })}>
+                      {
+                        treeOpen
+                          ? <FolderOpenIcon />
+                          : <FolderClosedIcon />
+                      }
+
+                    </FloatingActionButton>
+                    <FloatingActionButton style={{ position: 'absolute', right: 5, bottom: 0 }}>
+                      <ContentAdd />
+                    </FloatingActionButton>
+                  </div>
+                )
+            }
+          </Media>
           {
             contextMenu.open
             ? (
