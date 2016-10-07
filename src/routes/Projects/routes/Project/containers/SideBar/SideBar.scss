@@ -6,6 +6,9 @@
   min-height: 180px;
   transform: rotate(0deg);
   overflow: hidden;
+  @media (max-width: 736px) {
+    min-height: 140px;
+  }
 }
 .filehover {
   border: 3px dashed #b2dfdb;

@@ -228,31 +228,30 @@ export default class SideBar extends Component {
         onContextMenu={this._rightClick}
       >
         <div className={classes['dropzone']}>
+        <Media query={isDesktop}>
           {
-            (projectsMenu && showProjects)
-              ? <SelectField
-                style={{width: '80%', marginLeft: '10%'}}
-                labelStyle={{fontSize: '1.5rem', fontWeight: '300', textOverflow: 'ellipsis'}}
-                autoWidth={false}
-                value={project.name}
-                children={projectsMenu}
-                onChange={this.selectProject}
-                />
-              : <RaisedButton
-                label='Save To Account'
-                />
-          }
-          <Media query={isDesktop}>
-            {
-              matches => matches &&
-                <TreeView
-                  fileStructure={files}
-                  onRightClick={this.showContextMenu}
-                  project={project}
-                  loading={!isLoaded(files)}
-                />
-            }
-          </Media>
+            matches => matches ?
+              (projectsMenu && showProjects)
+                ? <SelectField
+                  style={{width: '80%', marginLeft: '10%'}}
+                  labelStyle={{fontSize: '1.5rem', fontWeight: '300', textOverflow: 'ellipsis'}}
+                  autoWidth={false}
+                  value={project.name}
+                  children={projectsMenu}
+                  onChange={this.selectProject}
+                  />
+                : <RaisedButton
+                  label='Save To Account'
+                  />
+            : null
+        }
+        </Media>
+          <TreeView
+            fileStructure={files}
+            onRightClick={this.showContextMenu}
+            project={project}
+            loading={!isLoaded(files)}
+          />
           <input
             type='file'
             ref='fileInput'
@@ -333,15 +332,31 @@ export default class SideBar extends Component {
                 </div>
                 : (
                   <div>
-                    <FloatingActionButton style={{ position: 'absolute', left: 5, bottom: 0 }} onClick={() => this.setState({ treeOpen: !treeOpen })}>
-                      {
-                        treeOpen
-                          ? <FolderOpenIcon />
-                          : <FolderClosedIcon />
-                      }
-
-                    </FloatingActionButton>
-                    <FloatingActionButton style={{ position: 'absolute', right: 5, bottom: 0 }}>
+                  <IconMenu
+                    iconButtonElement={
+                      <IconButton
+                        style={iconButtonStyle}
+                        iconStyle={iconStyle}
+                        tooltip='Add'
+                        tooltipPosition={tooltipPosition}
+                        touch >
+                        <AddIcon />
+                      </IconButton>
+                  }>
+                    <MenuItem
+                      primaryText='Upload files'
+                      onClick={this._fileUpload}
+                    />
+                    <MenuItem
+                      primaryText='Add file'
+                      onClick={() => { onShowPopover('file') }}
+                    />
+                    <MenuItem
+                      primaryText='Add folder'
+                      onClick={() => { onShowPopover('folder') }}
+                    />
+                  </IconMenu>
+                    <FloatingActionButton style={{ position: 'absolute', right: 10, bottom: 70 }}>
                       <ContentAdd />
                     </FloatingActionButton>
                   </div>

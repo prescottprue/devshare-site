@@ -7,6 +7,12 @@ import Pane from '../Pane/Pane'
 // Components
 import WorkspacePopover from '../../components/WorkspacePopover/WorkspacePopover'
 import classes from './Workspace.scss'
+import {BottomNavigation, BottomNavigationItem} from 'material-ui/BottomNavigation'
+import Paper from 'material-ui/Paper'
+import Media from 'react-media'
+import FolderIcon from 'material-ui/svg-icons/file/folder-open'
+import EditorIcon from 'material-ui/svg-icons/editor/text-fields'
+import SettingsIcon from 'material-ui/svg-icons/action/settings'
 
 // redux/devshare
 import { connect } from 'react-redux'
@@ -153,15 +159,42 @@ export default class Workspace extends Component {
           open={this.state.popoverOpen}
           onClose={this.handlePopoverClose}
         />
-        <SideBar
-          project={project}
-          projects={projects}
-          account={account}
-          onSettingsClick={onSettingsClick}
-          onSharingClick={onSharingClick}
-          showProjects={!!account && !!account.username}
-          onShowPopover={this.showPopover}
-        />
+        <Media query="(max-width: 736)">
+          {
+            matches => matches
+            ? (
+              <SideBar
+                project={project}
+                projects={projects}
+                account={account}
+                onSettingsClick={onSettingsClick}
+                onSharingClick={onSharingClick}
+                showProjects={!!account && !!account.username}
+                onShowPopover={this.showPopover}
+              />
+            )
+            : (
+              <Paper zDepth={1}>
+               <BottomNavigation selectedIndex={this.state.selectedIndex}>
+                 <BottomNavigationItem
+                   label="Files"
+                   icon={<FolderIcon />}
+                   onTouchTap={() => this.select(0)}
+                 />
+                 <BottomNavigationItem
+                   label="Editor"
+                   icon={<EditorIcon />}
+                 />
+                 <BottomNavigationItem
+                   label="Settings"
+                   icon={<SettingsIcon />}
+                 />
+               </BottomNavigation>
+             </Paper>
+            )
+          }
+        </Media>
+
         <Pane
           project={project}
           params={params}

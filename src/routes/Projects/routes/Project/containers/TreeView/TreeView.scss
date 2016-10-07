@@ -7,6 +7,9 @@
 	-webkit-flex-flow: row wrap;
 	-webkit-padding-start: 0;
 	margin: .5rem 0;
+	@media (max-width: 736px) {
+		margin: 0;
+  }
 	display: flex;
 	flex-grow: 1;
 	flex-direction: column;
