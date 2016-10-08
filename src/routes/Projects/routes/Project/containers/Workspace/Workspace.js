@@ -11,8 +11,8 @@ import Paper from 'material-ui/Paper'
 import FolderIcon from 'material-ui/svg-icons/file/folder-open'
 import EditorIcon from 'material-ui/svg-icons/editor/text-fields'
 import SettingsIcon from 'material-ui/svg-icons/action/settings'
-import { Tabs, Tab } from 'material-ui/Tabs'
-
+import DesktopLayout from '../../components/DesktopLayout/DesktopLayout'
+import MobileLayout from '../../components/MobileLayout/MobileLayout'
 import WorkspacePopover from '../../components/WorkspacePopover/WorkspacePopover'
 import classes from './Workspace.scss'
 
@@ -24,7 +24,7 @@ const { pathToJS } = helpers
 @devshare()
 @connect(
   // Map state to props
-  ({devshare}, { params }) => ({
+  ({ devshare }, { params }) => ({
     authError: pathToJS(devshare, 'authError'),
     account: pathToJS(devshare, 'profile')
   })
@@ -39,8 +39,7 @@ export default class Workspace extends Component {
     addType: 'file',
     popoverOpen: false,
     debouncedFiles: null,
-    filesLoading: false,
-    slideIndex: 0
+    filesLoading: false
   }
 
   static propTypes = {
@@ -158,73 +157,6 @@ export default class Workspace extends Component {
       projects
     } = this.props
 
-    const desktopLayout = (
-      <div className={classes.container}>
-        <SideBar
-          project={project}
-          projects={projects}
-          account={account}
-          onSettingsClick={onSettingsClick}
-          onSharingClick={onSharingClick}
-          showProjects={!!account && !!account.username}
-          onShowPopover={this.showPopover}
-        />
-        <Pane
-          project={project}
-          params={params}
-        />
-      </div>
-    )
-
-    const mobileLayout = (
-      <div className={classes['mobile']}>
-        <SwipeableViews
-          index={this.state.slideIndex}
-          onChangeIndex={this.handleChange}
-        >
-          <div className={classes.tab}>
-            <SideBar
-              project={project}
-              projects={projects}
-              account={account}
-              onSettingsClick={onSettingsClick}
-              onSharingClick={onSharingClick}
-              showProjects={!!account && !!account.username}
-              onShowPopover={this.showPopover}
-            />
-          </div>
-          <div className={classes.tab}>
-            <Pane
-              project={project}
-              params={params}
-            />
-          </div>
-          <div className={classes.tab}>
-            Settings Page
-          </div>
-        </SwipeableViews>
-        <Paper zDepth={1} className={classes.bottom}>
-          <Tabs onChange={this.handleChange} value={this.state.slideIndex}>
-            <Tab
-              label='Files'
-              value={0}
-              icon={<FolderIcon />}
-            />
-            <Tab
-              label='Editor'
-              value={1}
-              icon={<EditorIcon />}
-            />
-            <Tab
-              label='Settings'
-              value={2}
-              icon={<SettingsIcon />}
-            />
-          </Tabs>
-        </Paper>
-      </div>
-    )
-
     return (
       <div className={classes['container']} ref='workspace'>
         <WorkspacePopover
@@ -238,8 +170,22 @@ export default class Workspace extends Component {
         <Media query={{minWidth: '736px'}}>
           {
             matches => matches
-            ? desktopLayout
-            : mobileLayout
+            ? <DesktopLayout
+                project={project}
+                projects={projects}
+                account={account}
+                onSettingsClick={onSettingsClick}
+                onSharingClick={onSharingClick}
+                onShowPopover={this.showPopover}
+              />
+            : <MobileLayout
+                project={project}
+                projects={projects}
+                account={account}
+                onSettingsClick={onSettingsClick}
+                onSharingClick={onSharingClick}
+                onShowPopover={this.showPopover}
+              />
           }
         </Media>
       </div>
