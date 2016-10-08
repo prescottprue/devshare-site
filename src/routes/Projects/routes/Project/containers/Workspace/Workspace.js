@@ -5,14 +5,16 @@ import SideBar from '../SideBar/SideBar'
 import Pane from '../Pane/Pane'
 
 // Components
-import WorkspacePopover from '../../components/WorkspacePopover/WorkspacePopover'
-import classes from './Workspace.scss'
-import {BottomNavigation, BottomNavigationItem} from 'material-ui/BottomNavigation'
-import Paper from 'material-ui/Paper'
 import Media from 'react-media'
+import SwipeableViews from 'react-swipeable-views'
+import Paper from 'material-ui/Paper'
 import FolderIcon from 'material-ui/svg-icons/file/folder-open'
 import EditorIcon from 'material-ui/svg-icons/editor/text-fields'
 import SettingsIcon from 'material-ui/svg-icons/action/settings'
+import { Tabs, Tab } from 'material-ui/Tabs'
+
+import WorkspacePopover from '../../components/WorkspacePopover/WorkspacePopover'
+import classes from './Workspace.scss'
 
 // redux/devshare
 import { connect } from 'react-redux'
@@ -37,7 +39,8 @@ export default class Workspace extends Component {
     addType: 'file',
     popoverOpen: false,
     debouncedFiles: null,
-    filesLoading: false
+    filesLoading: false,
+    slideIndex: 0
   }
 
   static propTypes = {
@@ -86,6 +89,12 @@ export default class Workspace extends Component {
     this.setState({
       popoverOpen: false
     })
+
+  handleChange = (value) => {
+    this.setState({
+      slideIndex: value
+    })
+  }
 
   saveSettings = data =>
     this.toggleSettingsModal()
@@ -149,6 +158,73 @@ export default class Workspace extends Component {
       projects
     } = this.props
 
+    const desktopLayout = (
+      <div className={classes.container}>
+        <SideBar
+          project={project}
+          projects={projects}
+          account={account}
+          onSettingsClick={onSettingsClick}
+          onSharingClick={onSharingClick}
+          showProjects={!!account && !!account.username}
+          onShowPopover={this.showPopover}
+        />
+        <Pane
+          project={project}
+          params={params}
+        />
+      </div>
+    )
+
+    const mobileLayout = (
+      <div className={classes['mobile']}>
+        <SwipeableViews
+          index={this.state.slideIndex}
+          onChangeIndex={this.handleChange}
+        >
+          <div className={classes.tab}>
+            <SideBar
+              project={project}
+              projects={projects}
+              account={account}
+              onSettingsClick={onSettingsClick}
+              onSharingClick={onSharingClick}
+              showProjects={!!account && !!account.username}
+              onShowPopover={this.showPopover}
+            />
+          </div>
+          <div className={classes.tab}>
+            <Pane
+              project={project}
+              params={params}
+            />
+          </div>
+          <div className={classes.tab}>
+            Settings Page
+          </div>
+        </SwipeableViews>
+        <Paper zDepth={1} className={classes.bottom}>
+          <Tabs onChange={this.handleChange} value={this.state.slideIndex}>
+            <Tab
+              label='Files'
+              value={0}
+              icon={<FolderIcon />}
+            />
+            <Tab
+              label='Editor'
+              value={1}
+              icon={<EditorIcon />}
+            />
+            <Tab
+              label='Settings'
+              value={2}
+              icon={<SettingsIcon />}
+            />
+          </Tabs>
+        </Paper>
+      </div>
+    )
+
     return (
       <div className={classes['container']} ref='workspace'>
         <WorkspacePopover
@@ -159,46 +235,13 @@ export default class Workspace extends Component {
           open={this.state.popoverOpen}
           onClose={this.handlePopoverClose}
         />
-        <Media query="(max-width: 736)">
+        <Media query={{minWidth: '736px'}}>
           {
             matches => matches
-            ? (
-              <SideBar
-                project={project}
-                projects={projects}
-                account={account}
-                onSettingsClick={onSettingsClick}
-                onSharingClick={onSharingClick}
-                showProjects={!!account && !!account.username}
-                onShowPopover={this.showPopover}
-              />
-            )
-            : (
-              <Paper zDepth={1}>
-               <BottomNavigation selectedIndex={this.state.selectedIndex}>
-                 <BottomNavigationItem
-                   label="Files"
-                   icon={<FolderIcon />}
-                   onTouchTap={() => this.select(0)}
-                 />
-                 <BottomNavigationItem
-                   label="Editor"
-                   icon={<EditorIcon />}
-                 />
-                 <BottomNavigationItem
-                   label="Settings"
-                   icon={<SettingsIcon />}
-                 />
-               </BottomNavigation>
-             </Paper>
-            )
+            ? desktopLayout
+            : mobileLayout
           }
         </Media>
-
-        <Pane
-          project={project}
-          params={params}
-        />
       </div>
     )
   }

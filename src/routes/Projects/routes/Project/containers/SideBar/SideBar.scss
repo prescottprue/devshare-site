@@ -7,7 +7,7 @@
   transform: rotate(0deg);
   overflow: hidden;
   @media (max-width: 736px) {
-    min-height: 140px;
+    height: 100%;
   }
 }
 .filehover {
@@ -41,9 +41,6 @@ a {
   flex-direction: row;
   justify-content: space-around;
   padding: 0 10px 40px 10px;
-  @media screen and (max-width: 700px){
-    padding: 0 10px 5px 10px;
-  }
 }
 // Hide default choose file button
 .file-input {

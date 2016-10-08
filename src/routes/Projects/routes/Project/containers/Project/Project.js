@@ -10,7 +10,6 @@ import CircularProgress from 'material-ui/CircularProgress'
 import { connect } from 'react-redux'
 import { devshare, helpers } from 'redux-devshare'
 const { isLoaded, dataToJS } = helpers
-import Media from 'react-media'
 
 @devshare(
   // Get paths from devshare
