@@ -11,11 +11,11 @@ const { toJS } = helpers
 
 @connect(
   // Map state to props
-  ({devshare, tabs}, { project: { username, projectname }}) => {
-    return {
+  ({ devshare, tabs }, { project: { username, projectname } }) => (
+    {
       tabs: toJS(tabs)[`${username}/${projectname}`] || {}
     }
-  },
+  ),
   // Map dispatch to props
   (dispatch) =>
     bindActionCreators(TabActions, dispatch)

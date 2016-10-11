@@ -6,7 +6,6 @@ import SwipeableViews from 'react-swipeable-views'
 import Paper from 'material-ui/Paper'
 import FolderIcon from 'material-ui/svg-icons/file/folder-open'
 import EditorIcon from 'material-ui/svg-icons/editor/text-fields'
-import SettingsIcon from 'material-ui/svg-icons/action/settings'
 
 import classes from './MobileLayout.scss'
 
@@ -30,7 +29,7 @@ export default class MobileLayout extends Component {
     })
   }
 
-  render() {
+  render () {
     const {
       project,
       projects,
@@ -62,9 +61,6 @@ export default class MobileLayout extends Component {
               project={project}
             />
           </div>
-          <div className={classes.tab}>
-            Settings Page
-          </div>
         </SwipeableViews>
         <Paper zDepth={1} className={classes.bottom}>
           <Tabs onChange={this.handleChange} value={this.state.slideIndex}>
@@ -77,11 +73,6 @@ export default class MobileLayout extends Component {
               label='Editor'
               value={1}
               icon={<EditorIcon />}
-            />
-            <Tab
-              label='Settings'
-              value={2}
-              icon={<SettingsIcon />}
             />
           </Tabs>
         </Paper>

@@ -1,16 +1,7 @@
 import React, { Component, PropTypes } from 'react'
 
-// Containers
-import SideBar from '../SideBar/SideBar'
-import Pane from '../Pane/Pane'
-
 // Components
 import Media from 'react-media'
-import SwipeableViews from 'react-swipeable-views'
-import Paper from 'material-ui/Paper'
-import FolderIcon from 'material-ui/svg-icons/file/folder-open'
-import EditorIcon from 'material-ui/svg-icons/editor/text-fields'
-import SettingsIcon from 'material-ui/svg-icons/action/settings'
 import DesktopLayout from '../../components/DesktopLayout/DesktopLayout'
 import MobileLayout from '../../components/MobileLayout/MobileLayout'
 import WorkspacePopover from '../../components/WorkspacePopover/WorkspacePopover'
@@ -24,7 +15,7 @@ const { pathToJS } = helpers
 @devshare()
 @connect(
   // Map state to props
-  ({ devshare }, { params }) => ({
+  ({ devshare }) => ({
     authError: pathToJS(devshare, 'authError'),
     account: pathToJS(devshare, 'profile')
   })
@@ -150,7 +141,6 @@ export default class Workspace extends Component {
   render () {
     const {
       project,
-      params,
       onSettingsClick,
       onSharingClick,
       account,
@@ -171,20 +161,20 @@ export default class Workspace extends Component {
           {
             matches => matches
             ? <DesktopLayout
-                project={project}
-                projects={projects}
-                account={account}
-                onSettingsClick={onSettingsClick}
-                onSharingClick={onSharingClick}
-                onShowPopover={this.showPopover}
+              project={project}
+              projects={projects}
+              account={account}
+              onSettingsClick={onSettingsClick}
+              onSharingClick={onSharingClick}
+              onShowPopover={this.showPopover}
               />
             : <MobileLayout
-                project={project}
-                projects={projects}
-                account={account}
-                onSettingsClick={onSettingsClick}
-                onSharingClick={onSharingClick}
-                onShowPopover={this.showPopover}
+              project={project}
+              projects={projects}
+              account={account}
+              onSettingsClick={onSettingsClick}
+              onSharingClick={onSharingClick}
+              onShowPopover={this.showPopover}
               />
           }
         </Media>

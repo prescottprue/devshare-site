@@ -1,8 +1,6 @@
 import React, { PropTypes, Component } from 'react'
 import { isArray, each, last, map } from 'lodash'
-
-import TreeView from '../TreeView'
-import ContextMenu from '../../components/ContextMenu/ContextMenu'
+import Media from 'react-media'
 import SelectField from 'material-ui/SelectField'
 import MenuItem from 'material-ui/MenuItem'
 import IconButton from 'material-ui/IconButton'
@@ -13,8 +11,9 @@ import GroupIcon from 'material-ui/svg-icons/social/group'
 import CopyIcon from 'material-ui/svg-icons/content/content-copy'
 import ArchiveIcon from 'material-ui/svg-icons/content/archive'
 import RaisedButton from 'material-ui/RaisedButton'
-import Media from 'react-media'
-import FloatingActionButton from 'material-ui/FloatingActionButton'
+
+import TreeView from '../TreeView'
+import ContextMenu from '../../components/ContextMenu/ContextMenu'
 
 const classnames = require('classnames')
 import classes from './SideBar.scss'
