@@ -5,6 +5,15 @@ import { useRouterHistory } from 'react-router'
 import { syncHistoryWithStore } from 'react-router-redux'
 import createStore from './store/createStore'
 import AppContainer from './containers/App/App'
+import { version } from '../package.json'
+import { env } from './config'
+
+// ========================================================
+// Set Window Variables
+// ========================================================
+window.version = version
+window.env = env
+// initScripts()
 
 // ========================================================
 // Browser History Setup
@@ -29,7 +38,7 @@ const history = syncHistoryWithStore(browserHistory, store, {
 // ========================================================
 // Developer Tools Setup
 // ========================================================
-if (__DEBUG__) {
+if (__DEV__) {
   if (window.devToolsExtension) {
     // window.devToolsExtension.open()
   }

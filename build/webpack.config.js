@@ -1,47 +1,46 @@
-import webpack from 'webpack'
-import cssnano from 'cssnano'
-import HtmlWebpackPlugin from 'html-webpack-plugin'
-import ExtractTextPlugin from 'extract-text-webpack-plugin'
-import config from '../config'
-import _debug from 'debug'
-import FaviconsWebpackPlugin from 'favicons-webpack-plugin'
+const webpack = require('webpack')
+const cssnano = require('cssnano')
+const HtmlWebpackPlugin = require('html-webpack-plugin')
+const ExtractTextPlugin = require('extract-text-webpack-plugin')
+const config = require('../config')
+const debug = require('debug')('app:webpack:config')
+const FaviconsWebpackPlugin = require('favicons-webpack-plugin')
 
-const debug = _debug('app:webpack:config')
 const paths = config.utils_paths
-const {__DEV__, __PROD__, __TEST__} = config.globals
+const __DEV__ = config.globals.__DEV__
+const __PROD__ = config.globals.__PROD__
+const __TEST__ = config.globals.__TEST__
 
-debug('Create configuration.')
+debug('Creating configuration.')
 const webpackConfig = {
-  name: 'client',
-  target: 'web',
-  devtool: config.compiler_devtool,
-  resolve: {
-    root: paths.client(),
-    extensions: ['', '.js', '.jsx', '.json']
+  name    : 'client',
+  target  : 'web',
+  devtool : config.compiler_devtool,
+  resolve : {
+    root       : paths.client(),
+    extensions : ['', '.js', '.jsx', '.json']
   },
-  module: {}
+  module : {}
 }
 // ------------------------------------
 // Entry Points
 // ------------------------------------
-const APP_ENTRY_PATHS = [
-  paths.client('main.js')
-]
+const APP_ENTRY = paths.client('main.js')
 
 webpackConfig.entry = {
-  app: __DEV__
-    ? APP_ENTRY_PATHS.concat(`webpack-hot-middleware/client?path=${config.compiler_public_path}__webpack_hmr`)
-    : APP_ENTRY_PATHS,
-  vendor: config.compiler_vendor
+  app : __DEV__
+    ? [APP_ENTRY].concat(`webpack-hot-middleware/client?path=${config.compiler_public_path}__webpack_hmr`)
+    : [APP_ENTRY],
+  vendor : config.compiler_vendors
 }
 
 // ------------------------------------
 // Bundle Output
 // ------------------------------------
 webpackConfig.output = {
-  filename: `[name].[${config.compiler_hash_type}].js`,
-  path: paths.dist(),
-  publicPath: config.compiler_public_path
+  filename   : `[name].[${config.compiler_hash_type}].js`,
+  path       : paths.dist(),
+  publicPath : config.compiler_public_path
 }
 
 // ------------------------------------
@@ -50,13 +49,12 @@ webpackConfig.output = {
 webpackConfig.plugins = [
   new webpack.DefinePlugin(config.globals),
   new HtmlWebpackPlugin({
-    template: paths.client('index.html'),
-    hash: false,
-    favicon: paths.client('static/favicon.ico'),
-    filename: 'index.html',
-    inject: 'body',
-    minify: {
-      collapseWhitespace: true
+    template : paths.client('index.html'),
+    hash     : false,
+    filename : 'index.html',
+    inject   : 'body',
+    minify   : {
+      collapseWhitespace : true
     }
   })
 ]
@@ -73,10 +71,10 @@ if (__DEV__) {
     new webpack.optimize.OccurrenceOrderPlugin(),
     new webpack.optimize.DedupePlugin(),
     new webpack.optimize.UglifyJsPlugin({
-      compress: {
-        unused: true,
-        dead_code: true,
-        warnings: false
+      compress : {
+        unused    : true,
+        dead_code : true,
+        warnings  : false
       }
     })
   )
@@ -86,36 +84,10 @@ if (__DEV__) {
 if (!__TEST__) {
   webpackConfig.plugins.push(
     new webpack.optimize.CommonsChunkPlugin({
-      names: ['vendor']
+      names : ['vendor']
     })
   )
 }
-
-// ------------------------------------
-// Pre-Loaders
-// ------------------------------------
-/*
-[ NOTE ]
-We no longer use eslint-loader due to it severely impacting build
-times for larger projects. `npm run lint` still exists to aid in
-deploy processes (such as with CI), and it's recommended that you
-use a linting plugin for your IDE in place of this loader.
-
-If you do wish to continue using the loader, you can uncomment
-the code below and run `npm i --save-dev eslint-loader`. This code
-will be removed in a future release.
-
-webpackConfig.module.preLoaders = [{
-  test: /\.(js|jsx)$/,
-  loader: 'eslint',
-  exclude: /node_modules/
-}]
-
-webpackConfig.eslint = {
-  configFile: paths.base('.eslintrc'),
-  emitWarning: __DEV__
-}
-*/
 
 // ------------------------------------
 // Loaders
@@ -123,13 +95,11 @@ webpackConfig.eslint = {
 // JavaScript / JSON
 webpackConfig.module.loaders = [{
   test: /\.(js|jsx)$/,
-  exclude: [/node_modules/, /devshare\//],
+  exclude: [/node_modules/, /devshare\//], // allow for npm linking without producing babel errors
   loader: 'babel',
-  query: {
-    cacheDirectory: true
-  }
-},
-{
+  query: config.compiler_babel
+}, {
+  // exclude: [/react-redux-firebase/, /document-viewer\//],
   test: /\.json$/,
   loader: 'json'
 }]
@@ -153,7 +123,6 @@ if (config.compiler_css_modules) {
     paths.client().replace(/[\^\$\.\*\+\-\?\=\!\:\|\\\/\(\)\[\]\{\}\,]/g, '\\$&') // eslint-disable-line
   )
 }
-
 const isUsingCSSModules = !!PATHS_TO_TREAT_AS_CSS_MODULES.length
 const cssModulesRegex = new RegExp(`(${PATHS_TO_TREAT_AS_CSS_MODULES.join('|')})`)
 
@@ -210,28 +179,25 @@ webpackConfig.module.loaders.push({
   ]
 })
 
-// ------------------------------------
-// Style Configuration
-// ------------------------------------
 webpackConfig.sassLoader = {
-  includePaths: paths.client('styles')
+  includePaths : paths.client('styles')
 }
 
 webpackConfig.postcss = [
   cssnano({
-    autoprefixer: {
-      add: true,
-      remove: true,
-      browsers: ['last 2 versions']
+    autoprefixer : {
+      add      : true,
+      remove   : true,
+      browsers : ['last 2 versions']
     },
-    discardComments: {
-      removeAll: true
+    discardComments : {
+      removeAll : true
     },
-    discardUnused: false,
-    mergeIdents: false,
-    reduceIdents: false,
-    safe: true,
-    sourcemap: true
+    discardUnused : false,
+    mergeIdents   : false,
+    reduceIdents  : false,
+    safe          : true,
+    sourcemap     : true,
   })
 ]
 
@@ -254,14 +220,15 @@ webpackConfig.module.loaders.push(
 // when we don't know the public path (we know it only when HMR is enabled [in development]) we
 // need to use the extractTextPlugin to fix this issue:
 // http://stackoverflow.com/questions/34133808/webpack-ots-parsing-error-loading-fonts/34133809#34133809
-if (!__DEV__) {
+if (!__DEV__ && !__TEST__) {
   debug('Apply ExtractTextPlugin to CSS loaders.')
-  webpackConfig.module.loaders.filter((loader) =>
-    loader.loaders && loader.loaders.find((name) => /css/.test(name.split('?')[0]))
+  webpackConfig.module.loaders.filter(loader =>
+    loader.loaders && loader.loaders.find(name => /css/.test(name.split('?')[0]))
   ).forEach((loader) => {
-    const [first, ...rest] = loader.loaders
+    const first = loader.loaders[0]
+    const rest = loader.loaders.slice(1)
     loader.loader = ExtractTextPlugin.extract(first, rest.join('!'))
-    Reflect.deleteProperty(loader, 'loaders')
+    delete loader.loaders
   })
 
   webpackConfig.plugins.push(
@@ -287,4 +254,4 @@ if (!__DEV__) {
   )
 }
 
-export default webpackConfig
+module.exports = webpackConfig
