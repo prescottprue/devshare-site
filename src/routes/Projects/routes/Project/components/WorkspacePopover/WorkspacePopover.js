@@ -23,7 +23,7 @@ export default class WorkspacePopover extends Component {
   }
 
   componentWillReceiveProps (props) {
-    if (props.type && props.open) this.show('pop')
+    if (props.type && props.open) { this.show('pop') }
   }
 
   show = (key, e) =>
@@ -38,7 +38,7 @@ export default class WorkspacePopover extends Component {
     })
 
   closePopover = key => {
-    if (this.state.activePopover !== key) return
+    if (this.state.activePopover !== key) { return }
     this.setState({
       activePopover: 'none'
     }, () => {

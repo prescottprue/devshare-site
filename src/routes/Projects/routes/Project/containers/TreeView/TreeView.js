@@ -83,7 +83,7 @@ export default class TreeView extends Component {
   }
 
   getStructure = () => {
-    if (!this.props.files || !this.props.files.length) return null
+    if (!this.props.files || !this.props.files.length) { return null }
     return this.props.files.map((entry, i) => {
       // no metadata
       if (!entry.meta) {

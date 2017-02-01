@@ -154,7 +154,7 @@ export default class SideBar extends Component {
       }
       reader.readAsText(file)
     }
-    if (entry.webkitRelativePath) return readAndSaveFile(entry, entry.webkitRelativePath)
+    if (entry.webkitRelativePath) { return readAndSaveFile(entry, entry.webkitRelativePath) }
     entry.file(file => readAndSaveFile(file, entry.fullPath))
   }
 
@@ -162,7 +162,7 @@ export default class SideBar extends Component {
     this.addFolder(entry.fullPath)
     let reader = entry.createReader()
     reader.readEntries(folder => {
-      if (folder.length > 1) this.handleEntries(folder)
+      if (folder.length > 1) { this.handleEntries(folder) }
     })
   }
 

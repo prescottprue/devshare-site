@@ -1,6 +1,6 @@
 {
   "name": "devshare-site",
-  "version": "0.2.0",
+  "version": "0.2.2",
   "description": "Open source development platform.",
   "main": "index.js",
   "engines": {
@@ -141,6 +141,7 @@
     "eslint-config-standard-react": "^4.2.0",
     "eslint-plugin-import": "^2.2.0",
     "eslint-plugin-jsx-a11y": "^2.2.3",
+    "eslint-plugin-promise": "^3.4.0",
     "eslint-plugin-react": "^6.5.0",
     "eslint-plugin-standard": "^2.0.1",
     "expose-loader": "^0.7.1",
