@@ -10,16 +10,17 @@ cache:
 
 install:
   - npm set progress=false
-  - npm install -g firebase-tools
   - npm install
 
 script:
+  - npm run config
   - npm run lint:fix
   - npm run test
   - npm run build:prod
-  - npm run deploy
 
 after_success:
+  - npm install -g firebase-tools
+  - npm run deploy
   - npm run codecov
 
 notifications:

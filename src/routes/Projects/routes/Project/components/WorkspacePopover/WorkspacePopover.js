@@ -70,7 +70,7 @@ export default class WorkspacePopover extends Component {
         anchorEl={workspaceElement}
         anchorOrigin={originSettings}
         targetOrigin={originSettings}
-        onRequestClose={this.closePopover.bind(this, 'pop')} >
+        onRequestClose={() => this.closePopover('pop')} >
         <div style={pathInputStyling}>
           <p>Enter path for new {type}</p>
           <TextField

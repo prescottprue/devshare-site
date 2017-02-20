@@ -14,7 +14,7 @@ export const validate = ({ email, password, username }) => {
     if (username.match(/[/\s]/g)) {
       errors.username = 'Username may not contain spaces'
     }
-    if (username.match(/[.$#\[\]\/]/g)) {
+    if (username.match(/[.$#[\]/]/g)) {
       errors.username = 'Username may not contain symbols'
     }
   }
@@ -25,7 +25,7 @@ export const validate = ({ email, password, username }) => {
 }
 
 export const SignupForm = ({ handleSubmit, submitting }) => (
-  <form className={classes['container']} onSubmit={handleSubmit}>
+  <form className={classes.container} onSubmit={handleSubmit}>
     <div>
       <Field
         component={TextField}
@@ -48,7 +48,7 @@ export const SignupForm = ({ handleSubmit, submitting }) => (
         type='password'
         />
     </div>
-    <div className={classes['submit']}>
+    <div className={classes.submit}>
       <RaisedButton
         label='Signup'
         primary

@@ -1,5 +1,5 @@
+/* eslint-disable import/no-extraneous-dependencies */
 const _debug = require('debug') // eslint-disable-line no-underscore-dangle
-const { version } = require('../package.json')
 const fs = require('fs')
 const path = require('path')
 const firebaseEnvironemnts = require('../config/firebaseEnvironments')
@@ -12,43 +12,37 @@ const {
   GA_TRACKINGID,
   INT_FIREBASE_WEBAPIKEY,
   STAGE_FIREBASE_WEBAPIKEY,
-  PROD_FIREBASE_WEBAPIKEY,
+  PROD_FIREBASE_WEBAPIKEY
 } = process.env
-
-const isProduction = (TRAVIS_BRANCH === 'prod')
-const isStage = (TRAVIS_BRANCH === 'stage')
 
 const createConfigFile = (cb) => {
   let env = 'int'
+  let firebase = firebaseEnvironemnts.int
+  firebase.apiKey = INT_FIREBASE_WEBAPIKEY
 
-  if (TRAVIS_PULL_REQUEST === false) {
-    if (isProduction) {
-      env = 'prod'
+  if (TRAVIS_PULL_REQUEST === 'false') {
+    switch (TRAVIS_BRANCH) {
+      case 'stage':
+        env = 'stage'
+        firebase = firebaseEnvironemnts.stage
+        firebase.apiKey = STAGE_FIREBASE_WEBAPIKEY
+        break
+      case 'prod':
+        env = 'prod'
+        firebase = firebaseEnvironemnts.prod
+        firebase.apiKey = PROD_FIREBASE_WEBAPIKEY
+        break
+      default:
+        // leave int by default
     }
-    if (isStage) {
-      env = 'stage'
-    }
-  }
-
-  let firebase = {}
-  if (isProduction) {
-    firebase = firebaseEnvironemnts.prod
-    firebase.apiKey = PROD_FIREBASE_WEBAPIKEY
-  } else if (isStage) {
-    firebase = firebaseEnvironemnts.stage
-    firebase.apiKey = STAGE_FIREBASE_WEBAPIKEY
-  } else {
-    firebase = firebaseEnvironemnts.int
-    firebase.apiKey = INT_FIREBASE_WEBAPIKEY
   }
 
   const outputPath = path.join(__dirname, '..', 'src/config.js')
   const fileString = `export const firebase = ${JSON.stringify(firebase, null, 2)}\n` +
-    `\nexport const version = ${JSON.stringify(version)}\n`+
-    `\nexport const env = ${JSON.stringify(env)}\n`+
-    `\nexport const sentryDsn = ${JSON.stringify(SENTRY_DSN || '')}\n`+
-    `\nexport const gaTrackingId = ${JSON.stringify(GA_TRACKINGID || '')}\n`+
-    `\nexport default { firebase, version, env, sentryDsn, gaTrackingId }\n`
+    `\nexport const env = ${JSON.stringify(env)}\n` +
+    `\nexport const sentryDsn = ${JSON.stringify(SENTRY_DSN || '')}\n` +
+    `\nexport const gaTrackingId = ${JSON.stringify(GA_TRACKINGID || '')}\n` +
+    '\nexport default { firebase, env, gaTrackingId }\n'
 
   fs.writeFile(outputPath, fileString, 'utf8', (err) => { // eslint-disable-line consistent-return
     if (err) {
@@ -60,8 +54,8 @@ const createConfigFile = (cb) => {
   })
 }
 
-(function () {
+(function () { // eslint-disable-line func-names
   createConfigFile(() => {
     debug('Config file successfully written to src/config.js')
   })
-})()
+}())

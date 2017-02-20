@@ -1,17 +1,20 @@
 module.exports = {
   int: {
-    authDomain: 'top-agent-int.firebaseapp.com',
-    databaseURL: 'https://top-agent-int.firebaseio.com',
-    storageBucket: 'firebase-top-agent-int.appspot.com'
+    authDomain: 'devshare-int.firebaseapp.com',
+    databaseURL: 'https://devshare-int.firebaseio.com',
+    storageBucket: 'devshare-int.appspot.com',
+    messagingSenderId: '499842460400'
   },
   stage: {
-    authDomain: 'reside-stage.firebaseapp.com',
-    databaseURL: 'https://reside-stage.firebaseio.com',
-    storageBucket: 'reside-stage.appspot.com'
+    authDomain: 'devshare-stg.firebaseapp.com',
+    databaseURL: 'https://devshare-stg.firebaseio.com',
+    storageBucket: 'devshare-stg.appspot.com',
+    messagingSenderId: '995180480938'
   },
   prod: {
-    authDomain: 'reside-prod.firebaseapp.com',
-    databaseURL: 'https://reside-prod.firebaseio.com',
-    storageBucket: 'reside-prod.appspot.com'
+    authDomain: 'devshare-1.firebaseapp.com',
+    databaseURL: 'https://devshare-1.firebaseio.com',
+    storageBucket: 'devshare-1.appspot.com',
+    messagingSenderId: '54741256621'
   }
 }
