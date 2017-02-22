@@ -2,11 +2,9 @@ import { UserAuthWrapper } from 'redux-auth-wrapper'
 import { browserHistory } from 'react-router'
 import { paths } from 'constants'
 import { helpers } from 'redux-devshare'
-
+import LoadingSpinner from 'components/LoadingSpinner'
+import { AUTHED_REDIRECT, UNAUTHED_REDIRECT } from 'constants/actionTypes'
 const { pathToJS } = helpers
-
-const AUTHED_REDIRECT = 'AUTHED_REDIRECT'
-const UNAUTHED_REDIRECT = 'UNAUTHED_REDIRECT'
 
 /**
  * @description Higher Order Component that redirects to `/login` instead
@@ -16,11 +14,11 @@ const UNAUTHED_REDIRECT = 'UNAUTHED_REDIRECT'
  */
 export const UserIsAuthenticated = UserAuthWrapper({ // eslint-disable-line new-cap
   wrapperDisplayName: 'UserIsAuthenticated',
-  // LoadingComponent: LoadingSpinner,
-  authSelector: ({ firebase }) => pathToJS(firebase, 'auth'),
-  authenticatingSelector: ({ firebase }) =>
-    (pathToJS(firebase, 'auth') === undefined) ||
-    (pathToJS(firebase, 'isInitializing') === true),
+  LoadingComponent: LoadingSpinner,
+  authSelector: ({ devshare }) => pathToJS(devshare, 'auth'),
+  authenticatingSelector: ({ devshare }) =>
+    (pathToJS(devshare, 'auth') === undefined) ||
+    (pathToJS(devshare, 'isInitializing') === true),
   predicate: auth => auth !== null,
   redirectAction: newLoc => (dispatch) => {
     browserHistory.replace(newLoc)
@@ -42,22 +40,17 @@ export const UserIsAuthenticated = UserAuthWrapper({ // eslint-disable-line new-
 export const UserIsNotAuthenticated = UserAuthWrapper({ // eslint-disable-line new-cap
   wrapperDisplayName: 'UserIsNotAuthenticated',
   allowRedirectBack: false,
-  // LoadingComponent: LoadingSpinner,
-  failureRedirectPath: (state, props) =>
-    props.location.query.redirect || paths.transactions,
-  authSelector: ({ firebase }) => pathToJS(firebase, 'auth'),
-  authenticatingSelector: ({ firebase }) =>
-    (pathToJS(firebase, 'auth') === undefined) ||
-    (pathToJS(firebase, 'isInitializing') === true),
+  LoadingComponent: LoadingSpinner,
+  failureRedirectPath: ({ devshare }, props) =>
+    props.location.query.redirect || paths.home,
+  authSelector: ({ devshare }) => pathToJS(devshare, 'auth'),
+  authenticatingSelector: ({ devshare }) =>
+    (pathToJS(devshare, 'auth') === undefined) ||
+    (pathToJS(devshare, 'profile') === undefined) ||
+    (pathToJS(devshare, 'isInitializing') === true),
   predicate: auth => auth === null,
   redirectAction: newLoc => (dispatch) => {
     browserHistory.replace(newLoc)
     dispatch({ type: AUTHED_REDIRECT })
   }
 })
-
-export default {
-  UserIsAuthenticated,
-  UserIsNotAuthenticated,
-  UserHasPermission
-}
