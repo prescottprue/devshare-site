@@ -6,7 +6,6 @@ const path = require('path')
 const debug = _debug('app:build:config')
 const {
   TRAVIS_BRANCH,
-  TRAVIS_PULL_REQUEST,
   SENTRY_DSN,
   GA_TRACKINGID
 } = process.env
@@ -14,17 +13,15 @@ const {
 const createConfigFile = (cb) => {
   let env = 'int'
 
-  if (TRAVIS_PULL_REQUEST === 'false') {
-    switch (TRAVIS_BRANCH) {
-      case 'stage':
-        env = 'stage'
-        break
-      case 'prod':
-        env = 'prod'
-        break
-      default:
-        // leave int by default
-    }
+  switch (TRAVIS_BRANCH) {
+    case 'stage':
+      env = 'stage'
+      break
+    case 'prod':
+      env = 'prod'
+      break
+    default:
+      // leave int by default
   }
 
   const outputPath = path.join(__dirname, '..', 'src/config.js')
@@ -32,7 +29,7 @@ const createConfigFile = (cb) => {
     `\nexport const env = ${JSON.stringify(env)}\n` +
     `\nexport const sentryDsn = ${JSON.stringify(SENTRY_DSN || '')}\n` +
     `\nexport const gaTrackingId = ${JSON.stringify(GA_TRACKINGID || '')}\n` +
-    '\nexport default { firebase, env, gaTrackingId }\n'
+    '\nexport default { env, gaTrackingId }\n'
 
   fs.writeFile(outputPath, fileString, 'utf8', (err) => { // eslint-disable-line consistent-return
     if (err) {
