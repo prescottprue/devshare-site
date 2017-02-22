@@ -1,7 +1,7 @@
 {
   "name": "devshare-site",
   "version": "0.2.2",
-  "description": "Open source development platform.",
+  "description": "Open source code sharing and development platform.",
   "main": "index.js",
   "engines": {
     "node": ">=4.2.0",

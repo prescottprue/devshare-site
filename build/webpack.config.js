@@ -238,7 +238,7 @@ if (!__DEV__ && !__TEST__) {
   webpackConfig.plugins.push(
     new ExtractTextPlugin('[name].[contenthash].css', {
       allChunks: true
-    }),
+    })
     // new FaviconsWebpackPlugin({
     //   logo: 'static/reside-icon.png',
     //   inject: true,
