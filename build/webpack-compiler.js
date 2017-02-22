@@ -8,7 +8,7 @@ function webpackCompiler (webpackConfig, statsFormat) {
   return new Promise((resolve, reject) => {
     const compiler = webpack(webpackConfig)
 
-    compiler.run((err, stats) => {
+    compiler.run((err, stats) => { // eslint-disable-line consistent-return
       if (err) {
         debug('Webpack compiler encountered a fatal error.', err)
         return reject(err)

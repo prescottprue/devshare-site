@@ -1,10 +1,11 @@
+/* eslint-disable import/no-extraneous-dependencies, no-underscore-dangle, no-param-reassign, consistent-return */
 const webpack = require('webpack')
 const cssnano = require('cssnano')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const ExtractTextPlugin = require('extract-text-webpack-plugin')
 const config = require('../config')
 const debug = require('debug')('app:webpack:config')
-const FaviconsWebpackPlugin = require('favicons-webpack-plugin')
+// const FaviconsWebpackPlugin = require('favicons-webpack-plugin')
 
 const paths = config.utils_paths
 const __DEV__ = config.globals.__DEV__
@@ -13,14 +14,14 @@ const __TEST__ = config.globals.__TEST__
 
 debug('Creating configuration.')
 const webpackConfig = {
-  name    : 'client',
-  target  : 'web',
-  devtool : config.compiler_devtool,
-  resolve : {
-    root       : paths.client(),
-    extensions : ['', '.js', '.jsx', '.json']
+  name: 'client',
+  target: 'web',
+  devtool: config.compiler_devtool,
+  resolve: {
+    root: paths.client(),
+    extensions: ['', '.js', '.jsx', '.json']
   },
-  module : {}
+  module: {}
 }
 // ------------------------------------
 // Entry Points
@@ -28,19 +29,19 @@ const webpackConfig = {
 const APP_ENTRY = paths.client('main.js')
 
 webpackConfig.entry = {
-  app : __DEV__
+  app: __DEV__
     ? [APP_ENTRY].concat(`webpack-hot-middleware/client?path=${config.compiler_public_path}__webpack_hmr`)
     : [APP_ENTRY],
-  vendor : config.compiler_vendors
+  vendor: config.compiler_vendors
 }
 
 // ------------------------------------
 // Bundle Output
 // ------------------------------------
 webpackConfig.output = {
-  filename   : `[name].[${config.compiler_hash_type}].js`,
-  path       : paths.dist(),
-  publicPath : config.compiler_public_path
+  filename: `[name].[${config.compiler_hash_type}].js`,
+  path: paths.dist(),
+  publicPath: config.compiler_public_path
 }
 
 // ------------------------------------
@@ -49,12 +50,12 @@ webpackConfig.output = {
 webpackConfig.plugins = [
   new webpack.DefinePlugin(config.globals),
   new HtmlWebpackPlugin({
-    template : paths.client('index.html'),
-    hash     : false,
-    filename : 'index.html',
-    inject   : 'body',
-    minify   : {
-      collapseWhitespace : true
+    template: paths.client('index.html'),
+    hash: false,
+    filename: 'index.html',
+    inject: 'body',
+    minify: {
+      collapseWhitespace: true
     }
   })
 ]
@@ -71,11 +72,14 @@ if (__DEV__) {
     new webpack.optimize.OccurrenceOrderPlugin(),
     new webpack.optimize.DedupePlugin(),
     new webpack.optimize.UglifyJsPlugin({
-      compress : {
-        unused    : true,
-        dead_code : true,
-        warnings  : false
+      compress: {
+        unused: true,
+        dead_code: true,
+        warnings: false
       }
+    }),
+    new webpack.DefinePlugin({
+      'process.env.NODE_ENV': JSON.stringify('production')
     })
   )
 }
@@ -84,7 +88,7 @@ if (__DEV__) {
 if (!__TEST__) {
   webpackConfig.plugins.push(
     new webpack.optimize.CommonsChunkPlugin({
-      names : ['vendor']
+      names: ['vendor']
     })
   )
 }
@@ -95,11 +99,11 @@ if (!__TEST__) {
 // JavaScript / JSON
 webpackConfig.module.loaders = [{
   test: /\.(js|jsx)$/,
-  exclude: [/node_modules/, /devshare\//], // allow for npm linking without producing babel errors
+  exclude: [/node_modules/, /react-redux-firebase\//, /document-viewer\//], // allow for npm linking without producing babel errors
   loader: 'babel',
   query: config.compiler_babel
 }, {
-  // exclude: [/react-redux-firebase/, /document-viewer\//],
+  exclude: [/react-redux-firebase/, /document-viewer\//],
   test: /\.json$/,
   loader: 'json'
 }]
@@ -180,24 +184,24 @@ webpackConfig.module.loaders.push({
 })
 
 webpackConfig.sassLoader = {
-  includePaths : paths.client('styles')
+  includePaths: paths.client('styles')
 }
 
 webpackConfig.postcss = [
   cssnano({
-    autoprefixer : {
-      add      : true,
-      remove   : true,
-      browsers : ['last 2 versions']
+    autoprefixer: {
+      add: true,
+      remove: true,
+      browsers: ['last 2 versions']
     },
-    discardComments : {
-      removeAll : true
+    discardComments: {
+      removeAll: true
     },
-    discardUnused : false,
-    mergeIdents   : false,
-    reduceIdents  : false,
-    safe          : true,
-    sourcemap     : true,
+    discardUnused: false,
+    mergeIdents: false,
+    reduceIdents: false,
+    safe: true,
+    sourcemap: true
   })
 ]
 
@@ -210,7 +214,7 @@ webpackConfig.module.loaders.push(
   { test: /\.ttf(\?.*)?$/,   loader: 'url?prefix=fonts/&name=[path][name].[ext]&limit=10000&mimetype=application/octet-stream' },
   { test: /\.eot(\?.*)?$/,   loader: 'file?prefix=fonts/&name=[path][name].[ext]' },
   { test: /\.svg(\?.*)?$/,   loader: 'url?prefix=fonts/&name=[path][name].[ext]&limit=10000&mimetype=image/svg+xml' },
-  { test: /\.(png|jpg|gif)$/,    loader: 'url?limit=8192' }
+  { test: /\.(png|jpg)$/,    loader: 'url?limit=8192' }
 )
 /* eslint-enable */
 
@@ -235,22 +239,17 @@ if (!__DEV__ && !__TEST__) {
     new ExtractTextPlugin('[name].[contenthash].css', {
       allChunks: true
     }),
-    new FaviconsWebpackPlugin({
-      logo: 'static/devshare-icon.png',
-      inject: true,
-      icons: {
-        android: true,
-        appleIcon: true,
-        appleStartup: true,
-        coast: false,
-        favicons: true,
-        firefox: true,
-        opengraph: false,
-        twitter: false,
-        yandex: false,
-        windows: false
-      }
-    })
+    // new FaviconsWebpackPlugin({
+    //   logo: 'static/reside-icon.png',
+    //   inject: true,
+    //   icons: {
+    //     favicons: true,
+    //     appleIcon: true,
+    //     appleStartup: true,
+    //     firefox: true,
+    //     android: true
+    //   }
+    // })
   )
 }
 

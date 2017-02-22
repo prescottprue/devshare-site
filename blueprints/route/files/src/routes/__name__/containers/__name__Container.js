@@ -1,7 +1,7 @@
 import React, { Component, PropTypes } from 'react'
 import { connect } from 'react-redux'
 import { reduxForm } from 'redux-form'
-import { firebaseConnect, helpers } from 'redux-devshare'
+import { devshare, helpers } from 'redux-devshare'
 
 import <%= pascalEntityName %> from '../components/<%= pascalEntityName %>/<%= pascalEntityName %>'
 
@@ -10,7 +10,7 @@ const { pathToJS, dataToJS } = helpers
 const formName = <%= pascalEntityName %>
 
 // Props decorators
-@firebaseConnect(
+@devshare(
   // List of Firbase refs to sync
   ({ params }) => ([
     '<%= pascalEntityName %>'
