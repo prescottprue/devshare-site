@@ -1,6 +1,7 @@
 import React, { PropTypes, Component } from 'react'
 import { isArray, each, last, map } from 'lodash'
 import Media from 'react-media'
+import classnames from 'classnames'
 import SelectField from 'material-ui/SelectField'
 import MenuItem from 'material-ui/MenuItem'
 import IconButton from 'material-ui/IconButton'
@@ -14,8 +15,6 @@ import RaisedButton from 'material-ui/RaisedButton'
 
 import TreeView from '../TreeView'
 import ContextMenu from '../../components/ContextMenu/ContextMenu'
-
-const classnames = require('classnames')
 import classes from './SideBar.scss'
 
 const fileEntityBlackList = ['.DS_Store', 'node_modules']
@@ -135,13 +134,12 @@ export default class SideBar extends Component {
       this.readAndSaveFolderEntry(entries)
     }
     each(entries, (entry) => {
-      if (fileEntityBlackList.indexOf(last(entry.fullPath.split('/'))) !== -1) {
-        return void 0
-      }
-      if (entry.isFile) {
-        this.readAndSaveFileEntry(entry)
-      } else if (entry.isDirectory) {
-        this.readAndSaveFolderEntry(entry)
+      if (fileEntityBlackList.indexOf(last(entry.fullPath.split('/'))) === -1) {
+        if (entry.isFile) {
+          this.readAndSaveFileEntry(entry)
+        } else if (entry.isDirectory) {
+          this.readAndSaveFolderEntry(entry)
+        }
       }
     })
   }
@@ -156,15 +154,18 @@ export default class SideBar extends Component {
       }
       reader.readAsText(file)
     }
-    if (entry.webkitRelativePath) return readAndSaveFile(entry, entry.webkitRelativePath)
-    entry.file(file => readAndSaveFile(file, entry.fullPath))
+    if (entry.webkitRelativePath) {
+      readAndSaveFile(entry, entry.webkitRelativePath)
+    } else {
+      entry.file(file => readAndSaveFile(file, entry.fullPath))
+    }
   }
 
   readAndSaveFolderEntry = (entry) => {
     this.addFolder(entry.fullPath)
     let reader = entry.createReader()
     reader.readEntries(folder => {
-      if (folder.length > 1) this.handleEntries(folder)
+      if (folder.length > 1) { this.handleEntries(folder) }
     })
   }
 
@@ -254,30 +255,77 @@ export default class SideBar extends Component {
             {
               matches => matches
                 ? (
-                <div style={{width: '100%'}}>
-                  <div className={classes['buttons']}>
-                    <IconButton
-                      style={iconButtonStyle}
-                      iconStyle={iconStyle}
-                      onClick={this.cloneClick}
-                      tooltip='Clone'
-                      tooltipPosition={tooltipPosition}
-                      touch
-                      disabled>
-                      <CopyIcon />
-                    </IconButton>
-                    <IconButton
-                      style={iconButtonStyle}
-                      iconStyle={iconStyle}
-                      onClick={this.downloadClick}
-                      tooltip='Download'
-                      tooltipPosition={tooltipPosition}
-                      touch
-                      disabled={!files || files.length < 1}>
-                      <ArchiveIcon />
-                    </IconButton>
+                  <div style={{width: '100%'}}>
+                    <div className={classes['buttons']}>
+                      <IconButton
+                        style={iconButtonStyle}
+                        iconStyle={iconStyle}
+                        onClick={this.cloneClick}
+                        tooltip='Clone'
+                        tooltipPosition={tooltipPosition}
+                        touch
+                        disabled>
+                        <CopyIcon />
+                      </IconButton>
+                      <IconButton
+                        style={iconButtonStyle}
+                        iconStyle={iconStyle}
+                        onClick={this.downloadClick}
+                        tooltip='Download'
+                        tooltipPosition={tooltipPosition}
+                        touch
+                        disabled={!files || files.length < 1}>
+                        <ArchiveIcon />
+                      </IconButton>
+                    </div>
+                    <div className={classes['buttons']} style={{width: '100%'}}>
+                      <IconMenu
+                        iconButtonElement={
+                          <IconButton
+                            style={iconButtonStyle}
+                            iconStyle={iconStyle}
+                            tooltip='Add'
+                            tooltipPosition={tooltipPosition}
+                            touch >
+                            <AddIcon />
+                          </IconButton>
+                    }>
+                        <MenuItem
+                          primaryText='Upload files'
+                          onClick={this._fileUpload}
+                      />
+                        <MenuItem
+                          primaryText='Add file'
+                          onClick={() => { onShowPopover('file') }}
+                      />
+                        <MenuItem
+                          primaryText='Add folder'
+                          onClick={() => { onShowPopover('folder') }}
+                      />
+                      </IconMenu>
+                      <IconButton
+                        style={iconButtonStyle}
+                        iconStyle={iconStyle}
+                        onClick={onSharingClick}
+                        tooltip='Sharing'
+                        tooltipPosition={tooltipPosition}
+                        touch >
+                        <GroupIcon />
+                      </IconButton>
+                      <IconButton
+                        style={iconButtonStyle}
+                        iconStyle={iconStyle}
+                        onClick={onSettingsClick}
+                        tooltip='Settings'
+                        tooltipPosition={tooltipPosition}
+                        touch >
+                        <SettingsIcon />
+                      </IconButton>
+                    </div>
                   </div>
-                  <div className={classes['buttons']} style={{width: '100%'}}>
+                )
+                : (
+                  <div>
                     <IconMenu
                       iconButtonElement={
                         <IconButton
@@ -292,64 +340,17 @@ export default class SideBar extends Component {
                       <MenuItem
                         primaryText='Upload files'
                         onClick={this._fileUpload}
-                      />
+                    />
                       <MenuItem
                         primaryText='Add file'
                         onClick={() => { onShowPopover('file') }}
-                      />
+                    />
                       <MenuItem
                         primaryText='Add folder'
                         onClick={() => { onShowPopover('folder') }}
-                      />
+                    />
                     </IconMenu>
-                    <IconButton
-                      style={iconButtonStyle}
-                      iconStyle={iconStyle}
-                      onClick={onSharingClick}
-                      tooltip='Sharing'
-                      tooltipPosition={tooltipPosition}
-                      touch >
-                      <GroupIcon />
-                    </IconButton>
-                    <IconButton
-                      style={iconButtonStyle}
-                      iconStyle={iconStyle}
-                      onClick={onSettingsClick}
-                      tooltip='Settings'
-                      tooltipPosition={tooltipPosition}
-                      touch >
-                      <SettingsIcon />
-                    </IconButton>
                   </div>
-                </div>
-                )
-                : (
-                <div>
-                  <IconMenu
-                    iconButtonElement={
-                      <IconButton
-                        style={iconButtonStyle}
-                        iconStyle={iconStyle}
-                        tooltip='Add'
-                        tooltipPosition={tooltipPosition}
-                        touch >
-                        <AddIcon />
-                      </IconButton>
-                    }>
-                    <MenuItem
-                      primaryText='Upload files'
-                      onClick={this._fileUpload}
-                    />
-                    <MenuItem
-                      primaryText='Add file'
-                      onClick={() => { onShowPopover('file') }}
-                    />
-                    <MenuItem
-                      primaryText='Add folder'
-                      onClick={() => { onShowPopover('folder') }}
-                    />
-                  </IconMenu>
-                </div>
                 )
             }
           </Media>
