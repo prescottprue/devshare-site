@@ -43,8 +43,13 @@ const deployToFirebase = (cb) => {
   })
 }
 
-;(async function () {
-  deployToFirebase(() => {
-    debug('Successfully deployed to Firebase')
+(function () {
+  deployToFirebase((err, stdout) => {
+    if (err || !stdout) {
+      debug('error deploying to Firebase: ', err)
+      return
+    }
+    debug(stdout) // log output of firebase cli
+    debug('\nSuccessfully deployed to Firebase')
   })
 })()
