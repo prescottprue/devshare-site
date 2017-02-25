@@ -1,20 +1,17 @@
 import React, { PropTypes, Component } from 'react'
+import { connect } from 'react-redux'
+import { bindActionCreators } from 'redux'
+import { toJS } from 'react-redux-firebase'
+
+import { actions as TabActions } from '../../modules/tabs'
 import Tabs from '../../components/Tabs'
 import Views from '../../components/Views'
 import classes from './Pane.scss'
 
-import { connect } from 'react-redux'
-import { bindActionCreators } from 'redux'
-import { actions as TabActions } from '../../modules/tabs'
-import { helpers } from 'redux-devshare'
-const { toJS } = helpers
-
 @connect(
-  // Map state to props
-  ({devshare, tabs}, { params: { username, projectname } }) => ({
+  ({ tabs }, { params: { username, projectname } }) => ({
     tabs: toJS(tabs)[`${username}/${projectname}`] || {}
   }),
-  // Map dispatch to props
   (dispatch) =>
     bindActionCreators(TabActions, dispatch)
 )

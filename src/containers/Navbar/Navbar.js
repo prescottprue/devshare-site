@@ -1,6 +1,8 @@
 import React, { Component, PropTypes } from 'react'
-import classes from './Navbar.scss'
 import { Link } from 'react-router'
+import { connect } from 'react-redux'
+import { firebaseConnect, pathToJS } from 'react-redux-firebase'
+
 // Components
 import AppBar from 'material-ui/AppBar'
 import IconMenu from 'material-ui/IconMenu'
@@ -8,6 +10,7 @@ import IconButton from 'material-ui/IconButton'
 import MenuItem from 'material-ui/MenuItem'
 import FlatButton from 'material-ui/FlatButton'
 import Avatar from 'material-ui/Avatar'
+import classes from './Navbar.scss'
 
 const stockPhotoUrl = 'https://s3.amazonaws.com/kyper-cdn/img/User.png'
 const originSettings = { horizontal: 'right', vertical: 'top' }
@@ -19,17 +22,11 @@ const avatarStyles = {
   button: { marginRight: '.25rem', width: avatarSize, height: avatarSize },
   wrapper: { marginTop: '0px' }
 }
-// redux/devshare
-import { connect } from 'react-redux'
-import { devshare, helpers } from 'redux-devshare'
-const { pathToJS } = helpers
 
-// Decorators
-@devshare()
+@firebaseConnect()
 @connect(
-  ({devshare}) => ({
-    authError: pathToJS(devshare, 'authError'),
-    account: pathToJS(devshare, 'profile')
+  ({firebase}) => ({
+    account: pathToJS(firebase, 'profile')
   })
 )
 export class Navbar extends Component {
@@ -39,11 +36,11 @@ export class Navbar extends Component {
 
   static propTypes = {
     account: PropTypes.object,
-    devshare: PropTypes.object.isRequired
+    firebase: PropTypes.object.isRequired
   }
 
   handleLogout = () =>
-    this.props.devshare
+    this.props.firebase
       .logout()
       .then(() => this.context.router.push('/'))
 
@@ -105,7 +102,7 @@ export class Navbar extends Component {
       <AppBar
         title={
           <Link to={brandPath} className={classes['brand']}>
-            devshare
+            firebase
           </Link>
         }
         showMenuIconButton={false}

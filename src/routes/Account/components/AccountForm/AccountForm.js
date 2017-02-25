@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react'
 import { Field } from 'redux-form'
-import TextField from '../../../../components/TextField'
+import TextField from 'components/TextField'
 import classes from './AccountForm.scss'
 import ProviderDataForm from '../ProviderDataForm/ProviderDataForm'
 
@@ -21,7 +21,7 @@ export const AccountForm = ({ account, handleSubmit, submitting }) => (
         component={TextField}
       />
     </div>
-    <div>
+    <div className={classes.accounts}>
       <h4>Linked Accounts</h4>
       {
         account.providerData &&
@@ -35,7 +35,7 @@ export const AccountForm = ({ account, handleSubmit, submitting }) => (
 
 AccountForm.propTypes = {
   account: PropTypes.shape({
-    providerData: PropTypes.array
+    providerData: PropTypes.object
   }),
   handleSubmit: PropTypes.func,
   submitting: PropTypes.bool

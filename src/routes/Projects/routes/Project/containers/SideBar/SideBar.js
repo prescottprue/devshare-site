@@ -168,7 +168,7 @@ export default class SideBar extends Component {
   }
 
   deleteFile = path =>
-    this.props.devshare
+    this.props.firebase
       .project(this.props.project)
       .fileSystem
       .file(path)
@@ -176,7 +176,7 @@ export default class SideBar extends Component {
       // .then(file => event({ category: 'Files', action: 'File deleted' }))
 
   downloadClick = () =>
-    this.props.devshare
+    this.props.firebase
       .project(this.props.project)
       .download()
       .then(res => console.log('download successful:', res))

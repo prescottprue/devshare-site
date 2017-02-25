@@ -1,31 +1,26 @@
 import React, { Component, PropTypes } from 'react'
 import { Link } from 'react-router'
-import GoogleButton from 'react-google-button'
+import { connect } from 'react-redux'
+import { firebaseConnect, pathToJS, isLoaded } from 'react-redux-firebase'
+// import { UserIsNotAuthenticated } from 'utils/router'
 
-// Components
-import SignupForm from '../components/SignupForm/SignupForm'
+import GoogleButton from 'react-google-button'
 import Paper from 'material-ui/Paper'
 import RaisedButton from 'material-ui/RaisedButton'
 import CircularProgress from 'material-ui/CircularProgress'
 import Snackbar from 'material-ui/Snackbar'
 import GithubIcon from 'react-icons/lib/go/mark-github'
 import FontIcon from 'material-ui/FontIcon'
+import SignupForm from '../components/SignupForm/SignupForm'
 
 import classes from './SignupContainer.scss'
 
-// redux-devsharev3
-import { connect } from 'react-redux'
-import { devshare, helpers } from 'redux-devshare'
-const { isLoaded, isEmpty, pathToJS } = helpers
-// import { UserIsNotAuthenticated } from 'utils/router'
-
 // @UserIsNotAuthenticated // redirect to home if logged in
-@devshare()
+@firebaseConnect()
 @connect(
-  // Map state to props
-  ({devshare}) => ({
-    authError: pathToJS(devshare, 'authError'),
-    account: pathToJS(devshare, 'profile')
+  ({firebase}) => ({
+    authError: pathToJS(firebase, 'authError'),
+    account: pathToJS(firebase, 'profile')
   })
 )
 export default class Signup extends Component {
@@ -34,7 +29,7 @@ export default class Signup extends Component {
   }
   static propTypes = {
     account: PropTypes.object,
-    devshare: PropTypes.object,
+    firebase: PropTypes.object,
     authError: PropTypes.object
   }
 
@@ -53,7 +48,7 @@ export default class Signup extends Component {
       snackCanOpen: true,
       isLoading: true
     })
-    this.props.devshare
+    this.props.firebase
       .signup(creds)
       .then(account =>
         this.context.router.push(`${account.username}`)
@@ -65,7 +60,7 @@ export default class Signup extends Component {
       snackCanOpen: true,
       isLoading: true
     })
-    this.props.devshare
+    this.props.firebase
       .login({ provider, type: 'popup' })
       .then(account =>
         this.context.router.push(`${account.username}`)

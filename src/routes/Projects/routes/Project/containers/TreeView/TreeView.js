@@ -1,34 +1,26 @@
 import React, { PropTypes, Component } from 'react'
-import { each, omit, findIndex, map, last } from 'lodash'
-
-import TreeFolder from '../../components/TreeFolder'
-import TreeFile from '../../components/TreeFile'
-import CircularProgress from 'material-ui/CircularProgress'
-import classes from './TreeView.scss'
-
-// redux-devsharev3
+import { each, omit, findIndex, last } from 'lodash'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
+import { firebaseConnect, isLoaded, isEmpty, dataToJS } from 'react-redux-firebase'
+import CircularProgress from 'material-ui/CircularProgress'
 import { actions as TabActions } from '../../modules/tabs'
-import { devshare, helpers } from 'redux-devshare'
-const { isLoaded, isEmpty, dataToJS } = helpers
+import TreeFolder from '../../components/TreeFolder'
+import TreeFile from '../../components/TreeFile'
+import classes from './TreeView.scss'
 
 const fileEntityBlackList = ['.DS_Store', 'node_modules']
 
-@devshare(
-  ({ project }) =>
-    ([
-      `files/${project.owner}/${project.name}`
-    ])
+@firebaseConnect(
+  ({ project }) => ([
+    `files/${project.owner}/${project.name}`
+  ])
 )
 @connect(
-  ({ devshare, tabs }, { project: { name, owner } }) =>
+  ({ firebase, tabs }, { project: { name, owner } }) =>
     ({
       tabs: tabs[`${owner}/${name}`] && tabs[`${owner}/${name}`].list ? tabs[`${owner}/${name}`].list : [],
-      files: map(
-        dataToJS(devshare, `files/${owner}/${name}`),
-        (file, key) => Object.assign(file, { key })
-      )
+      files: dataToJS(firebase, `files/${owner}/${name}`)
     }),
   // Map dispatch to props
   (dispatch) =>
@@ -38,7 +30,7 @@ export default class TreeView extends Component {
 
   static propTypes = {
     project: PropTypes.object.isRequired,
-    files: PropTypes.array,
+    files: PropTypes.object,
     tabs: PropTypes.array.isRequired,
     openTab: PropTypes.func.isRequired,
     navigateToTab: PropTypes.func.isRequired,

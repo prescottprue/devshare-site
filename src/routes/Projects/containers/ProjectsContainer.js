@@ -1,41 +1,35 @@
 import React, { Component, PropTypes } from 'react'
-import { toArray } from 'lodash'
-
-// Components
+import { connect } from 'react-redux'
+import { map } from 'lodash'
+import {
+  firebaseConnect,
+  pathToJS,
+  isLoaded,
+  isEmpty,
+  populatedDataToJS
+} from 'react-redux-firebase'
+import LoadingSpinner from 'components/LoadingSpinner'
+import SharingDialog from 'components/SharingDialog/SharingDialog'
 import ProjectTile from '../components/ProjectTile/ProjectTile'
 import NewProjectTile from '../components/NewProjectTile/NewProjectTile'
 import NewProjectDialog from '../components/NewProjectDialog/NewProjectDialog'
-import SharingDialog from 'components/SharingDialog/SharingDialog'
-import CircularProgress from 'material-ui/CircularProgress'
+
 import classes from './ProjectsContainer.scss'
 
-// redux/devshare
-import { connect } from 'react-redux'
-import { devshare, helpers } from 'redux-devshare'
-const { pathToJS, dataToJS, isLoaded, isEmpty } = helpers
+const populates = [
+  { child: 'collaborators', root: 'users' }
+]
 
-// Decorators
-@devshare(
-  ({ params }) =>
-    ([
-      `projects/${params.username}`,
-      // TODO: Use population instead of loading whole usernames list
-      'usernames'
-      // `projects/${params.username}#populate=collaborators:users`,
-    ])
+@firebaseConnect(
+  ({ params }) => ([
+    { path: `projects/${params.username}`, populates }
+  ])
 )
 @connect(
-  ({ devshare }, { params }) => ({
-    projects: toArray(dataToJS(devshare, `projects/${params.username}`))
-    .map(project =>
-      (project.collaborators && dataToJS(devshare, 'usernames'))
-        ? Object.assign(project, {
-          collaborators: project.collaborators.map(id => ({ username: dataToJS(devshare, 'usernames')[id] }))
-        })
-        : project
-    ),
-    account: pathToJS(devshare, 'profile'),
-    auth: pathToJS(devshare, 'auth')
+  ({ firebase }, { params }) => ({
+    projects: populatedDataToJS(firebase, `projects/${params.username}`, populates),
+    account: pathToJS(firebase, 'profile'),
+    auth: pathToJS(firebase, 'auth')
   })
 )
 export class Projects extends Component {
@@ -47,7 +41,7 @@ export class Projects extends Component {
   static propTypes = {
     account: PropTypes.object,
     projects: PropTypes.array,
-    devshare: PropTypes.object,
+    firebase: PropTypes.object,
     auth: PropTypes.object,
     children: PropTypes.object,
     params: PropTypes.object,
@@ -69,7 +63,7 @@ export class Projects extends Component {
   }
 
   newSubmit = name =>
-    this.props.devshare
+    this.props.firebase
       .projects()
       .add({ name, owner: this.props.account.username })
       .catch(err => {
@@ -77,9 +71,9 @@ export class Projects extends Component {
         console.error('error creating new project', err)
       })
 
-  // TODO: Delete through devshare projects method
+  // TODO: Delete through firebase projects method
   deleteProject = ({ name }) =>
-    this.props.devshare
+    this.props.firebase
       .project(this.props.params.username, name)
       .delete()
 
@@ -94,15 +88,11 @@ export class Projects extends Component {
     // TODO: Look into moving this into its own layer
     if (this.props.children) { return this.props.children }
 
-    const { projects, account, params: { username }, devshare } = this.props
+    const { projects, account, params: { username }, firebase } = this.props
     const { newProjectModal, addCollabModal, currentProject } = this.state
 
     if (!isLoaded(projects)) {
-      return (
-        <div className={classes['progress']}>
-          <CircularProgress />
-        </div>
-      )
+      return <LoadingSpinner />
     }
 
     // User has no projects and doesn't match logged in user
@@ -114,10 +104,10 @@ export class Projects extends Component {
       )
     }
 
-    const projectsList = projects.map((project, i) =>
+    const projectsList = map(projects, (project, i) =>
       (
         <ProjectTile
-          key={`${project.name}-Collab-${i}`}
+          key={`Project-${i}`}
           project={project}
           onCollabClick={this.collabClick}
           onAddCollabClick={() => this.toggleModal('addCollab', project)}
@@ -145,9 +135,9 @@ export class Projects extends Component {
             <SharingDialog
               project={currentProject}
               open={addCollabModal}
-              searchUsers={devshare.users().search}
-              onAddCollab={devshare.project(currentProject).addCollaborator}
-              onRemoveCollab={devshare.project(currentProject).removeCollaborator}
+              searchUsers={firebase.users().search}
+              onAddCollab={firebase.project(currentProject).addCollaborator}
+              onRemoveCollab={firebase.project(currentProject).removeCollaborator}
               onRequestClose={() => this.toggleModal('addCollab')}
             />
           ) : null

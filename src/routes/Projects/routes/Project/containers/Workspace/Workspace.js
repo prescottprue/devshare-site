@@ -1,4 +1,6 @@
 import React, { Component, PropTypes } from 'react'
+import { connect } from 'react-redux'
+import { firebaseConnect, pathToJS } from 'react-redux-firebase'
 
 // Containers
 import SideBar from '../SideBar/SideBar'
@@ -8,17 +10,10 @@ import Pane from '../Pane/Pane'
 import WorkspacePopover from '../../components/WorkspacePopover/WorkspacePopover'
 import classes from './Workspace.scss'
 
-// redux/devshare
-import { connect } from 'react-redux'
-import { devshare, helpers } from 'redux-devshare'
-const { pathToJS } = helpers
-
-@devshare()
+@firebaseConnect()
 @connect(
-  // Map state to props
-  ({devshare}, { params }) => ({
-    authError: pathToJS(devshare, 'authError'),
-    account: pathToJS(devshare, 'profile')
+  ({ firebase }) => ({
+    account: pathToJS(firebase, 'profile')
   })
 )
 export default class Workspace extends Component {
@@ -35,7 +30,7 @@ export default class Workspace extends Component {
   }
 
   static propTypes = {
-    devshare: PropTypes.shape({
+    firebase: PropTypes.shape({
       project: PropTypes.func,
       users: PropTypes.func
     }),
@@ -90,9 +85,9 @@ export default class Workspace extends Component {
   removeCollaborator = username =>
     this.props.removeCollaborator(this.props.project, username)
 
-  // TODO: expose search in redux-devshare
+  // TODO: expose search in redux-firebase
   searchUsers = (q, cb) => {
-    this.props.devshare.users()
+    this.props.firebase.users()
       .search(q)
       .then(usersList =>
         cb(null, usersList),
@@ -102,7 +97,7 @@ export default class Workspace extends Component {
 
   addFile = (path, content) => {
     console.log('add file called:', path, content)
-    this.props.devshare
+    this.props.firebase
       .project(this.props.project)
       .fileSystem
       .addFile(path, content)
@@ -114,7 +109,7 @@ export default class Workspace extends Component {
   }
 
   addFolder = path =>
-    this.props.devshare
+    this.props.firebase
       .project(this.props.project)
       .fileSystem
       .addFolder(path.replace('/', ''))
@@ -126,7 +121,7 @@ export default class Workspace extends Component {
       : this.addFile(path, content)
 
   deleteFile = (path) =>
-    this.props.devshare
+    this.props.firebase
       .project(this.props.project)
       .fileSystem
       .file(path)

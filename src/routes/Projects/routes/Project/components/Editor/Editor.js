@@ -1,15 +1,14 @@
 import React, { PropTypes, Component } from 'react'
-import { project } from 'devshare'
-import classes from './Editor.scss'
+import { project } from 'firebase'
 
 import { connect } from 'react-redux'
-import { helpers } from 'redux-devshare'
-const { pathToJS } = helpers
+import { pathToJS } from 'react-redux-firebase'
+import classes from './Editor.scss'
 
 @connect(
   // Map state to props
-  ({ devshare }) => ({
-    account: pathToJS(devshare, 'profile')
+  ({ firebase }) => ({
+    account: pathToJS(firebase, 'profile')
   })
 )
 export default class Editor extends Component {

@@ -1,22 +1,23 @@
 import React, { Component, PropTypes } from 'react'
 import { reduxForm } from 'redux-form'
-import CircularProgress from 'material-ui/CircularProgress'
 import Paper from 'material-ui/Paper'
 // import AccountDialog from '../components/AccountDialog/AccountDialog'
+import LoadingSpinner from 'components/LoadingSpinner'
 import AccountForm from '../components/AccountForm/AccountForm'
 import { connect } from 'react-redux'
-import { devshare, helpers } from 'redux-devshare'
+import { firebaseConnect, pathToJS, isLoaded } from 'react-redux-firebase'
+import { UserIsAuthenticated } from 'utils/router'
 import classes from './AccountContainer.scss'
 
-const { pathToJS, isLoaded } = helpers
 const defaultUserImageUrl = 'https://s3.amazonaws.com/kyper-cdn/img/User.png'
 
-@devshare()
+@UserIsAuthenticated
+@firebaseConnect()
 @connect(
-  ({devshare}) => ({
-    authError: pathToJS(devshare, 'authError'),
-    account: pathToJS(devshare, 'profile'),
-    initialValues: pathToJS(devshare, 'profile')
+  ({firebase}) => ({
+    authError: pathToJS(firebase, 'authError'),
+    account: pathToJS(firebase, 'profile'),
+    initialValues: pathToJS(firebase, 'profile')
   })
 )
 @reduxForm({
@@ -29,7 +30,7 @@ export default class Account extends Component {
 
   static propTypes = {
     account: PropTypes.object,
-    devshare: PropTypes.shape({
+    firebase: PropTypes.shape({
       logout: PropTypes.func.isRequired,
       uploadAvatar: PropTypes.func,
       updateAccount: PropTypes.func
@@ -39,9 +40,7 @@ export default class Account extends Component {
   state = { modalOpen: false }
 
   handleLogout = () =>
-    this.props.devshare
-      .logout()
-      .then(() => this.context.router.push('/'))
+    this.props.firebase.logout() // redirect handled by @UserIsAuthenticated
 
   toggleModal = () => {
     this.setState({
@@ -50,14 +49,10 @@ export default class Account extends Component {
   }
 
   render () {
-    const { account, devshare: { saveAccount } } = this.props
+    const { account, firebase: { saveAccount } } = this.props
 
     if (!isLoaded(account)) {
-      return (
-        <div className={classes.container}>
-          <CircularProgress size={1.5} />
-        </div>
-      )
+      return <LoadingSpinner />
     }
 
     return (
