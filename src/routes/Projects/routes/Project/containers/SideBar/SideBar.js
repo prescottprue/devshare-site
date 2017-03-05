@@ -11,9 +11,13 @@ import GroupIcon from 'material-ui/svg-icons/social/group'
 import CopyIcon from 'material-ui/svg-icons/content/content-copy'
 import ArchiveIcon from 'material-ui/svg-icons/content/archive'
 import RaisedButton from 'material-ui/RaisedButton'
+import { connect } from 'react-redux'
+import { bindActionCreators } from 'redux'
+import { firebaseConnect, isLoaded, dataToJS } from 'react-redux-firebase'
 
 import TreeView from '../TreeView'
 import ContextMenu from '../../components/ContextMenu/ContextMenu'
+import { actions as TabActions } from '../../modules/tabs'
 import classes from './SideBar.scss'
 
 const fileEntityBlackList = ['.DS_Store', 'node_modules']
@@ -23,18 +27,10 @@ const iconButtonStyle = { width: '50px', height: '50px', padding: '0px' }
 const iconStyle = { width: '100%', height: '100%' }
 const tooltipPosition = 'top-center'
 
-// redux-devsharev3
-import { connect } from 'react-redux'
-import { bindActionCreators } from 'redux'
-import { actions as TabActions } from '../../modules/tabs'
-import { devshare, helpers } from 'redux-devshare'
-const { isLoaded, dataToJS } = helpers
-
-@devshare(
-  ({ project }) =>
-    ([
-      `files/${project.owner}/${project.name}`
-    ])
+@firebaseConnect(
+  ({ project }) => ([
+    `files/${project.owner}/${project.name}`
+  ])
 )
 @connect(
   ({ devshare }, { project }) =>
@@ -52,7 +48,7 @@ export default class SideBar extends Component {
 
   static propTypes = {
     projects: PropTypes.array,
-    devshare: PropTypes.object,
+    firebase: PropTypes.object,
     project: PropTypes.object.isRequired,
     files: PropTypes.array,
     tabs: PropTypes.object,

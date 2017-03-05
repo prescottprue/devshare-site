@@ -40,8 +40,7 @@ export const UserIsNotAuthenticated = UserAuthWrapper({ // eslint-disable-line n
   wrapperDisplayName: 'UserIsNotAuthenticated',
   allowRedirectBack: false,
   LoadingComponent: LoadingSpinner,
-  failureRedirectPath: ({ firebase }, props) =>
-    props.location.query.redirect || paths.home,
+  failureRedirectPath: paths.home,
   authSelector: ({ firebase }) => pathToJS(firebase, 'auth'),
   authenticatingSelector: ({ firebase }) =>
     (pathToJS(firebase, 'auth') === undefined) ||

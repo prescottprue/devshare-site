@@ -2,8 +2,8 @@ import React, { Component, PropTypes } from 'react'
 import { Link } from 'react-router'
 import { connect } from 'react-redux'
 import { firebaseConnect, pathToJS, isLoaded, isEmpty } from 'react-redux-firebase'
-// import { UserIsNotAuthenticated } from 'utils/router'
-
+import { UserIsNotAuthenticated } from 'utils/router'
+import { paths } from 'constants'
 import GoogleButton from 'react-google-button'
 import Paper from 'material-ui/Paper'
 import Snackbar from 'material-ui/Snackbar'
@@ -15,7 +15,7 @@ import LoginForm from '../components/LoginForm/LoginForm'
 
 import classes from './LoginContainer.scss'
 
-// @UserIsNotAuthenticated // redirect to home if logged in
+@UserIsNotAuthenticated // redirect to home if logged in
 @firebaseConnect()
 @connect(
   ({firebase}) => ({
@@ -40,19 +40,17 @@ export default class Login extends Component {
 
   handleLogin = loginData => {
     this.setState({ snackCanOpen: true })
-    this.props.firebase
-      .login(loginData)
-      .then(account => this.context.router.push(`/${account.username}`))
+    this.props.firebase.login(loginData)
   }
 
   providerLogin = (provider) =>
-    this.handleLogin({ provider, type: 'popup' })
+    this.handleLogin({ provider })
 
   render () {
-    const { isLoading, snackCanOpen } = this.state
-    const { authError } = this.props
+    const { snackCanOpen } = this.state
+    const { authError, account } = this.props
 
-    if (isLoading && !authError) {
+    if (!isLoaded(account)) {
       return <LoadingSpinner />
     }
 
@@ -73,17 +71,17 @@ export default class Login extends Component {
             onClick={() => this.providerLogin('github')}
             label='Sign in with Github'
             icon={
-              <FontIcon className={classes['github-icon']}>
+              <FontIcon className={classes.githubIcon}>
                 <GithubIcon />
               </FontIcon>
             }
           />
         </div>
         <div className={classes.signup}>
-          <span className={classes['signup-label']}>
+          <span className={classes.signupLabel}>
             Need an account?
           </span>
-          <Link className={classes['signup-link']} to='/signup'>
+          <Link className={classes.signupLink} to={paths.signup}>
             Sign Up
           </Link>
         </div>

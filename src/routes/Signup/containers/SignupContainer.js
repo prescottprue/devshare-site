@@ -1,16 +1,16 @@
 import React, { Component, PropTypes } from 'react'
 import { Link } from 'react-router'
 import { connect } from 'react-redux'
-import { firebaseConnect, pathToJS, isLoaded } from 'react-redux-firebase'
-// import { UserIsNotAuthenticated } from 'utils/router'
-
+import { firebaseConnect, pathToJS, isLoaded, isEmpty } from 'react-redux-firebase'
 import GoogleButton from 'react-google-button'
 import Paper from 'material-ui/Paper'
 import RaisedButton from 'material-ui/RaisedButton'
-import CircularProgress from 'material-ui/CircularProgress'
 import Snackbar from 'material-ui/Snackbar'
 import GithubIcon from 'react-icons/lib/go/mark-github'
 import FontIcon from 'material-ui/FontIcon'
+// import { UserIsNotAuthenticated } from 'utils/router'
+import { paths } from 'constants'
+import LoadingSpinner from 'components/LoadingSpinner'
 import SignupForm from '../components/SignupForm/SignupForm'
 
 import classes from './SignupContainer.scss'
@@ -34,8 +34,7 @@ export default class Signup extends Component {
   }
 
   state = {
-    snackCanOpen: false,
-    isLoading: false
+    snackCanOpen: false
   }
 
   handleRequestClose = () =>
@@ -44,71 +43,60 @@ export default class Signup extends Component {
     })
 
   handleSignup = (creds) => {
-    this.setState({
-      snackCanOpen: true,
-      isLoading: true
-    })
+    const { email, username } = creds
+    this.setState({ snackCanOpen: true })
     this.props.firebase
-      .signup(creds)
-      .then(account =>
+      .createUser(creds, { email, username })
+      .then(account => {
         this.context.router.push(`${account.username}`)
-      )
+      })
   }
 
   providerLogin = (provider) => {
-    this.setState({
-      snackCanOpen: true,
-      isLoading: true
-    })
+    this.setState({ snackCanOpen: true })
     this.props.firebase
-      .login({ provider, type: 'popup' })
+      .login({ provider })
       .then(account =>
         this.context.router.push(`${account.username}`)
       )
   }
 
   render () {
-    const { authError } = this.props
-    const { snackCanOpen, isLoading } = this.state
+    const { authError, account } = this.props
+    const { snackCanOpen } = this.state
 
-    if (isLoading && !authError) {
-      return (
-        <div className={classes['container']}>
-          <div className='Signup-Progress'>
-            <CircularProgress mode='indeterminate' />
-          </div>
-        </div>
-      )
+    if (!isLoaded(account)) {
+      return <LoadingSpinner />
     }
 
     return (
-      <div className={classes['container']}>
-        <Paper className={classes['panel']}>
+      <div className={classes.container}>
+        <Paper className={classes.panel}>
           <SignupForm onSubmit={this.handleSignup} />
         </Paper>
-        <div className={classes['or']}>
+        <div className={classes.or}>
           or
         </div>
-        <div className={classes['providers']}>
+        <div className={classes.providers}>
           <GoogleButton onClick={() => this.providerLogin('google')} />
         </div>
-        <div className={classes['providers']}>
+        <div className={classes.providers}>
           <RaisedButton
-            className={classes['github']}
+            className={classes.github}
             onClick={() => this.providerLogin('github')}
             label='Sign in with Github'
             icon={
-              <FontIcon className={classes['github-icon']}>
+              <FontIcon className={classes.githubIcon}>
                 <GithubIcon />
               </FontIcon>
             }
           />
         </div>
-        <div className={classes['login']}>
-          <span className={classes['login-label']}>
+        <div className={classes.login}>
+          <span className={classes.loginLabel}>
             Already have an account?
           </span>
-          <Link className={classes['login-link']} to='/login'>
+          <Link className={classes.loginLink} to={paths.login}>
             Login
           </Link>
         </div>
