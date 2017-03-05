@@ -1,6 +1,7 @@
 import React, { Component, PropTypes } from 'react'
 import { Link } from 'react-router'
 import { connect } from 'react-redux'
+import { devshare } from 'redux-devshare'
 import { firebaseConnect, pathToJS, isLoaded, isEmpty } from 'react-redux-firebase'
 import GoogleButton from 'react-google-button'
 import Paper from 'material-ui/Paper'
@@ -8,14 +9,15 @@ import RaisedButton from 'material-ui/RaisedButton'
 import Snackbar from 'material-ui/Snackbar'
 import GithubIcon from 'react-icons/lib/go/mark-github'
 import FontIcon from 'material-ui/FontIcon'
-// import { UserIsNotAuthenticated } from 'utils/router'
+import { UserIsNotAuthenticated } from 'utils/router'
 import { paths } from 'constants'
 import LoadingSpinner from 'components/LoadingSpinner'
 import SignupForm from '../components/SignupForm/SignupForm'
 
 import classes from './SignupContainer.scss'
 
-// @UserIsNotAuthenticated // redirect to home if logged in
+@UserIsNotAuthenticated // redirect to home if logged in
+@devshare()
 @firebaseConnect()
 @connect(
   ({firebase}) => ({
@@ -43,11 +45,11 @@ export default class Signup extends Component {
     })
 
   handleSignup = (creds) => {
-    const { email, username } = creds
     this.setState({ snackCanOpen: true })
-    this.props.firebase
-      .createUser(creds, { email, username })
+    this.props.devshare
+      .signup(creds)
       .then(account => {
+        console.log('account:', account)
         this.context.router.push(`${account.username}`)
       })
   }

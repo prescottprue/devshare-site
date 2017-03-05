@@ -40,11 +40,11 @@ export default class Workspace extends Component {
     }),
     account: PropTypes.object,
     project: PropTypes.object,
+    projects: PropTypes.object,
     tabs: PropTypes.object,
     showProjects: PropTypes.bool,
     hideName: PropTypes.bool,
     showButtons: PropTypes.bool,
-    projects: PropTypes.array,
     navigateToTab: PropTypes.func,
     closeTab: PropTypes.func,
     addCollaborator: PropTypes.func,
@@ -139,7 +139,7 @@ export default class Workspace extends Component {
     } = this.props
 
     return (
-      <div className={classes['container']} ref='workspace'>
+      <div className={classes.container} ref='workspace'>
         <WorkspacePopover
           workspaceElement={this.refs.workspace}
           initialPath={this.state.addPath}

@@ -2,14 +2,15 @@ import { applyMiddleware, compose, createStore } from 'redux'
 import { routerMiddleware } from 'react-router-redux'
 import thunk from 'redux-thunk'
 import makeRootReducer from './reducers'
-import { reactReduxFirebase } from 'react-redux-firebase'
-import { firebase as fbConfig } from '../config'
+import { reactReduxFirebase, getFirebase } from 'react-redux-firebase'
+import { reduxDevshare, getDevshare } from 'redux-devshare'
+import { firebase as fbConfig, env } from '../config'
 
 export default (initialState = {}, history) => {
   // ======================================================
   // Middleware Configuration
   // ======================================================
-  const middleware = [thunk, routerMiddleware(history)]
+  const middleware = [thunk.withExtraArgument({ getFirebase, getDevshare }), routerMiddleware(history)]
 
   // ======================================================
   // Store Enhancers
@@ -31,6 +32,9 @@ export default (initialState = {}, history) => {
     compose(
       applyMiddleware(...middleware),
       // TODO: Pass node environment directly
+      reduxDevshare(
+        { env }
+      ),
       reactReduxFirebase(
           fbConfig,
         {

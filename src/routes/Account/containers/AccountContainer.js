@@ -1,15 +1,13 @@
 import React, { Component, PropTypes } from 'react'
+import { connect } from 'react-redux'
 import { reduxForm } from 'redux-form'
+import { firebaseConnect, pathToJS, isLoaded } from 'react-redux-firebase'
 import Paper from 'material-ui/Paper'
-// import AccountDialog from '../components/AccountDialog/AccountDialog'
 import LoadingSpinner from 'components/LoadingSpinner'
 import AccountForm from '../components/AccountForm/AccountForm'
-import { connect } from 'react-redux'
-import { firebaseConnect, pathToJS, isLoaded } from 'react-redux-firebase'
 import { UserIsAuthenticated } from 'utils/router'
+import defaultUserImageUrl from 'static/User.png'
 import classes from './AccountContainer.scss'
-
-const defaultUserImageUrl = 'https://s3.amazonaws.com/kyper-cdn/img/User.png'
 
 @UserIsAuthenticated
 @firebaseConnect()
@@ -24,10 +22,6 @@ const defaultUserImageUrl = 'https://s3.amazonaws.com/kyper-cdn/img/User.png'
   form: 'Account'
 })
 export default class Account extends Component {
-  static contextTypes = {
-    router: React.PropTypes.object.isRequired
-  }
-
   static propTypes = {
     account: PropTypes.object,
     firebase: PropTypes.shape({
@@ -38,9 +32,6 @@ export default class Account extends Component {
   }
 
   state = { modalOpen: false }
-
-  handleLogout = () =>
-    this.props.firebase.logout() // redirect handled by @UserIsAuthenticated
 
   toggleModal = () => {
     this.setState({
@@ -61,7 +52,7 @@ export default class Account extends Component {
           <div className={classes.settings}>
             <div className={classes.avatar}>
               <img
-                className={classes['avatar-current']}
+                className={classes.avatarCurrent}
                 src={account && account.avatarUrl || defaultUserImageUrl}
                 onClick={this.toggleModal}
               />

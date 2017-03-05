@@ -52,7 +52,7 @@
       }
     },
     "start": {
-      "command": "webpack-dashboard -c cyan -m -t Brawndo -- node bin/server",
+      "command": "webpack-dashboard -c cyan -m -t Devshare -- node bin/server",
       "env": {
         "DEBUG": "app:*"
       }
@@ -113,7 +113,7 @@
     "react-tap-event-plugin": "2.0.1",
     "redux": "3.6.0",
     "redux-auth-wrapper": "1.0.0",
-    "redux-devshare": "0.2.1",
+    "redux-devshare": "0.3.0",
     "redux-form": "6.4.3",
     "redux-thunk": "2.2.0"
   },

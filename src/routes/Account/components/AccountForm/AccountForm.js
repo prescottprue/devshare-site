@@ -11,6 +11,7 @@ export const AccountForm = ({ account, handleSubmit, submitting }) => (
       <Field
         name='username'
         label='Username'
+        disabled
         component={TextField}
       />
     </div>
@@ -21,15 +22,17 @@ export const AccountForm = ({ account, handleSubmit, submitting }) => (
         component={TextField}
       />
     </div>
-    <div className={classes.accounts}>
-      <h4>Linked Accounts</h4>
-      {
-        account.providerData &&
+    {
+      account.providerData
+      ? (
+        <div className={classes.accounts}>
           <ProviderDataForm
             providerData={account.providerData}
           />
-      }
-    </div>
+        </div>
+      )
+      : null
+    }
   </div>
 )
 

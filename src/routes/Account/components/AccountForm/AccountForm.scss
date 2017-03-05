@@ -1,7 +1,6 @@
 @import 'base';
 .container {
   @extend .flex-column-center;
-  align-items: center;
   justify-content: flex-start;
   height: 100%;
   width: 100%;

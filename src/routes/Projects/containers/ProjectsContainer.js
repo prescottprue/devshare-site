@@ -8,6 +8,7 @@ import {
   isEmpty,
   populatedDataToJS
 } from 'react-redux-firebase'
+import { devshare } from 'redux-devshare'
 import LoadingSpinner from 'components/LoadingSpinner'
 import SharingDialog from 'components/SharingDialog/SharingDialog'
 import ProjectTile from '../components/ProjectTile/ProjectTile'
@@ -20,6 +21,7 @@ const populates = [
   { child: 'collaborators', root: 'users' }
 ]
 
+@devshare()
 @firebaseConnect(
   ({ params }) => ([
     { path: `projects/${params.username}`, populates }
@@ -40,8 +42,9 @@ export class Projects extends Component {
 
   static propTypes = {
     account: PropTypes.object,
-    projects: PropTypes.array,
+    projects: PropTypes.object,
     firebase: PropTypes.object,
+    devshare: PropTypes.object,
     auth: PropTypes.object,
     children: PropTypes.object,
     params: PropTypes.object,
@@ -62,18 +65,22 @@ export class Projects extends Component {
     this.setState(newState)
   }
 
-  newSubmit = name =>
-    this.props.firebase
-      .projects()
-      .add({ name, owner: this.props.account.username })
+  newSubmit = name => {
+    const { account } = this.props
+    console.log('this.props.devshare', this.props.devshare)
+    // TODO: Check to make sure project does not already exist before creating
+    this.props.devshare
+      .projects(account.username)
+      .add({ name, owner: account.username, createdAt: this.props.firebase.database.ServerValue.TIMESTAMP })
       .catch(err => {
         // TODO: Show Snackbar
         console.error('error creating new project', err)
       })
+  }
 
-  // TODO: Delete through firebase projects method
+  // TODO: Delete through devshare projects method
   deleteProject = ({ name }) =>
-    this.props.firebase
+    this.props.devshare
       .project(this.props.params.username, name)
       .delete()
 
@@ -88,7 +95,7 @@ export class Projects extends Component {
     // TODO: Look into moving this into its own layer
     if (this.props.children) { return this.props.children }
 
-    const { projects, account, params: { username }, firebase } = this.props
+    const { projects, account, params: { username }, devshare } = this.props
     const { newProjectModal, addCollabModal, currentProject } = this.state
 
     if (!isLoaded(projects)) {
@@ -135,9 +142,9 @@ export class Projects extends Component {
             <SharingDialog
               project={currentProject}
               open={addCollabModal}
-              searchUsers={firebase.users().search}
-              onAddCollab={firebase.project(currentProject).addCollaborator}
-              onRemoveCollab={firebase.project(currentProject).removeCollaborator}
+              searchUsers={devshare.users().search}
+              onAddCollab={devshare.project(currentProject).addCollaborator}
+              onRemoveCollab={devshare.project(currentProject).removeCollaborator}
               onRequestClose={() => this.toggleModal('addCollab')}
             />
           ) : null

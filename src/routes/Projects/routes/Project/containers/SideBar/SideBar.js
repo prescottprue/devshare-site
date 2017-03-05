@@ -28,15 +28,15 @@ const iconStyle = { width: '100%', height: '100%' }
 const tooltipPosition = 'top-center'
 
 @firebaseConnect(
-  ({ project }) => ([
+  ({ project, params }) => ([
     `files/${project.owner}/${project.name}`
   ])
 )
 @connect(
-  ({ devshare }, { project }) =>
+  ({ firebase }, { project }) =>
     ({
       files: map(
-        dataToJS(devshare, `files/${project.owner}/${project.name}`),
+        dataToJS(firebase, `files/${project.owner}/${project.name}`),
         (file, key) => Object.assign(file, { key })
       )
     }),
@@ -211,13 +211,13 @@ export default class SideBar extends Component {
       : null
 
     return (
-      <div className={classnames(classes['container'], { 'filehover': filesOver })}
+      <div className={classnames(classes.container, { 'filehover': filesOver })}
         onDragOver={this.handleFileDrag}
         onDragLeave={this.handleFileDragLeave}
         onDrop={this.handleFileDrop}
         onContextMenu={this._rightClick}
       >
-        <div className={classes['dropzone']}>
+        <div className={classes.dropzone}>
           {
             (projectsMenu && showProjects)
               ? <SelectField
@@ -245,7 +245,7 @@ export default class SideBar extends Component {
             onChange={this.handleFileUpload}
             multiple
           />
-          <div className={classes['buttons']}>
+          <div className={classes.buttons}>
             <IconButton
               style={iconButtonStyle}
               iconStyle={iconStyle}
@@ -267,7 +267,7 @@ export default class SideBar extends Component {
               <ArchiveIcon />
             </IconButton>
           </div>
-          <div className={classes['buttons']}>
+          <div className={classes.buttons}>
             <IconMenu
               iconButtonElement={
                 <IconButton
@@ -285,11 +285,11 @@ export default class SideBar extends Component {
               />
               <MenuItem
                 primaryText='Add file'
-                onClick={() => { onShowPopover('file') }}
+                onClick={() => onShowPopover('file')}
               />
               <MenuItem
                 primaryText='Add folder'
-                onClick={() => { onShowPopover('folder') }}
+                onClick={() => onShowPopover('folder')}
               />
             </IconMenu>
             <IconButton
@@ -316,8 +316,8 @@ export default class SideBar extends Component {
             ? (
               <ContextMenu
                 path={contextMenu.path}
-                onAddFileClick={() => { onShowPopover('file') }}
-                onAddFolderClick={() => { onShowPopover('folder') }}
+                onAddFileClick={() => onShowPopover('file')}
+                onAddFolderClick={() => onShowPopover('folder')}
                 onFileDelete={this.deleteFile}
                 position={contextMenu.position}
                 dismiss={this.dismissContextMenu}

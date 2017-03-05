@@ -1,31 +1,29 @@
 import React, { Component, PropTypes } from 'react'
 import { connect } from 'react-redux'
+import { devshare } from 'redux-devshare'
 import { firebaseConnect, dataToJS, isLoaded } from 'react-redux-firebase'
-
-import CircularProgress from 'material-ui/CircularProgress'
-import SharingDialog from 'components/SharingDialog/SharingDialog'
+import LoadingSpinner from 'components/LoadingSpinner'
+import SharingDialog from 'components/SharingDialog'
 import Workspace from '../Workspace/Workspace'
 import SettingsDialog from '../../components/SettingsDialog/SettingsDialog'
-
 import classes from './Project.scss'
 
+@devshare()
 @firebaseConnect(
-  // Get paths from devshare
-  ({ params: { username, projectname } }) =>
-    ([
-      `projects/${username}`,
-      `projects/${username}/${projectname}`
-    ])
+  // Get paths from firebase
+  ({ params: { username, projectname } }) => ([
+    `projects/${username}`,
+    `projects/${username}/${projectname}`
+  ])
 )
 @connect(
   // Map state to props
   ({ firebase }, { params: { username, projectname } }) => ({
     projects: dataToJS(firebase, `projects/${username}`),
-    project: dataToJS(firebase, `projects/${username}/${projectname}`)
+    project: Object.assign({}, dataToJS(firebase, `projects/${username}/${projectname}`), { owner: username, name: projectname })
   })
 )
 export default class Project extends Component {
-
   static contextTypes = {
     router: React.PropTypes.object.isRequired
   }
@@ -37,7 +35,8 @@ export default class Project extends Component {
     auth: PropTypes.object,
     params: PropTypes.object.isRequired,
     children: PropTypes.object,
-    firebase: PropTypes.shape({
+    firebase: PropTypes.object.isRequired,
+    devshare: PropTypes.shape({
       project: PropTypes.func.isRequired
     })
   }
@@ -55,10 +54,14 @@ export default class Project extends Component {
   }
 
   addCollaborator = username =>
-    this.props.firebase.project(this.props.project).addCollaborator(username)
+    this.props.devshare
+      .project(this.props.project)
+      .addCollaborator(username)
 
   removeCollaborator = username =>
-    this.props.firebase.project(this.props.project).removeCollaborator(username)
+    this.props.devshare
+      .project(this.props.project)
+      .removeCollaborator(username)
 
   toggleDialog = (name) => {
     const newState = {}
@@ -67,25 +70,21 @@ export default class Project extends Component {
   }
 
   render () {
-    const { projects, project, params, firebase } = this.props
+    const { projects, project, params, devshare } = this.props
     const { settingsOpen, sharingOpen, vimEnabled } = this.state
 
     if (!isLoaded(project)) {
-      return (
-        <div className={classes['progress']}>
-          <CircularProgress />
-        </div>
-      )
+      return <LoadingSpinner />
     }
 
     return (
-      <div className={classes['container']} ref='workspace'>
+      <div className={classes.container} ref='workspace'>
         <Workspace
           project={project}
           projects={projects}
           params={params}
-          onSettingsClick={() => { this.toggleDialog('settings') }}
-          onSharingClick={() => { this.toggleDialog('sharing') }}
+          onSettingsClick={() => this.toggleDialog('settings')}
+          onSharingClick={() => this.toggleDialog('sharing')}
         />
         {
           settingsOpen &&
@@ -96,7 +95,7 @@ export default class Project extends Component {
               onSave={this.saveSettings}
               onVimToggle={this.toggleVim}
               vimEnabled={vimEnabled}
-              onRequestClose={() => { this.toggleDialog('settings') }}
+              onRequestClose={() => this.toggleDialog('settings')}
             />
           )
         }
@@ -106,7 +105,7 @@ export default class Project extends Component {
             <SharingDialog
               project={project}
               open={sharingOpen}
-              searchUsers={firebase.users().search}
+              searchUsers={devshare.users().search}
               onSave={this.saveSettings}
               onAddCollab={this.addCollaborator}
               onRemoveCollab={this.removeCollaborator}

@@ -1,5 +1,5 @@
 import React, { PropTypes, Component } from 'react'
-import { each, omit, findIndex, last } from 'lodash'
+import { each, omit, findIndex, last, size, map } from 'lodash'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import { firebaseConnect, isLoaded, isEmpty, dataToJS } from 'react-redux-firebase'
@@ -73,10 +73,10 @@ export default class TreeView extends Component {
   }
 
   getStructure = () => {
-    if (!this.props.files || !this.props.files.length) {
+    if (!this.props.files || !size(this.props.files)) {
       return null
     }
-    return this.props.files.map((entry, i) => {
+    return map(this.props.files, (entry, i) => {
       // no metadata
       if (!entry.meta) {
         const firstChildPath = entry[Object.keys(entry)[0]].meta.path

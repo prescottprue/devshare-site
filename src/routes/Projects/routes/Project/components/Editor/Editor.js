@@ -1,10 +1,11 @@
 import React, { PropTypes, Component } from 'react'
-import { project } from 'firebase'
+import { devshare } from 'redux-devshare'
 
 import { connect } from 'react-redux'
 import { pathToJS } from 'react-redux-firebase'
 import classes from './Editor.scss'
 
+@devshare()
 @connect(
   // Map state to props
   ({ firebase }) => ({
@@ -18,6 +19,7 @@ export default class Editor extends Component {
     account: PropTypes.shape({
       username: PropTypes.string.isRequired
     }),
+    devshare: PropTypes.object,
     theme: PropTypes.string,
     name: PropTypes.string.isRequired,
     height: PropTypes.string,
@@ -72,7 +74,7 @@ export default class Editor extends Component {
     require('codemirror/mode/xml/xml')
     const editorDiv = document.getElementById(this.props.name)
     const { name, owner } = this.props.project
-    const file = project(owner, name).fileSystem.file(this.props.filePath)
+    const file = this.props.devshare.project(owner, name).fileSystem.file(this.props.filePath)
     this.editor = CodeMirror(editorDiv, {
       lineNumbers: true,
       lineWrapping: true,
@@ -98,7 +100,7 @@ export default class Editor extends Component {
     const Firepad = require('firepad')
     const { project: { name, owner }, account } = this.props
     if (typeof editor.firepad === 'undefined') {
-      const { fileSystem } = project(owner, name)
+      const { fileSystem } = this.props.devshare.project(owner, name)
       const file = fileSystem.file(this.props.filePath)
       try {
         try {
@@ -140,7 +142,7 @@ export default class Editor extends Component {
 
   render () {
     return (
-      <div className={classes['container']} id={this.props.name} />
+      <div className={classes.container} id={this.props.name} />
     )
   }
 }

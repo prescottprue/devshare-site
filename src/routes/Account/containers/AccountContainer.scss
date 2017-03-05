@@ -1,14 +1,12 @@
+@import 'base';
+
 .container {
-  display: flex;
-  flex-direction: row;
+  @extend .flex-row-center;
   align-items: center;
-  justify-content: center;
   padding-top: 4rem;
 }
 .pane {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+  @extend .flex-column-center;
   justify-content: space-around;
   flex-basis: 60%;
 }
@@ -20,39 +18,17 @@
   justify-content: center;
 }
 .avatar {
-  &-new {
-    &-droptext {
-      height: 100%;
-      font-size: 1.3rem;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-    }
-  }
-  &-current {
+  &Current {
     width: 100%;
     max-width: 13rem;
     height: auto;
     cursor: pointer;
   }
 }
-
-
-.ImageManager {
-  display: flex;
-  flex-direction: row;
-  .Preview {
-    width: 10rem;
-    height: auto;
-  }
-}
 .meta {
-  display:flex;
-  flex-basis: 60%;
-  flex-direction: column;
+  @extend .flex-column-center;
   justify-content: center;
-  align-items: center;
+  flex-basis: 60%;
   margin-bottom: 3rem;
   margin-top: 2rem;
 }
