@@ -8,6 +8,10 @@
         ".write": true
       }
     },
+    "requests": {
+      ".read": true,
+      ".write": true
+    },
     "projects": {
       ".read": true,
       ".write": true,

@@ -1,6 +1,7 @@
 import React, { Component, PropTypes } from 'react'
 import { connect } from 'react-redux'
 import { firebaseConnect, pathToJS } from 'react-redux-firebase'
+import { devshare } from 'redux-devshare'
 
 // Containers
 import SideBar from '../SideBar/SideBar'
@@ -10,6 +11,7 @@ import Pane from '../Pane/Pane'
 import WorkspacePopover from '../../components/WorkspacePopover/WorkspacePopover'
 import classes from './Workspace.scss'
 
+@devshare()
 @firebaseConnect()
 @connect(
   ({ firebase }) => ({
@@ -97,7 +99,7 @@ export default class Workspace extends Component {
 
   addFile = (path, content) => {
     console.log('add file called:', path, content)
-    this.props.firebase
+    this.props.devshare
       .project(this.props.project)
       .fileSystem
       .addFile(path, content)
@@ -109,7 +111,7 @@ export default class Workspace extends Component {
   }
 
   addFolder = path =>
-    this.props.firebase
+    this.props.devshare
       .project(this.props.project)
       .fileSystem
       .addFolder(path.replace('/', ''))
@@ -121,7 +123,7 @@ export default class Workspace extends Component {
       : this.addFile(path, content)
 
   deleteFile = (path) =>
-    this.props.firebase
+    this.props.devshare
       .project(this.props.project)
       .fileSystem
       .file(path)

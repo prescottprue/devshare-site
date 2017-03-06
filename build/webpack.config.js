@@ -21,6 +21,10 @@ const webpackConfig = {
     root: paths.client(),
     extensions: ['', '.js', '.jsx', '.json']
   },
+  stats: {
+    // silence critical dependency warnings from Firepad styles
+    warnings: false
+  },
   module: {}
 }
 // ------------------------------------
@@ -99,7 +103,7 @@ if (!__TEST__) {
 // JavaScript / JSON
 webpackConfig.module.loaders = [{
   test: /\.(js|jsx)$/,
-  exclude: [/node_modules/, /react-redux-firebase\//], // allow for npm linking without producing babel errors
+  exclude: [/node_modules/, /react-redux-firebase\//, /devshare\//], // allow for npm linking without producing babel errors
   loader: 'babel',
   query: config.compiler_babel
 }, {
@@ -119,6 +123,7 @@ const BASE_CSS_LOADER = 'css?sourceMap&-minimize'
 // These paths will be combined into a single regex.
 const PATHS_TO_TREAT_AS_CSS_MODULES = [
   // 'react-toolbox', (example)
+  'firepad'
 ]
 
 // If config has CSS modules enabled, treat this project's styles as CSS modules.
@@ -153,6 +158,7 @@ if (isUsingCSSModules) {
   webpackConfig.module.loaders.push({
     test: /\.css$/,
     include: cssModulesRegex,
+    exclude: [ /firepad\//, /devshare\// ],
     loaders: [
       'style',
       cssModulesLoader,

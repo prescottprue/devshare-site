@@ -12,6 +12,7 @@ import CopyIcon from 'material-ui/svg-icons/content/content-copy'
 import ArchiveIcon from 'material-ui/svg-icons/content/archive'
 import RaisedButton from 'material-ui/RaisedButton'
 import { connect } from 'react-redux'
+import { devshare } from 'redux-devshare'
 import { bindActionCreators } from 'redux'
 import { firebaseConnect, isLoaded, dataToJS } from 'react-redux-firebase'
 
@@ -22,33 +23,37 @@ import classes from './SideBar.scss'
 
 const fileEntityBlackList = ['.DS_Store', 'node_modules']
 
-// Icon styles
 const iconButtonStyle = { width: '50px', height: '50px', padding: '0px' }
 const iconStyle = { width: '100%', height: '100%' }
 const tooltipPosition = 'top-center'
+const projectSelectLabelStyle = {
+  fontSize: '1.5rem',
+  fontWeight: '300',
+  textOverflow: 'ellipsis'
+}
 
+@devshare()
 @firebaseConnect(
   ({ project, params }) => ([
     `files/${project.owner}/${project.name}`
   ])
 )
 @connect(
-  ({ firebase }, { project }) =>
-    ({
-      files: map(
-        dataToJS(firebase, `files/${project.owner}/${project.name}`),
-        (file, key) => Object.assign(file, { key })
-      )
-    }),
-  // Map dispatch to props
+  ({ firebase }, { project }) => ({
+    files: map(
+      dataToJS(firebase, `files/${project.owner}/${project.name}`),
+      (file, key) => Object.assign(file, { key })
+    )
+  }),
   (dispatch) =>
     bindActionCreators(TabActions, dispatch)
 )
 export default class SideBar extends Component {
 
   static propTypes = {
-    projects: PropTypes.array,
+    projects: PropTypes.object,
     firebase: PropTypes.object,
+    devshare: PropTypes.object,
     project: PropTypes.object.isRequired,
     files: PropTypes.array,
     tabs: PropTypes.object,
@@ -164,7 +169,7 @@ export default class SideBar extends Component {
   }
 
   deleteFile = path =>
-    this.props.firebase
+    this.props.devshare
       .project(this.props.project)
       .fileSystem
       .file(path)
@@ -172,7 +177,7 @@ export default class SideBar extends Component {
       // .then(file => event({ category: 'Files', action: 'File deleted' }))
 
   downloadClick = () =>
-    this.props.firebase
+    this.props.devshare
       .project(this.props.project)
       .download()
       .then(res => console.log('download successful:', res))
@@ -222,7 +227,7 @@ export default class SideBar extends Component {
             (projectsMenu && showProjects)
               ? <SelectField
                 style={{width: '80%', marginLeft: '10%'}}
-                labelStyle={{fontSize: '1.5rem', fontWeight: '300', textOverflow: 'ellipsis'}}
+                labelStyle={projectSelectLabelStyle}
                 autoWidth={false}
                 value={project.name}
                 children={projectsMenu}
