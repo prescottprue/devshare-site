@@ -55,6 +55,7 @@ export default class TreeView extends Component {
     const matchingInd = findIndex(tabs, (t) => t.file.path === tabData.file.path)
     // console.log('matching index:', tabs, tabData, matchingInd, )
     // Only open tab if file is not already open
+    console.debug('open file called', { matchingInd, file, tabs })
     if (matchingInd === -1) {
       this.props.openTab(project, tabData)
       this.props.navigateToTab(project) // Select last tab
@@ -127,7 +128,7 @@ export default class TreeView extends Component {
         <div className={classes.container}>
           <div className={classes.wrapper}>
             <div className={classes.loader}>
-              <CircularProgress size={0.75} />
+              <CircularProgress size={75} />
             </div>
           </div>
         </div>

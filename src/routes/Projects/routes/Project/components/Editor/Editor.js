@@ -66,7 +66,7 @@ export default class Editor extends Component {
     require('codemirror/mode/htmlmixed/htmlmixed')
     require('codemirror/mode/go/go')
     require('codemirror/mode/yaml/yaml')
-    require('codemirror/mode/pug/pug')
+    // require('codemirror/mode/pug/pug')
     require('codemirror/mode/markdown/markdown')
     require('codemirror/mode/sass/sass')
     require('codemirror/mode/shell/shell')
@@ -98,10 +98,12 @@ export default class Editor extends Component {
   handleLoad = (editor) => {
     // Load file content
     const Firepad = require('firepad')
+    console.log('calling load:', editor)
     const { project: { name, owner }, account } = this.props
     if (typeof editor.firepad === 'undefined') {
       const { fileSystem } = this.props.devshare.project(owner, name)
       const file = fileSystem.file(this.props.filePath)
+      console.debug('file:', file)
       try {
         try {
           this.firepad = Firepad.fromCodeMirror(
@@ -114,10 +116,12 @@ export default class Editor extends Component {
         }
         if (this.firepad && this.firepad.on) {
           this.firepad.on('ready', () => {
-            // TODO: Load original content of file
             if (this.firepad.isHistoryEmpty()) {
-              Firepad.Headless(fileSystem.firebaseRef()).getText(text => {
-                this.content = text
+              console.debug('history is empty, loading content')
+              // Load original content of file
+              file.get().then((content) => {
+                console.log('content loaded from file:', content)
+                this.firepad.setText(content.original)
               })
             }
           })
@@ -129,7 +133,9 @@ export default class Editor extends Component {
   }
 
   handleDispose = () => {
-    if (this.firepad && typeof this.firepad.dispose === 'function') { this.firepad.dispose() }
+    if (this.firepad && typeof this.firepad.dispose === 'function') {
+      this.firepad.dispose()
+    }
   }
 
   enableVim = () => {
