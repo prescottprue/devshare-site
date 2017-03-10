@@ -4,7 +4,7 @@ import classes from './CoreLayout.scss'
 import '../../styles/core.scss'
 
 export const CoreLayout = ({ children }) => (
-  <section class="core">
+  <section className={classes.coreLayout}>
     <Navbar />
     <section className={classes.mainContainer}>
       {children}
