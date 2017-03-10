@@ -24,6 +24,18 @@ const deployToFirebase = (cb) => {
     return
   }
 
+  debug('Installing firebase-tools...')
+
+  exec('npm install -g firebase-tools', (error, stdout) => {
+    if (error !== null && cb && typeof cb === 'function') {
+      cb(error, null)
+      return
+    }
+    if (cb && typeof cb === 'function') {
+      cb(null, stdout)
+    }
+  })
+
   debug('Deploying to Firebase...')
 
   if (TRAVIS_BRANCH === 'prod' || TRAVIS_BRANCH === 'stage') {
@@ -31,13 +43,11 @@ const deployToFirebase = (cb) => {
   }
 
   exec(`firebase deploy --token ${FIREBASE_TOKEN} --project ${projectName}`, (error, stdout) => {
-    if (error !== null) {
-      if (cb) {
-        cb(error, null)
-        return
-      }
+    if (error !== null && typeof cb === 'function') {
+      cb(error, null)
+      return
     }
-    if (cb) {
+    if (typeof cb === 'function') {
       cb(null, stdout)
     }
   })
