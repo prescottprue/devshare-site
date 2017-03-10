@@ -32,7 +32,7 @@ export default class Workspace extends Component {
   }
 
   static propTypes = {
-    firebase: PropTypes.shape({
+    devshare: PropTypes.shape({
       project: PropTypes.func,
       users: PropTypes.func
     }),
@@ -89,7 +89,8 @@ export default class Workspace extends Component {
 
   // TODO: expose search in redux-firebase
   searchUsers = (q, cb) => {
-    this.props.firebase.users()
+    this.props.devshare
+      .users()
       .search(q)
       .then(usersList =>
         cb(null, usersList),
@@ -97,8 +98,7 @@ export default class Workspace extends Component {
       )
   }
 
-  addFile = (path, content) => {
-    console.log('add file called:', path, content)
+  addFile = (path, content) =>
     this.props.devshare
       .project(this.props.project)
       .fileSystem
@@ -108,7 +108,6 @@ export default class Workspace extends Component {
         console.error('error adding file', error)
         this.error = error.toString
       })
-  }
 
   addFolder = path =>
     this.props.devshare

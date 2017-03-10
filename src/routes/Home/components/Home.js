@@ -48,15 +48,11 @@ export default class Home extends Component {
     // event({ category: 'Projects', action: 'Create Anonymous' })
     this.props.firebase
       .push('projects/anon', { name: 'test', createdAt: this.props.firebase.database.ServerValue.TIMESTAMP })
-      .then((snap) => {
-        return this.props.devshare
+      .then((snap) => this.props.devshare
           .project('anon', snap.key)
           .fileSystem
           .addFile('index.txt', 'You can add a file by clicking the plus in the lower left corner.\n Delete this file by left clicking on the file name on the left.')
-          .then(() => {
-            return snap
-          })
-      })
+          .then(() => snap))
       .then((snap) => {
         this.context.router.push(`anon/${snap.key}`)
       })

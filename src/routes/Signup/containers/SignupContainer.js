@@ -32,6 +32,7 @@ export default class Signup extends Component {
   static propTypes = {
     account: PropTypes.object,
     firebase: PropTypes.object,
+    devshare: PropTypes.object,
     authError: PropTypes.object
   }
 
@@ -46,10 +47,12 @@ export default class Signup extends Component {
 
   handleSignup = (creds) => {
     this.setState({ snackCanOpen: true })
-    this.props.devshare
-      .signup(creds)
+    this.props
+      // .devshare // devshare method
+      // .signup(creds)
+      .firebase // firebase method
+      .createUser(creds, { email: creds.email, username: creds.username })
       .then(account => {
-        console.log('account:', account)
         this.context.router.push(`${account.username}`)
       })
   }

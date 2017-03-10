@@ -2,8 +2,14 @@ import React, { PropTypes, Component } from 'react'
 import { each, omit, findIndex, last, size, map } from 'lodash'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
-import { firebaseConnect, isLoaded, isEmpty, dataToJS } from 'react-redux-firebase'
 import CircularProgress from 'material-ui/CircularProgress'
+import {
+  firebaseConnect,
+  isLoaded,
+  isEmpty,
+  dataToJS,
+  toJS
+} from 'react-redux-firebase'
 import { actions as TabActions } from '../../modules/tabs'
 import TreeFolder from '../../components/TreeFolder'
 import TreeFile from '../../components/TreeFile'
@@ -17,11 +23,13 @@ const fileEntityBlackList = ['.DS_Store', 'node_modules']
   ])
 )
 @connect(
-  ({ firebase, tabs }, { project: { name, owner } }) =>
-    ({
-      tabs: tabs[`${owner}/${name}`] && tabs[`${owner}/${name}`].list ? tabs[`${owner}/${name}`].list : [],
-      files: dataToJS(firebase, `files/${owner}/${name}`)
-    }),
+  ({ firebase, tabs }, { project: { owner, name } }) => ({
+    tabs: toJS(tabs)[`${owner}/${name}`] || { list: [], currentIndex: 0 },
+    files: map(
+      dataToJS(firebase, `files/${owner}/${name}`),
+      (file, key) => Object.assign(file, { key })
+    )
+  }),
   // Map dispatch to props
   (dispatch) =>
     bindActionCreators(TabActions, dispatch)
@@ -30,8 +38,8 @@ export default class TreeView extends Component {
 
   static propTypes = {
     project: PropTypes.object.isRequired,
-    files: PropTypes.object,
-    tabs: PropTypes.array.isRequired,
+    files: PropTypes.array,
+    tabs: PropTypes.object.isRequired,
     openTab: PropTypes.func.isRequired,
     navigateToTab: PropTypes.func.isRequired,
     fileStructure: PropTypes.arrayOf(PropTypes.shape({
@@ -51,17 +59,17 @@ export default class TreeView extends Component {
       file
     }
 
-    // Search for already matching path
-    const matchingInd = findIndex(tabs, (t) => t.file.path === tabData.file.path)
-    // console.log('matching index:', tabs, tabData, matchingInd, )
+    // check if tab is already open
+    let tabIndex = findIndex(tabs.list, (t) => t.file.path === tabData.file.path)
+
     // Only open tab if file is not already open
-    console.debug('open file called', { matchingInd, file, tabs })
-    if (matchingInd === -1) {
+    if (tabIndex < 0) {
       this.props.openTab(project, tabData)
-      this.props.navigateToTab(project) // Select last tab
-    } else {
-      this.props.navigateToTab(project, matchingInd)
+      tabIndex = tabs.list.length
     }
+
+    // activate selected tab
+    this.props.navigateToTab(project, tabIndex)
   }
 
   onFilesAdd = (e) => {
