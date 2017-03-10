@@ -1,2 +1,11 @@
 .mainContainer {
 }
+section:first-child {
+  display: flex;
+  flex-flow: column nowrap;
+}
+section:first-child,
+section:first-child > section {
+  height: 100%;
+  position: relative;
+}
