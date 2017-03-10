@@ -25,9 +25,12 @@ script:
   # - npm run test
   - npm run build:prod
 
-after_success:
-  - npm run deploy
-  # - npm run codecov
+deploy:
+  skip_cleanup: true
+  provider: firebase
+  token:
+    project: $TRAVIS_BRANCH
+    secure: $FIREBASE_TOKEN
 
 notifications:
   email:

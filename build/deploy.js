@@ -24,18 +24,6 @@ const deployToFirebase = (cb) => {
     return
   }
 
-  debug('Installing firebase-tools...')
-
-  exec('npm install -g firebase-tools', (error, stdout) => {
-    if (error !== null && cb && typeof cb === 'function') {
-      cb(error, null)
-      return
-    }
-    if (cb && typeof cb === 'function') {
-      cb(null, stdout)
-    }
-  })
-
   debug('Deploying to Firebase...')
 
   if (TRAVIS_BRANCH === 'prod' || TRAVIS_BRANCH === 'stage') {
