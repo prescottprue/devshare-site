@@ -141,7 +141,10 @@ export default class Editor extends Component {
 
   render () {
     return (
-      <div className={classes['container']} id={this.props.name} />
+      <section className={classes['editor']}>
+        <style>{'.CodeMirror,.CodeMirror-scroll,.firepad {overflow: hidden; overflow-y: scroll; position: relative; height: 100%; width: 100%;}'}</style>
+        <div className={classes['container']} id={this.props.name} />
+      </section>
     )
   }
 }
