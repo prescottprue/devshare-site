@@ -3,12 +3,11 @@ sudo: false
 language: node_js
 
 node_js:
-  - 6.9.1
+  - 6.10.0
 
-# cache:
-#   bundler: true
-#   directories:
-#     - node_modules # NPM packages
+cache:
+  directories:
+    - node_modules
 
 install:
   - npm set progress=false
