@@ -22,14 +22,14 @@ branches:
 script:
   - npm run config
   - npm run lint:fix
-  # - npm run test
+  - npm run test
   - npm run build:prod
 
 deploy:
-  skip_cleanup: true
   provider: firebase
+  project: $TRAVIS_BRANCH
+  skip_cleanup: true
   token:
-    project: $TRAVIS_BRANCH
     secure: $FIREBASE_TOKEN
 
 notifications:
