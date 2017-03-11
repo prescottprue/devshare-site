@@ -1,28 +1,69 @@
 @import 'base';
 
-.container {
-  @extend .flex-row-center;
+.container, .form, .pane, .settings {
   align-items: center;
-  padding-top: 4rem;
-}
-.pane {
-  @extend .flex-column-center;
-  justify-content: space-around;
-  flex-basis: 60%;
-}
-.settings {
-  width: 100%;
   display: flex;
-  flex-direction: row;
-  align-items: center;
   justify-content: center;
 }
+
+.container, .settings {
+  flex-direction: row;
+}
+
+.form, .pane {
+  flex-direction: column;
+}
+
+.pane {
+  padding: 8rem 4rem 4rem;
+  margin-top: 9rem;
+}
+
+.settings {
+  align-items: flex-start;
+  width: 100%;
+}
+
+.title {
+  margin: 0 0 1rem 0;
+}
+
 .avatar {
-  &Current {
+  align-items: center;
+  flex-direction: column;
+  position: absolute;
+
+  img {
+    border-radius: 50%;
+    box-shadow: 0 0 0.5rem #424242;
+    // margin: 1rem auto;
+    margin-top: -16rem;
+  }
+
+  &-new {
+    &-droptext {
+      height: 100%;
+      font-size: 1.3rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+    }
+  }
+  &-current {
     width: 100%;
     max-width: 13rem;
     height: auto;
     cursor: pointer;
+  }
+}
+
+.ImageManager {
+  display: flex;
+  flex-direction: row;
+  .Preview {
+    width: 10rem;
+    height: auto;
   }
 }
 .meta {

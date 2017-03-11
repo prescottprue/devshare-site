@@ -50,19 +50,19 @@ export default class Account extends Component {
       <div className={classes.container}>
         <Paper className={classes.pane}>
           <div className={classes.settings}>
-            <div className={classes.avatar}>
+            <section className={classes.avatar}>
               <img
                 className={classes.avatarCurrent}
                 src={account && account.avatarUrl || defaultUserImageUrl}
                 onClick={this.toggleModal}
               />
-            </div>
-            <div className={classes.meta}>
+            </section>
+            <section className={classes.form}>
               <AccountForm
                 onSubmit={saveAccount}
                 account={account}
               />
-            </div>
+            </section>
           </div>
         </Paper>
       </div>

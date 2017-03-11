@@ -2,11 +2,27 @@
 .container {
   @extend .flex-column-center;
   justify-content: flex-start;
+  flex-flow: column nowrap;
   height: 100%;
   width: 100%;
+  margin: .2rem;
+
+  > div {
+    width: 100%;
+  }
 }
 
 .accounts {
   @extend .flex-column-center;
   width: 50%;
+}
+
+.title {
+  margin: 3rem 0 0;
+  color: #455A64 !important;
+  text-transform: lowercase;
+  font-variant: small-caps;
+  font-size: 1.66rem;
+  width: 100%;
+  text-align: left;
 }
