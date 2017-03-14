@@ -155,13 +155,15 @@ export default class TreeView extends Component {
               )
             : (
               <div className={classes.none} key='NotFound-1'>
-                <div className={classes['none-desktop']}>
-                  <span><strong>Right click</strong></span>
-                  <span className=''>OR</span>
+                <div className={classes.emptyDesktop}>
+                  <span>
+                    <strong>Right click</strong>
+                  </span>
+                  <span>OR</span>
                   <strong>Drop files</strong>
                   <span>to get started</span>
                 </div>
-                <div className={classes['none-mobile']}>
+                <div className={classes.emptyMobile}>
                   <span>Touch the Plus to get started</span>
                 </div>
               </div>

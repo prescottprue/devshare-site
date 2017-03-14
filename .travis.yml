@@ -11,7 +11,7 @@ cache:
 
 install:
   - npm set progress=false
-  - npm install
+  - npm install # install project dependencies
 
 branches:
   only:
@@ -24,6 +24,9 @@ script:
   - npm run lint:fix
   - npm run test
   - npm run build:prod
+
+after_success:
+  - npm install --prefix ./functions # install functions dependencies
 
 deploy:
   provider: firebase
