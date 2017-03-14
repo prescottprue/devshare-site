@@ -1,9 +1,7 @@
 const functions = require('firebase-functions');
-const nodemailer = require('nodemailer');
 const admin = require('firebase-admin');
 admin.initializeApp(functions.config().firebase);
-
-// Authenticate to Algolia Database.
+const nodemailer = require('nodemailer');
 const algoliasearch = require('algoliasearch');
 
 // Configure the email transport using the default SMTP transport and a GMail account.
@@ -64,15 +62,14 @@ exports.sendByeEmail = functions.auth.user().onDelete(event => {
 /**
  * @description Updates the search index when user entries are created or updated
  */
-exports.indexentry = functions.database.ref('/testing/$userid').onWrite(event => {
+exports.searchIndex = functions.database.ref('/users/{userid}').onWrite(event => {
+  console.log('index entry:', event.data.val(), event.data.key);
   const client = algoliasearch(functions.config().algolia.key, functions.config().algolia.secret);
   const index = client.initIndex('users');
 
   // TODO: Only index if it has changed
   const firebaseObject = event.data.val();
   firebaseObject.objectID = event.data.key;
-  console.log('index entry:', event.data.val(), event.data.key);
-
   return index.saveObject(firebaseObject)
 });
 
@@ -80,19 +77,20 @@ exports.indexentry = functions.database.ref('/testing/$userid').onWrite(event =>
  * @description Starts a search query whenever a query is requested (by adding one to the `/search/queries`
  * element. Search results are then written under `/search/results`.
  */
-exports.searchentry = functions.database.ref('/search/queries/$queryid').onWrite(event => {
+exports.searchQuery = functions.database.ref('/search/queries/{queryid}').onWrite(event => {
+  console.log('search:', event.data.val());
   const client = algoliasearch(functions.config().algolia.key, functions.config().algolia.secret);
   const index = client.initIndex('users');
 
   const query = event.data.val().query;
   const key = event.data.key;
-  console.log('search:', event.data.val());
-  return Promise.resolve('asdf')
-  // return index.search(query).then(content => {
-  //   const updates = {
-  //     '/last_query': event.timestamp
-  //   };
-  //   updates[`/search/results/${key}`] = content;
-  //   return admin.database().ref().update(updates);
-  // });
+  console.log('index entry:', event.data.val(), event.data.key);
+
+  return index.search(query).then(content => {
+    const updates = {
+      '/last_query': event.timestamp
+    };
+    updates[`/search/results/${key}`] = content;
+    return admin.database().ref().update(updates);
+  });
 });
