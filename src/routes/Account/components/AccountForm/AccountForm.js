@@ -1,57 +1,37 @@
 import React, { PropTypes } from 'react'
-import { Field, reduxForm } from 'redux-form'
+import { Field } from 'redux-form'
 import TextField from '../../../../components/TextField'
 import classes from './AccountForm.scss'
 import ProviderDataForm from '../ProviderDataForm/ProviderDataForm'
 
-import { connect } from 'react-redux'
-import { helpers } from 'redux-devshare'
-const { pathToJS } = helpers
-
 export const AccountForm = ({ account, handleSubmit, submitting }) => (
-  <div className={classes['Account']}>
-    <h4>Account</h4>
-    <div>
-      <Field
-        name='username'
-        component={TextField}
-        label='Username'
-      />
-    </div>
-    <div>
-      <Field
-        name='email'
-        component={TextField}
-        label='Email'
-      />
-    </div>
-    <div>
-      <h4>Linked Accounts</h4>
-      {
-        account.providerData &&
-          <ProviderDataForm
-            providerData={account.providerData}
-          />
-      }
-    </div>
+  <div className={classes.container}>
+    <Field
+      name='username'
+      label='Username'
+      component={TextField}
+    />
+    <Field
+      name='email'
+      label='Email'
+      component={TextField}
+    />
+    <h4 className={classes.title}>Linked Accounts</h4>
+    {
+      account.providerData &&
+        <ProviderDataForm
+          providerData={account.providerData}
+        />
+    }
   </div>
 )
 
 AccountForm.propTypes = {
   account: PropTypes.shape({
-    providerData: PropTypes.array
+    providerData: PropTypes.object
   }),
   handleSubmit: PropTypes.func,
   submitting: PropTypes.bool
 }
 
-const AccountReduxForm = reduxForm({
-  form: 'Account'
-})(AccountForm)
-
-export default connect(({devshare}) => (
-  {
-    initialValues: pathToJS(devshare, 'profile'),
-    account: pathToJS(devshare, 'profile')
-  }
-))(AccountReduxForm)
+export default AccountForm

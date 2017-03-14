@@ -11,7 +11,7 @@ import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import { actions as TabActions } from '../../modules/tabs'
 import { devshare, helpers } from 'redux-devshare'
-const { isLoaded, isEmpty, dataToJS } = helpers
+const { isLoaded, isEmpty, dataToJS, toJS } = helpers
 
 const fileEntityBlackList = ['.DS_Store', 'node_modules']
 
@@ -22,14 +22,13 @@ const fileEntityBlackList = ['.DS_Store', 'node_modules']
     ])
 )
 @connect(
-  ({ devshare, tabs }, { project: { name, owner } }) =>
-    ({
-      tabs: tabs[`${owner}/${name}`] && tabs[`${owner}/${name}`].list ? tabs[`${owner}/${name}`].list : [],
-      files: map(
+  ({devshare, tabs}, { project: { owner, name } }) => ({
+    tabs: toJS(tabs)[`${owner}/${name}`] || { list: [], currentIndex: 0 },
+    files: map(
         dataToJS(devshare, `files/${owner}/${name}`),
         (file, key) => Object.assign(file, { key })
       )
-    }),
+  }),
   // Map dispatch to props
   (dispatch) =>
     bindActionCreators(TabActions, dispatch)
@@ -39,7 +38,7 @@ export default class TreeView extends Component {
   static propTypes = {
     project: PropTypes.object.isRequired,
     files: PropTypes.array,
-    tabs: PropTypes.array.isRequired,
+    tabs: PropTypes.object.isRequired,
     openTab: PropTypes.func.isRequired,
     navigateToTab: PropTypes.func.isRequired,
     fileStructure: PropTypes.arrayOf(PropTypes.shape({
@@ -59,31 +58,32 @@ export default class TreeView extends Component {
       file
     }
 
-    // Search for already matching path
-    const matchingInd = findIndex(tabs, (t) => t.file.path === tabData.file.path)
-    // console.log('matching index:', tabs, tabData, matchingInd, )
+    // check if tab is already open
+    let tabIndex = findIndex(tabs.list, (t) => t.file.path === tabData.file.path)
+
     // Only open tab if file is not already open
-    if (matchingInd === -1) {
+    if (tabIndex < 0) {
       this.props.openTab(project, tabData)
-      // Select last tab
-      return this.props.navigateToTab(project)
+      tabIndex = tabs.list.length
     }
 
-    this.props.navigateToTab(project, matchingInd)
+    // activate selected tab
+    this.props.navigateToTab(project, tabIndex)
   }
 
   onFilesAdd = (e) => {
     e.preventDefault()
     each(e.target.files, item => {
-      if (fileEntityBlackList.indexOf(last(item.webkitRelativePath.split('/'))) !== -1) {
-        return void 0
+      if (fileEntityBlackList.indexOf(last(item.webkitRelativePath.split('/'))) === -1) {
+        this.readAndSaveFileEntry(item)
       }
-      this.readAndSaveFileEntry(item)
     })
   }
 
   getStructure = () => {
-    if (!this.props.files || !this.props.files.length) return null
+    if (!this.props.files || !this.props.files.length) {
+      return null
+    }
     return this.props.files.map((entry, i) => {
       // no metadata
       if (!entry.meta) {
@@ -132,10 +132,10 @@ export default class TreeView extends Component {
     const structure = this.getStructure()
     if (!isLoaded(files)) {
       return (
-        <div className={classes['container']}>
-          <div className={classes['wrapper']}>
-            <div className={classes['loader']}>
-              <CircularProgress size={0.75} />
+        <div className={classes.container}>
+          <div className={classes.wrapper}>
+            <div className={classes.loader}>
+              <CircularProgress size={40} />
             </div>
           </div>
         </div>
@@ -143,24 +143,26 @@ export default class TreeView extends Component {
     }
 
     return (
-      <div className={classes['container']}>
-        <div className={classes['wrapper']}>
+      <div className={classes.container}>
+        <div className={classes.wrapper}>
           {
             !isEmpty(files)
             ? (
-              <ol className={classes['structure']}>
+              <ol className={classes.structure}>
                 {structure}
               </ol>
               )
             : (
-              <div className={classes['none']} key='NotFound-1'>
-                <div className={classes['none-desktop']}>
-                  <span><strong>Right click</strong></span>
-                  <span className=''>OR</span>
+              <div className={classes.none} key='NotFound-1'>
+                <div className={classes.emptyDesktop}>
+                  <span>
+                    <strong>Right click</strong>
+                  </span>
+                  <span>OR</span>
                   <strong>Drop files</strong>
                   <span>to get started</span>
                 </div>
-                <div className={classes['none-mobile']}>
+                <div className={classes.emptyMobile}>
                   <span>Touch the Plus to get started</span>
                 </div>
               </div>

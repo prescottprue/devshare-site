@@ -17,14 +17,13 @@ import { map } from 'lodash'
 // const { pathToJS, dataToJS, isLoaded, isEmpty } = helpers
 
 export default class SharingDialog extends Component {
-
   state = {
     error: null
   }
 
   static propTypes = {
     project: PropTypes.object.isRequired,
-    open: PropTypes.bool,
+    open: PropTypes.bool, // react/no-unused-prop-types
     error: PropTypes.object,
     onRequestClose: PropTypes.func,
     searchUsers: PropTypes.func.isRequired,
@@ -140,14 +139,14 @@ export default class SharingDialog extends Component {
         {
           collabsList
             ? (
-            <List>
-              {collabsList}
-            </List>
+              <List>
+                {collabsList}
+              </List>
             )
             : (
-            <div className={classes['no-collabs']}>
-              <span>No current collaborators</span>
-            </div>
+              <div className={classes['no-collabs']}>
+                <span>No current collaborators</span>
+              </div>
             )
         }
         <div className={classes['search-container']}>
