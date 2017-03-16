@@ -27,7 +27,7 @@ script:
 
 after_success:
   - npm install --prefix ./functions # install functions dependencies
-  # - npm i -g firebase-ci # install firebase-ci
+  - npm i -g firebase-ci # install firebase-ci
   - firebase-ci deploy
 
 notifications:
