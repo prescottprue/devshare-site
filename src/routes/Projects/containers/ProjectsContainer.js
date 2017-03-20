@@ -34,7 +34,7 @@ const populates = [
     auth: pathToJS(firebase, 'auth')
   })
 )
-export class Projects extends Component {
+export default class Projects extends Component {
 
   static contextTypes = {
     router: React.PropTypes.object.isRequired
@@ -105,24 +105,22 @@ export class Projects extends Component {
     // User has no projects and doesn't match logged in user
     if (isEmpty(projects) && account && username !== account.username) {
       return (
-        <div className={classes['container']}>
+        <div className={classes.container}>
           <div>This user has no projects</div>
         </div>
       )
     }
 
-    const projectsList = map(projects, (project, i) =>
-      (
-        <ProjectTile
-          key={`Project-${i}`}
-          project={project}
-          onCollabClick={this.collabClick}
-          onAddCollabClick={() => this.toggleModal('addCollab', project)}
-          onSelect={this.openProject}
-          onDelete={this.deleteProject}
+    const projectsList = map(projects, (project, i) => (
+      <ProjectTile
+        key={`Project-${i}`}
+        project={project}
+        onCollabClick={this.collabClick}
+        onAddCollabClick={() => this.toggleModal('addCollab', project)}
+        onSelect={this.openProject}
+        onDelete={this.deleteProject}
       />
-      )
-    )
+    ))
 
     // If username doesn't match route then hide add project tile
     if (account && account.username === username) {
@@ -135,7 +133,7 @@ export class Projects extends Component {
     }
 
     return (
-      <div className={classes['container']}>
+      <div className={classes.container}>
         {
           addCollabModal
           ? (
@@ -159,11 +157,10 @@ export class Projects extends Component {
             />
           ) : null
         }
-        <div className={classes['tiles']}>
+        <div className={classes.tiles}>
           {projectsList}
         </div>
       </div>
     )
   }
 }
-export default Projects

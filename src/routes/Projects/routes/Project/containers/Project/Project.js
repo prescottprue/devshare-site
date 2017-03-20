@@ -1,6 +1,7 @@
 import React, { Component, PropTypes } from 'react'
 import { connect } from 'react-redux'
 import { devshare } from 'redux-devshare'
+import { toArray } from 'lodash'
 import { firebaseConnect, dataToJS, isLoaded } from 'react-redux-firebase'
 import LoadingSpinner from 'components/LoadingSpinner'
 import SharingDialog from 'components/SharingDialog'
@@ -13,15 +14,27 @@ import classes from './Project.scss'
   // Get paths from firebase
   ({ params: { username, projectname } }) => ([
     `projects/${username}`,
-    `projects/${username}/${projectname}`
+    `projects/${username}/${projectname}`,
+    // TODO: Use population instead of loading whole usernames list
+    // `projects/${params.username}#populate=collaborators:users`,
+    'usernames'
   ])
 )
 @connect(
   // Map state to props
-  ({ firebase }, { params: { username, projectname } }) => ({
-    projects: dataToJS(firebase, `projects/${username}`),
-    project: Object.assign({}, dataToJS(firebase, `projects/${username}/${projectname}`), { owner: username, name: projectname })
-  })
+  ({ firebase }, { params }) => {
+    const project = dataToJS(firebase, `projects/${params.username}/${params.projectname}`)
+    // TODO: Replace this with population
+    if (project && project.collaborators && dataToJS(firebase, 'usernames')) {
+      project.collaborators = project.collaborators.map(id => ({
+        username: dataToJS(firebase, 'usernames')[id]
+      }))
+    }
+    return {
+      projects: toArray(dataToJS(firebase, `projects/${params.username}`)),
+      project
+    }
+  }
 )
 export default class Project extends Component {
   static contextTypes = {
