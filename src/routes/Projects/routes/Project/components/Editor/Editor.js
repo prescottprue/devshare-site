@@ -2,9 +2,10 @@ import React, { PropTypes, Component } from 'react'
 import { devshare } from 'redux-devshare'
 
 import { connect } from 'react-redux'
-import { pathToJS } from 'react-redux-firebase'
+import { pathToJS, firebaseConnect } from 'react-redux-firebase'
 import classes from './Editor.scss'
 
+@firebaseConnect()
 @devshare()
 @connect(
   // Map state to props
@@ -18,6 +19,9 @@ export default class Editor extends Component {
     mode: PropTypes.string,
     account: PropTypes.shape({
       username: PropTypes.string.isRequired
+    }),
+    firebase: PropTypes.shape({
+      ref: PropTypes.func.isRequired
     }),
     devshare: PropTypes.object,
     theme: PropTypes.string,
@@ -103,11 +107,11 @@ export default class Editor extends Component {
     if (typeof editor.firepad === 'undefined') {
       const { fileSystem } = this.props.devshare.project(owner, name)
       const file = fileSystem.file(this.props.filePath)
-      console.debug('file:', file)
+      console.debug('file:', file, file.firebaseUrl())
       try {
         try {
           this.firepad = Firepad.fromCodeMirror(
-            file.firebaseRef(),
+            this.props.firebase.ref(file.firebaseUrl()),
             editor,
             { userId: account ? account.username : '&' }
           )
