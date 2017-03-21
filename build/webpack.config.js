@@ -25,7 +25,9 @@ const webpackConfig = {
     // silence critical dependency warnings from Firepad styles
     warnings: false
   },
-  module: {}
+  module: {
+    noParse: [ /firepad/ ]
+  }
 }
 // ------------------------------------
 // Entry Points
