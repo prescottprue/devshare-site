@@ -16,9 +16,11 @@ describe('(Route) Signup', () => {
   it('Sets Path to /signup', () => {
     expect(_route.path).to.equal('/signup')
   })
+
   it('Defines a getComponent function', () => {
     expect(_route.getComponent).to.be.a.function
   })
+
   it('Defines a getChildRoutes function', () => {
     expect(_route.getChildRoutes).to.be.a.function
   })
