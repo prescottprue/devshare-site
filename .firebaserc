@@ -6,7 +6,7 @@
     "master": "devshare-int",
     "default": "devshare-int"
   },
-  "ci": {
+  "functions": {
     "mapEnv": {
       "TRAVIS_BRANCH": "travis.branch"
     }
