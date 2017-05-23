@@ -40,7 +40,7 @@ export default class Login extends Component {
 
   handleLogin = loginData => {
     this.setState({ snackCanOpen: true })
-    this.props.firebase.login(loginData)
+    return this.props.firebase.login(loginData)
   }
 
   providerLogin = (provider) =>

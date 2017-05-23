@@ -28,7 +28,7 @@ const avatarStyles = {
     account: pathToJS(firebase, 'profile')
   })
 )
-export class Navbar extends Component {
+export default class Navbar extends Component {
   static contextTypes = {
     router: PropTypes.object.isRequired
   }
@@ -110,5 +110,3 @@ export class Navbar extends Component {
     )
   }
 }
-
-export default Navbar

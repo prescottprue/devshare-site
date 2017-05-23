@@ -1,7 +1,6 @@
 import React, { Component, PropTypes } from 'react'
 import { Link } from 'react-router'
 import { connect } from 'react-redux'
-import { devshare } from 'redux-devshare'
 import { firebaseConnect, pathToJS, isLoaded, isEmpty } from 'react-redux-firebase'
 import GoogleButton from 'react-google-button'
 import Paper from 'material-ui/Paper'
@@ -17,7 +16,6 @@ import SignupForm from '../components/SignupForm/SignupForm'
 import classes from './SignupContainer.scss'
 
 @UserIsNotAuthenticated // redirect to home if logged in
-@devshare()
 @firebaseConnect()
 @connect(
   ({firebase}) => ({
@@ -32,7 +30,6 @@ export default class Signup extends Component {
   static propTypes = {
     account: PropTypes.object,
     firebase: PropTypes.object,
-    devshare: PropTypes.object,
     authError: PropTypes.object
   }
 
@@ -47,10 +44,7 @@ export default class Signup extends Component {
 
   handleSignup = (creds) => {
     this.setState({ snackCanOpen: true })
-    this.props
-      // .devshare // devshare method
-      // .signup(creds)
-      .firebase // firebase method
+    return this.props.firebase
       .createUser(creds, { email: creds.email, username: creds.username })
       .then(account => {
         this.context.router.push(`${account.username}`)
@@ -59,7 +53,7 @@ export default class Signup extends Component {
 
   providerLogin = (provider) => {
     this.setState({ snackCanOpen: true })
-    this.props.firebase
+    return this.props.firebase
       .login({ provider })
       .then(account =>
         this.context.router.push(`${account.username}`)
