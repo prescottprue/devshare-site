@@ -43,7 +43,7 @@ export default class Project extends Component {
 
   static propTypes = {
     account: PropTypes.object,
-    projects: PropTypes.object,
+    projects: PropTypes.array,
     project: PropTypes.object,
     auth: PropTypes.object,
     params: PropTypes.object.isRequired,

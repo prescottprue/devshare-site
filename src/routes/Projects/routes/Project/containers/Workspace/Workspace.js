@@ -19,18 +19,6 @@ import classes from './Workspace.scss'
   })
 )
 export default class Workspace extends Component {
-
-  state = {
-    inputVisible: false,
-    settingsOpen: false,
-    sharingOpen: false,
-    addPath: '',
-    addType: 'file',
-    popoverOpen: false,
-    debouncedFiles: null,
-    filesLoading: false
-  }
-
   static propTypes = {
     devshare: PropTypes.shape({
       project: PropTypes.func,
@@ -42,7 +30,7 @@ export default class Workspace extends Component {
     }),
     account: PropTypes.object,
     project: PropTypes.object,
-    projects: PropTypes.object,
+    projects: PropTypes.array,
     tabs: PropTypes.object,
     showProjects: PropTypes.bool,
     hideName: PropTypes.bool,
@@ -54,6 +42,17 @@ export default class Workspace extends Component {
     onSettingsClick: PropTypes.func.isRequired,
     onSharingClick: PropTypes.func.isRequired,
     onProjectSelect: PropTypes.func
+  }
+
+  state = {
+    inputVisible: false,
+    settingsOpen: false,
+    sharingOpen: false,
+    addPath: '',
+    addType: 'file',
+    popoverOpen: false,
+    debouncedFiles: null,
+    filesLoading: false
   }
 
   toggleSettingsModal = () =>

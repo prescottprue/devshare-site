@@ -49,9 +49,8 @@ const projectSelectLabelStyle = {
     bindActionCreators(TabActions, dispatch)
 )
 export default class SideBar extends Component {
-
   static propTypes = {
-    projects: PropTypes.object,
+    projects: PropTypes.array,
     firebase: PropTypes.object,
     devshare: PropTypes.object,
     project: PropTypes.object.isRequired,
