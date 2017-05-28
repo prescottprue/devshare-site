@@ -1,22 +1,18 @@
 import React, { Component, PropTypes } from 'react'
-import { connect } from 'react-redux'
-import { firebaseConnect, pathToJS } from 'react-redux-firebase'
 import { devshare } from 'redux-devshare'
-
-// Containers
-import SideBar from '../SideBar/SideBar'
-import Pane from '../Pane/Pane'
-
-// Components
-import WorkspacePopover from '../../components/WorkspacePopover/WorkspacePopover'
+import { findIndex } from 'lodash'
+import { connect } from 'react-redux'
+import { bindActionCreators } from 'redux'
+import { actions as TabActions } from '../../modules/tabs'
+import SideBar from '../SideBar'
+import Pane from '../Pane'
+import WorkspacePopover from '../../components/WorkspacePopover'
 import classes from './Workspace.scss'
 
 @devshare()
-@firebaseConnect()
 @connect(
-  ({ firebase }) => ({
-    account: pathToJS(firebase, 'profile')
-  })
+  null,
+  (dispatch) => bindActionCreators(TabActions, dispatch)
 )
 export default class Workspace extends Component {
   static propTypes = {
@@ -30,8 +26,9 @@ export default class Workspace extends Component {
     }),
     account: PropTypes.object,
     project: PropTypes.object,
-    projects: PropTypes.array,
+    projects: PropTypes.object,
     tabs: PropTypes.object,
+    files: PropTypes.object,
     showProjects: PropTypes.bool,
     hideName: PropTypes.bool,
     showButtons: PropTypes.bool,
@@ -41,7 +38,8 @@ export default class Workspace extends Component {
     removeCollaborator: PropTypes.func,
     onSettingsClick: PropTypes.func.isRequired,
     onSharingClick: PropTypes.func.isRequired,
-    onProjectSelect: PropTypes.func
+    onProjectSelect: PropTypes.func,
+    openTab: PropTypes.func
   }
 
   state = {
@@ -99,7 +97,7 @@ export default class Workspace extends Component {
 
   addFile = (path, content) =>
     this.props.devshare
-      .project(this.props.project)
+      .project(this.props.params.username, this.props.params.projectname)
       .fileSystem
       .addFile(path, content)
       // .then(file => event({ category: 'Files', action: 'File added' }))
@@ -128,6 +126,28 @@ export default class Workspace extends Component {
       .remove()
       // .then(file => event({ category: 'Files', action: 'File deleted' }))
 
+  openFile = file => {
+    console.debug('open file called', file)
+    const { tabs, params: { username, projectname } } = this.props
+    const tabData = {
+      title: file.name || file.path.split('/')[file.path.split('/').length - 1],
+      type: 'file',
+      file
+    }
+
+    // check if tab is already open
+    let tabIndex = findIndex(tabs.list, (t) => t.file.path === tabData.file.path)
+
+    // Only open tab if file is not already open
+    if (tabIndex < 0) {
+      this.props.openTab({ name: projectname, owner: username }, tabData)
+      tabIndex = tabs.list.length
+    }
+
+    // activate selected tab
+    this.props.navigateToTab({ name: projectname, owner: username }, tabIndex)
+  }
+
   render () {
     const {
       project,
@@ -135,7 +155,9 @@ export default class Workspace extends Component {
       onSettingsClick,
       onSharingClick,
       account,
-      projects
+      files,
+      projects,
+      tabs
     } = this.props
 
     return (
@@ -152,14 +174,17 @@ export default class Workspace extends Component {
           project={project}
           projects={projects}
           account={account}
+          files={files}
+          tabs={tabs}
+          onFileClick={this.openFile}
           onSettingsClick={onSettingsClick}
           onSharingClick={onSharingClick}
           showProjects={!!account && !!account.username}
           onShowPopover={this.showPopover}
         />
         <Pane
-          project={project}
-          params={params}
+          project={{ name: params.projectname, owner: params.username }}
+          tabs={tabs}
         />
       </div>
     )

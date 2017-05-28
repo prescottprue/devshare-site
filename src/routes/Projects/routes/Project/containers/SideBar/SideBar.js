@@ -1,5 +1,5 @@
 import React, { PropTypes, Component } from 'react'
-import { isArray, each, last, map } from 'lodash'
+import { each, last, map } from 'lodash'
 import classnames from 'classnames'
 import SelectField from 'material-ui/SelectField'
 import MenuItem from 'material-ui/MenuItem'
@@ -14,10 +14,10 @@ import RaisedButton from 'material-ui/RaisedButton'
 import { connect } from 'react-redux'
 import { devshare } from 'redux-devshare'
 import { bindActionCreators } from 'redux'
-import { firebaseConnect, isLoaded, dataToJS } from 'react-redux-firebase'
+import { isLoaded } from 'react-redux-firebase'
 
-import TreeView from '../TreeView'
-import ContextMenu from '../../components/ContextMenu/ContextMenu'
+import TreeView from '../../components/TreeView'
+import ContextMenu from '../../components/ContextMenu'
 import { actions as TabActions } from '../../modules/tabs'
 import classes from './SideBar.scss'
 
@@ -33,28 +33,17 @@ const projectSelectLabelStyle = {
 }
 
 @devshare()
-@firebaseConnect(
-  ({ project, params }) => ([
-    `files/${project.owner}/${project.name}`
-  ])
-)
 @connect(
-  ({ firebase }, { project }) => ({
-    files: map(
-      dataToJS(firebase, `files/${project.owner}/${project.name}`),
-      (file, key) => Object.assign(file, { key })
-    )
-  }),
-  (dispatch) =>
-    bindActionCreators(TabActions, dispatch)
+  null,
+  (dispatch) => bindActionCreators(TabActions, dispatch)
 )
 export default class SideBar extends Component {
   static propTypes = {
-    projects: PropTypes.array,
+    projects: PropTypes.object,
     firebase: PropTypes.object,
     devshare: PropTypes.object,
     project: PropTypes.object.isRequired,
-    files: PropTypes.array,
+    files: PropTypes.object,
     tabs: PropTypes.object,
     openTab: PropTypes.func,
     closeTab: PropTypes.func,
@@ -62,7 +51,8 @@ export default class SideBar extends Component {
     onSettingsClick: PropTypes.func.isRequired,
     onSharingClick: PropTypes.func.isRequired,
     navigateToTab: PropTypes.func,
-    onShowPopover: PropTypes.func
+    onShowPopover: PropTypes.func,
+    onFileClick: PropTypes.func
   }
 
   state = {
@@ -190,6 +180,15 @@ export default class SideBar extends Component {
     console.log('Open clone dialog')
   }
 
+  onFilesAdd = (e) => {
+    e.preventDefault()
+    each(e.target.files, item => {
+      if (fileEntityBlackList.indexOf(last(item.webkitRelativePath.split('/'))) === -1) {
+        this.readAndSaveFileEntry(item)
+      }
+    })
+  }
+
   render () {
     const {
       files,
@@ -198,21 +197,12 @@ export default class SideBar extends Component {
       showProjects,
       onSettingsClick,
       onSharingClick,
-      onShowPopover
+      onShowPopover,
+      tabs,
+      onFileClick
     } = this.props
 
     const { contextMenu, filesOver } = this.state
-
-    const projectsMenu = isArray(projects) && projects.length > 0
-      ? projects.map((project, i) =>
-        <MenuItem
-          key={`Project-${i}`}
-          label={project.name}
-          value={project.name}
-          primaryText={project.name}
-        />
-        )
-      : null
 
     return (
       <div className={classnames(classes.container, { 'filehover': filesOver })}
@@ -223,22 +213,38 @@ export default class SideBar extends Component {
       >
         <div className={classes.dropzone}>
           {
-            (projectsMenu && showProjects)
-              ? <SelectField
-                style={{width: '80%', marginLeft: '10%'}}
-                labelStyle={projectSelectLabelStyle}
-                autoWidth={false}
-                value={project.name}
-                children={projectsMenu}
-                onChange={this.selectProject}
+            showProjects
+              ? (
+                <SelectField
+                  style={{width: '80%', marginLeft: '10%'}}
+                  labelStyle={projectSelectLabelStyle}
+                  autoWidth={false}
+                  value={project.name}
+                  onChange={this.selectProject}
+                  >
+                  {
+                    map(projects, (project, i) =>
+                      <MenuItem
+                        key={`Project-${i}`}
+                        label={project.name}
+                        value={project.name}
+                        primaryText={project.name}
+                      />
+                   )
+                  }
+                </SelectField>
+              )
+              : (
+                <RaisedButton
+                  label='Save To Account'
                 />
-              : <RaisedButton
-                label='Save To Account'
-                />
+              )
           }
           <TreeView
-            fileStructure={files}
+            files={files}
+            tabs={tabs}
             onRightClick={this.showContextMenu}
+            onFileClick={onFileClick}
             project={project}
             loading={!isLoaded(files)}
           />

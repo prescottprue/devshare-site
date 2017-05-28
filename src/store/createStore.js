@@ -10,7 +10,10 @@ export default (initialState = {}, history) => {
   // ======================================================
   // Middleware Configuration
   // ======================================================
-  const middleware = [thunk.withExtraArgument({ getFirebase, getDevshare }), routerMiddleware(history)]
+  const middleware = [
+    thunk.withExtraArgument({ getFirebase, getDevshare }),
+    routerMiddleware(history)
+  ]
 
   // ======================================================
   // Store Enhancers
@@ -41,8 +44,8 @@ export default (initialState = {}, history) => {
           userProfile: 'users',
           enableLogging: false
         },
-          ...enhancers
-        )
+      ),
+      ...enhancers
       )
     )
   store.asyncReducers = {}

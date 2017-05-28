@@ -47,12 +47,16 @@ export default class Home extends Component {
   newAnon = () => {
     // event({ category: 'Projects', action: 'Create Anonymous' })
     this.props.firebase
-      .push('projects/anon', { name: 'test', createdAt: this.props.firebase.database.ServerValue.TIMESTAMP })
-      .then((snap) => this.props.devshare
+      .push('projects/anon', { createdAt: this.props.firebase.database.ServerValue.TIMESTAMP })
+      .then((snap) =>
+        this.props.devshare
           .project('anon', snap.key)
           .fileSystem
           .addFile('index.txt', 'You can add a file by clicking the plus in the lower left corner.\n Delete this file by left clicking on the file name on the left.')
-          .then(() => snap))
+          .then(() => snap)
+        )
+      // set name for use with tabs
+      .then((snap) => snap.ref.update({ name: snap.key }).then(() => snap))
       .then((snap) => {
         this.context.router.push(`anon/${snap.key}`)
       })

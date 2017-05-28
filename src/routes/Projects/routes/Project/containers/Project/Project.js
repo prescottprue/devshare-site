@@ -1,40 +1,45 @@
 import React, { Component, PropTypes } from 'react'
 import { connect } from 'react-redux'
 import { devshare } from 'redux-devshare'
-import { toArray } from 'lodash'
-import { firebaseConnect, dataToJS, isLoaded } from 'react-redux-firebase'
+import {
+  firebaseConnect,
+  dataToJS,
+  pathToJS,
+  isLoaded,
+  toJS,
+  populatedDataToJS
+} from 'react-redux-firebase'
 import LoadingSpinner from 'components/LoadingSpinner'
 import SharingDialog from 'components/SharingDialog'
 import Workspace from '../Workspace/Workspace'
 import SettingsDialog from '../../components/SettingsDialog/SettingsDialog'
 import classes from './Project.scss'
 
+const populates = [
+  {
+    child: 'collaborators',
+    root: 'users'
+  }
+]
+
 @devshare()
 @firebaseConnect(
   // Get paths from firebase
   ({ params: { username, projectname } }) => ([
     `projects/${username}`,
-    `projects/${username}/${projectname}`,
-    // TODO: Use population instead of loading whole usernames list
-    // `projects/${params.username}#populate=collaborators:users`,
-    'usernames'
+    { path: `projects/${username}/${projectname}`, populates },
+    { path: `files/${username}/${projectname}` }
   ])
 )
 @connect(
   // Map state to props
-  ({ firebase }, { params }) => {
-    const project = dataToJS(firebase, `projects/${params.username}/${params.projectname}`)
-    // TODO: Replace this with population
-    if (project && project.collaborators && dataToJS(firebase, 'usernames')) {
-      project.collaborators = project.collaborators.map(id => ({
-        username: dataToJS(firebase, 'usernames')[id]
-      }))
-    }
-    return {
-      projects: toArray(dataToJS(firebase, `projects/${params.username}`)),
-      project
-    }
-  }
+  ({ firebase, tabs }, { params: { username, projectname } }) => ({
+    projects: dataToJS(firebase, `projects/${username}`),
+    files: dataToJS(firebase, `files/${username}/${projectname}`),
+    tabs: toJS(tabs)[`${username}/${projectname}`] || { list: [], currentIndex: 0 },
+    account: pathToJS(firebase, 'profile'),
+    project: populatedDataToJS(firebase, `projects/${username}/${projectname}`, populates)
+  })
 )
 export default class Project extends Component {
   static contextTypes = {
@@ -43,8 +48,10 @@ export default class Project extends Component {
 
   static propTypes = {
     account: PropTypes.object,
-    projects: PropTypes.array,
+    projects: PropTypes.object,
     project: PropTypes.object,
+    files: PropTypes.object,
+    tabs: PropTypes.object,
     auth: PropTypes.object,
     params: PropTypes.object.isRequired,
     children: PropTypes.object,
@@ -83,7 +90,7 @@ export default class Project extends Component {
   }
 
   render () {
-    const { projects, project, params, devshare } = this.props
+    const { projects, project, params, devshare, files, tabs } = this.props
     const { settingsOpen, sharingOpen, vimEnabled } = this.state
 
     if (!isLoaded(project)) {
@@ -96,6 +103,9 @@ export default class Project extends Component {
           project={project}
           projects={projects}
           params={params}
+          account={this.props.account}
+          files={files}
+          tabs={tabs}
           onSettingsClick={() => this.toggleDialog('settings')}
           onSharingClick={() => this.toggleDialog('sharing')}
         />

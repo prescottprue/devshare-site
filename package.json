@@ -97,7 +97,7 @@
     "react-dom": "15.4.2",
     "react-dropzone": "^3.6.0",
     "react-ga": "^2.1.2",
-    "react-google-button": "0.1.0",
+    "react-google-button": "^0.3.0",
     "react-icons": "^2.2.1",
     "react-redux": "4.4.6",
     "react-redux-firebase": "^1.4.0",

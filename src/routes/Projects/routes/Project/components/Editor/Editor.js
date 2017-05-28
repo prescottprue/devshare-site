@@ -14,7 +14,6 @@ import classes from './Editor.scss'
   })
 )
 export default class Editor extends Component {
-
   static propTypes = {
     mode: PropTypes.string,
     account: PropTypes.shape({
@@ -102,12 +101,10 @@ export default class Editor extends Component {
   handleLoad = (editor) => {
     // Load file content
     const Firepad = require('firepad')
-    console.log('calling load:', editor)
     const { project: { name, owner }, account } = this.props
     if (typeof editor.firepad === 'undefined') {
       const { fileSystem } = this.props.devshare.project(owner, name)
       const file = fileSystem.file(this.props.filePath)
-      console.debug('file:', file, file.firebaseUrl())
       try {
         try {
           this.firepad = Firepad.fromCodeMirror(
@@ -121,11 +118,10 @@ export default class Editor extends Component {
         if (this.firepad && this.firepad.on) {
           this.firepad.on('ready', () => {
             if (this.firepad.isHistoryEmpty()) {
-              console.debug('history is empty, loading content')
               // Load original content of file
               file.get().then((content) => {
-                console.log('content loaded from file:', content)
-                this.firepad.setText(content.original)
+                console.debug('loading original:', content.original)
+                // this.firepad.setText(content.original)
               })
             }
           })
