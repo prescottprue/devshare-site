@@ -6,6 +6,7 @@ node_js:
   - 6.10.0
 
 cache:
+  yarn: true
   directories:
     - node_modules
 
@@ -26,14 +27,8 @@ script:
   - npm run build:prod
 
 after_success:
-  - npm install --prefix ./functions # install functions dependencies
-
-deploy:
-  provider: firebase
-  project: $TRAVIS_BRANCH
-  skip_cleanup: true
-  token:
-    secure: $FIREBASE_TOKEN
+  - npm i -g firebase-ci # install firebase-ci
+  - firebase-ci deploy
 
 notifications:
   email:

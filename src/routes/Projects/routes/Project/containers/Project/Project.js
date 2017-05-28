@@ -1,44 +1,61 @@
 import React, { Component, PropTypes } from 'react'
-import Workspace from '../Workspace/Workspace'
-import { toArray } from 'lodash'
-
-import classes from './Project.scss'
-import SettingsDialog from '../../components/SettingsDialog/SettingsDialog'
-import SharingDialog from 'components/SharingDialog/SharingDialog'
-import CircularProgress from 'material-ui/CircularProgress'
-// redux-devsharev3
 import { connect } from 'react-redux'
-import { devshare, helpers } from 'redux-devshare'
-const { isLoaded, dataToJS } = helpers
+import { devshare } from 'redux-devshare'
+import {
+  firebaseConnect,
+  dataToJS,
+  pathToJS,
+  isLoaded,
+  toJS,
+  populatedDataToJS
+} from 'react-redux-firebase'
+import LoadingSpinner from 'components/LoadingSpinner'
+import SharingDialog from 'components/SharingDialog'
+import Workspace from '../Workspace/Workspace'
+import SettingsDialog from '../../components/SettingsDialog/SettingsDialog'
+import classes from './Project.scss'
 
-@devshare(
-  // Get paths from devshare
-  ({ params }) =>
-    ([
-      `projects/${params.username}`,
-      `projects/${params.username}/${params.projectname}`
-    ])
+const populates = [
+  {
+    child: 'collaborators',
+    root: 'users'
+  }
+]
+
+@devshare()
+@firebaseConnect(
+  // Get paths from firebase
+  ({ params: { username, projectname } }) => ([
+    `projects/${username}`,
+    { path: `projects/${username}/${projectname}`, populates },
+    { path: `files/${username}/${projectname}` }
+  ])
 )
 @connect(
   // Map state to props
-  ({ devshare }, { params }) => ({
-    projects: toArray(dataToJS(devshare, `projects/${params.username}`)),
-    project: dataToJS(devshare, `projects/${params.username}/${params.projectname}`)
+  ({ firebase, tabs }, { params: { username, projectname } }) => ({
+    projects: dataToJS(firebase, `projects/${username}`),
+    files: dataToJS(firebase, `files/${username}/${projectname}`),
+    tabs: toJS(tabs)[`${username}/${projectname}`] || { list: [], currentIndex: 0 },
+    account: pathToJS(firebase, 'profile'),
+    project: populatedDataToJS(firebase, `projects/${username}/${projectname}`, populates)
   })
 )
 export default class Project extends Component {
-
   static contextTypes = {
     router: React.PropTypes.object.isRequired
   }
 
   static propTypes = {
     account: PropTypes.object,
-    projects: PropTypes.array,
+    projects: PropTypes.object,
     project: PropTypes.object,
+    files: PropTypes.object,
+    tabs: PropTypes.object,
     auth: PropTypes.object,
     params: PropTypes.object.isRequired,
     children: PropTypes.object,
+    firebase: PropTypes.object.isRequired,
     devshare: PropTypes.shape({
       project: PropTypes.func.isRequired
     })
@@ -57,10 +74,14 @@ export default class Project extends Component {
   }
 
   addCollaborator = username =>
-    this.props.devshare.project(this.props.project).addCollaborator(username)
+    this.props.devshare
+      .project(this.props.project)
+      .addCollaborator(username)
 
   removeCollaborator = username =>
-    this.props.devshare.project(this.props.project).removeCollaborator(username)
+    this.props.devshare
+      .project(this.props.project)
+      .removeCollaborator(username)
 
   toggleDialog = (name) => {
     const newState = {}
@@ -69,25 +90,24 @@ export default class Project extends Component {
   }
 
   render () {
-    const { projects, project, params, devshare } = this.props
+    const { projects, project, params, devshare, files, tabs } = this.props
     const { settingsOpen, sharingOpen, vimEnabled } = this.state
 
     if (!isLoaded(project)) {
-      return (
-        <div className={classes['progress']}>
-          <CircularProgress />
-        </div>
-      )
+      return <LoadingSpinner />
     }
 
     return (
-      <div className={classes['container']} ref='workspace'>
+      <div className={classes.container} ref='workspace'>
         <Workspace
           project={project}
           projects={projects}
           params={params}
-          onSettingsClick={() => { this.toggleDialog('settings') }}
-          onSharingClick={() => { this.toggleDialog('sharing') }}
+          account={this.props.account}
+          files={files}
+          tabs={tabs}
+          onSettingsClick={() => this.toggleDialog('settings')}
+          onSharingClick={() => this.toggleDialog('sharing')}
         />
         {
           settingsOpen &&
@@ -98,7 +118,7 @@ export default class Project extends Component {
               onSave={this.saveSettings}
               onVimToggle={this.toggleVim}
               vimEnabled={vimEnabled}
-              onRequestClose={() => { this.toggleDialog('settings') }}
+              onRequestClose={() => this.toggleDialog('settings')}
             />
           )
         }

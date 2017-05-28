@@ -11,11 +11,6 @@ import { red500, red800 } from 'material-ui/styles/colors'
 import classes from './SharingDialog.scss'
 import { map } from 'lodash'
 
-// redux/devshare
-// import { connect } from 'react-redux'
-// import { devshare, helpers } from 'redux-devshare'
-// const { pathToJS, dataToJS, isLoaded, isEmpty } = helpers
-
 export default class SharingDialog extends Component {
   state = {
     error: null
@@ -79,8 +74,8 @@ export default class SharingDialog extends Component {
     const { collaborators, matchingUsers, searchText } = this.state
 
     const collabsList = collaborators
-      ? collaborators.map(({ image, username }, i) =>
-        <div key={`${project.name}-Collab-${i}`} className={classes['container']}>
+      ? collaborators.map(({ image, username }, i) => (
+        <div key={`${project.name}-Collab-${i}`} className={classes.container}>
           <ListItem
             leftAvatar={
               <Avatar
@@ -99,7 +94,7 @@ export default class SharingDialog extends Component {
             secondaryText='Read, Write'
           />
         </div>
-      )
+      ))
       : null
 
     const actions = [
@@ -123,14 +118,14 @@ export default class SharingDialog extends Component {
         title='Sharing'
         actions={actions}
         modal={false}
-        bodyClassName={classes['body']}
-        titleClassName={classes['title']}
-        contentClassName={classes['container']}
+        bodyClassName={classes.body}
+        titleClassName={classes.title}
+        contentClassName={classes.container}
       >
         {
           error
           ? (
-            <div className={classes['error']}>
+            <div className={classes.error}>
               <span>{error}</span>
             </div>
           )
@@ -151,7 +146,7 @@ export default class SharingDialog extends Component {
         }
         <div className={classes['search-container']}>
           <AutoComplete
-            className={classes['search']}
+            className={classes.search}
             hintText='Search users to add'
             floatingLabelText='Search users to add'
             fullWidth
