@@ -4,6 +4,8 @@ import { devshare } from 'redux-devshare'
 import { connect } from 'react-redux'
 import { pathToJS, firebaseConnect } from 'react-redux-firebase'
 import classes from './Editor.scss'
+require('codemirror/lib/codemirror.css')
+require('codemirror/theme/monokai.css')
 
 @firebaseConnect()
 @devshare()
@@ -60,8 +62,6 @@ export default class Editor extends Component {
   componentDidMount () {
     let CodeMirror = require('codemirror')
     require('expose?CodeMirror!codemirror') // Needed for Firepad to load CodeMirror
-    require('codemirror/lib/codemirror.css')
-    require('codemirror/theme/monokai.css')
     require('codemirror/keymap/vim')
     require('codemirror/mode/javascript/javascript')
     require('codemirror/mode/css/css')
@@ -102,6 +102,7 @@ export default class Editor extends Component {
     // Load file content
     const Firepad = require('firepad')
     const { project: { name, owner }, account } = this.props
+
     if (typeof editor.firepad === 'undefined') {
       const { fileSystem } = this.props.devshare.project(owner, name)
       const file = fileSystem.file(this.props.filePath)
