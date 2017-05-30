@@ -89,7 +89,11 @@ export default class ProjectTile extends Component {
   }
 
   render () {
-    const { onCollabClick, project: { collaborators, name, owner } } = this.props
+    const {
+      onCollabClick,
+      project: { collaborators, name, owner }
+    } = this.props
+
     let collaboratorsList = []
 
     // Collaborator Bubbles
@@ -112,7 +116,10 @@ export default class ProjectTile extends Component {
                 />
               )
               : (
-                <Avatar className={classes['collaborator-avatar']} size={avatarSize}>
+                <Avatar
+                  className={classes['collaborator-avatar']}
+                  size={avatarSize}
+                >
                   {username.charAt(0).toUpperCase()}
                 </Avatar>
               )
@@ -153,7 +160,8 @@ export default class ProjectTile extends Component {
         />
         <DeleteDialog
           name={name}
-          open={this.state.deleteOpen || false}
+          open={this.state.deleteOpen}
+          onRequestClose={() => this.setState({ deleteOpen: false })}
           onSubmit={this.deleteProject}
         />
         <Paper key={`Project-${name}`} className={classes.container}>
@@ -180,15 +188,15 @@ export default class ProjectTile extends Component {
               </List>
             </Popover>
             <SettingsIcon
-              className={classes['settings']}
+              className={classes.settings}
               onClick={this.toggleDropdown}
               hoverColor={hoverColor}
             />
           </div>
-          <span className={classes['owner']}>
+          <span className={classes.owner}>
             {owner || 'No Owner'}
           </span>
-          <div className={classes['collaborators']}>
+          <div className={classes.collaborators}>
             {collaboratorsList}
           </div>
         </Paper>

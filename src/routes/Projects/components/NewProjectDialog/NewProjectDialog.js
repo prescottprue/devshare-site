@@ -14,6 +14,7 @@ export const NewProjectDialog = ({
   submit,
   handleSubmit,
   submitting,
+  invalid,
   onRequestClose
 }) => (
   <Dialog
@@ -28,7 +29,8 @@ export const NewProjectDialog = ({
       <FlatButton
         label='Create'
         primary
-        disabled={submitting}
+        keyboardFocused
+        disabled={submitting || invalid}
         onTouchTap={submit}
       />
     ]}
@@ -68,6 +70,7 @@ NewProjectDialog.propTypes = {
   submit: PropTypes.func.isRequired, // added by redux-form
   handleSubmit: PropTypes.func.isRequired, // added by redux-form
   submitting: PropTypes.bool.isRequired, // added by redux-form
+  invalid: PropTypes.bool.isRequired, // added by redux-form
   onRequestClose: PropTypes.func.isRequired
 }
 

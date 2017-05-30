@@ -6,7 +6,8 @@ export const formNames = {
   account: 'account',
   signup: 'signup',
   login: 'login',
-  newProject: 'newProject'
+  newProject: 'newProject',
+  removeProject: 'removeProject'
 }
 
 /**
