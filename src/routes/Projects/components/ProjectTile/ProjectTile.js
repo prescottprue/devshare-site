@@ -1,4 +1,4 @@
-import React, {Component, PropTypes} from 'react'
+import React, { Component, PropTypes } from 'react'
 import { map } from 'lodash'
 import Paper from 'material-ui/Paper'
 import Avatar from 'material-ui/Avatar'
@@ -18,7 +18,6 @@ const avatarSize = 50
 const hoverColor = '#03A9F4'
 
 export default class ProjectTile extends Component {
-
   static propTypes = {
     project: PropTypes.object.isRequired,
     onSelect: PropTypes.func.isRequired,

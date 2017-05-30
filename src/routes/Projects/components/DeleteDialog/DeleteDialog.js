@@ -57,12 +57,12 @@ export const DeleteDialog = ({
           <div className={classes.restatement}>
             <span>
               You are about to delete your project named
-              <span className={classes['restatement-name']}>
+              <span className={classes.restatementName}>
                 {name}
               </span>
             </span>
           </div>
-          <div className={classes['input-group']}>
+          <div className={classes.inputGroup}>
             <span>Please type in the name of the project to confirm:</span>
             <Field
               floatingLabelText='Project Name'
