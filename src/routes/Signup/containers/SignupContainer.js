@@ -8,6 +8,7 @@ import RaisedButton from 'material-ui/RaisedButton'
 import Snackbar from 'material-ui/Snackbar'
 import GithubIcon from 'react-icons/lib/go/mark-github'
 import FontIcon from 'material-ui/FontIcon'
+import { trackEvent } from 'utils/analytics'
 import { UserIsNotAuthenticated } from 'utils/router'
 import { paths } from 'constants'
 import LoadingSpinner from 'components/LoadingSpinner'
@@ -47,7 +48,12 @@ export default class Signup extends Component {
     return this.props.firebase
       .createUser(creds, { email: creds.email, username: creds.username })
       .then(account => {
+        trackEvent({ category: 'Auth', action: 'Signup' })
         this.context.router.push(`${account.username}`)
+      })
+      .catch((err) => {
+        Raven.captureException('Erorr with login:', err)
+        return Promise.reject(err)
       })
   }
 
@@ -58,6 +64,11 @@ export default class Signup extends Component {
       .then(account =>
         this.context.router.push(`${account.username}`)
       )
+      .catch((err) => {
+        console.error('Error with provider signup:', err)
+        Raven.captureException('Erorr with Provider Signup:', err)
+        return Promise.reject(err)
+      })
   }
 
   render () {

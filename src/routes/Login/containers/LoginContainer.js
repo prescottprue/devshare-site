@@ -3,6 +3,7 @@ import { Link } from 'react-router'
 import { connect } from 'react-redux'
 import { firebaseConnect, pathToJS, isLoaded, isEmpty } from 'react-redux-firebase'
 import { UserIsNotAuthenticated } from 'utils/router'
+import { trackEvent } from 'utils/analytics'
 import { paths } from 'constants'
 import GoogleButton from 'react-google-button'
 import Paper from 'material-ui/Paper'
@@ -41,6 +42,11 @@ export default class Login extends Component {
   handleLogin = loginData => {
     this.setState({ snackCanOpen: true })
     return this.props.firebase.login(loginData)
+      .then(() => trackEvent({ category: 'Auth', action: 'Login' }))
+      .catch((err) => {
+        Raven.captureException('Error with Login:', err)
+        return Promise.reject(err)
+      })
   }
 
   providerLogin = (provider) =>
