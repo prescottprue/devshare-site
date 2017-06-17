@@ -777,6 +777,12 @@ babel-plugin-transform-function-bind@^6.22.0:
     babel-plugin-syntax-function-bind "^6.8.0"
     babel-runtime "^6.22.0"
 
+babel-plugin-transform-object-assign@^6.22.0:
+  version "6.22.0"
+  resolved "https://registry.yarnpkg.com/babel-plugin-transform-object-assign/-/babel-plugin-transform-object-assign-6.22.0.tgz#f99d2f66f1a0b0d498e346c5359684740caa20ba"
+  dependencies:
+    babel-runtime "^6.22.0"
+
 babel-plugin-transform-object-rest-spread@^6.22.0, babel-plugin-transform-object-rest-spread@^6.23.0:
   version "6.23.0"
   resolved "https://registry.yarnpkg.com/babel-plugin-transform-object-rest-spread/-/babel-plugin-transform-object-rest-spread-6.23.0.tgz#875d6bc9be761c58a2ae3feee5dc4895d8c7f921"
@@ -5477,9 +5483,9 @@ react-icons@^2.2.1:
   dependencies:
     react-icon-base "2.0.4"
 
-react-redux-firebase@^1.5.0-beta.3:
-  version "1.5.0-beta.3"
-  resolved "https://registry.yarnpkg.com/react-redux-firebase/-/react-redux-firebase-1.5.0-beta.3.tgz#9e5400a823c19988f85170ea035e9fac7ddd6571"
+react-redux-firebase@^1.4.1:
+  version "1.4.1"
+  resolved "https://registry.yarnpkg.com/react-redux-firebase/-/react-redux-firebase-1.4.1.tgz#7326a7eb9ab240edb65e73d6132c21197d3f61b6"
   dependencies:
     es6-promise "^4.1.0"
     firebase "^3.9.0"
@@ -5487,7 +5493,6 @@ react-redux-firebase@^1.5.0-beta.3:
     immutable "^3.8.1"
     jwt-decode "^2.2.0"
     lodash "^4.17.4"
-    prop-types "^15.5.8"
 
 react-redux@4.4.6:
   version "4.4.6"

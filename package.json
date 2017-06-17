@@ -1,6 +1,6 @@
 {
   "name": "devshare-site",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "description": "Open source code sharing and development platform.",
   "main": "index.js",
   "engines": {
@@ -101,7 +101,7 @@
     "react-google-button": "^0.3.0",
     "react-icons": "^2.2.1",
     "react-redux": "4.4.6",
-    "react-redux-firebase": "^1.5.0-beta.3",
+    "react-redux-firebase": "^1.4.1",
     "react-router": "2.8.1",
     "react-router-redux": "4.0.6",
     "react-tap-event-plugin": "2.0.1",

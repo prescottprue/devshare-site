@@ -5,6 +5,7 @@ import { firebaseConnect, pathToJS, isLoaded, isEmpty } from 'react-redux-fireba
 import { UserIsNotAuthenticated } from 'utils/router'
 import { trackEvent } from 'utils/analytics'
 import { paths } from 'constants'
+import Raven from 'raven-js'
 import GoogleButton from 'react-google-button'
 import Paper from 'material-ui/Paper'
 import Snackbar from 'material-ui/Snackbar'
@@ -42,7 +43,10 @@ export default class Login extends Component {
   handleLogin = loginData => {
     this.setState({ snackCanOpen: true })
     return this.props.firebase.login(loginData)
-      .then(() => trackEvent({ category: 'Auth', action: 'Login' }))
+      .then((account) => {
+        console.log('account:', account)
+        trackEvent({ category: 'Auth', action: 'Login' })
+      })
       .catch((err) => {
         Raven.captureException('Error with Login:', err)
         return Promise.reject(err)
@@ -50,7 +54,7 @@ export default class Login extends Component {
   }
 
   providerLogin = (provider) =>
-    this.handleLogin({ provider })
+    this.handleLogin({ provider, type: 'popup' })
 
   render () {
     const { snackCanOpen } = this.state
