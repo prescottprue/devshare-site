@@ -16,6 +16,7 @@ branches:
     - prod
     - stage
     - int
+    - v0.3.3
 
 script:
   - npm run config
@@ -24,7 +25,7 @@ script:
   - npm run build:prod
 
 after_success:
-  - npm i -g firebase-ci # install firebase-ci
+  - npm i -g firebase-ci@2.0.0-alpha # install firebase-ci
   - firebase-ci deploy
 
 notifications:
