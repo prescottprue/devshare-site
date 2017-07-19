@@ -21,7 +21,7 @@ branches:
 script:
   # - npm run lint:fix
   # - npm run test
-  - npm run build:prod
+  # - npm run build:prod
 
 after_success:
   - npm i -g firebase-ci@2.0.0-alpha # install firebase-ci
