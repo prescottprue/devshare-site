@@ -13,7 +13,7 @@
     },
     "createConfig": {
       "v0.3.3": {
-        "version": "${NPM_PACKAGE_VERSION || ''}",
+        "version": "${npm_package_version || ''}",
         "env": "prod",
         "firebase": {
           "apiKey": "${STAGE_FIREBASE_WEBAPIKEY}",
