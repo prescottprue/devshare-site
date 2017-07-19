@@ -13,14 +13,19 @@ branches:
     - int
     - v0.3.3
 
+install:
+  - npm set progress=false
+  # - npm install
+  - npm i -g firebase-ci@2.0.0-alpha
+  - firebase-ci deploy
+
 script:
   # - npm run lint:fix
   # - npm run test
   # - npm run build:prod
 
 after_success:
-  - npm i -g firebase-ci@2.0.0-alpha # install firebase-ci
-  - firebase-ci deploy
+   # install firebase-ci
 
 notifications:
   email:
