@@ -16,7 +16,7 @@ branches:
 install:
   - npm set progress=false
   # - npm install
-  - npm i -g firebase-ci@2.0.0-alpha
+  - npm i -g firebase-ci@0.2.0-alpha
   - firebase-ci deploy
 
 script:
