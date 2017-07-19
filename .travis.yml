@@ -3,15 +3,11 @@ sudo: false
 language: node_js
 
 node_js:
-  - 6.10.0
+  - 6.11.0
 
 cache:
   directories:
     - node_modules
-
-install:
-  - npm set progress=false
-  - npm install # install project dependencies
 
 branches:
   only:
@@ -20,6 +16,12 @@ branches:
     - stage
     - int
 
+install:
+  - npm set progress=false
+  - npm install
+  - npm i -g firebase-ci@next
+  - firebase-ci createConfig
+
 script:
   - npm run config
   - npm run lint:fix
@@ -27,7 +29,7 @@ script:
   - npm run build:prod
 
 after_success:
-  - npm i -g firebase-ci@0.1.0-rc.7 # install firebase-ci
+  # - firebase-ci mapEnv
   - firebase-ci deploy
 
 notifications:
