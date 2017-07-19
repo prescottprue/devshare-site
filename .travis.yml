@@ -15,17 +15,18 @@ branches:
 
 install:
   - npm set progress=false
-  # - npm install
-  - npm i -g firebase-ci@0.2.0-alpha
-  - firebase-ci deploy
+  - npm install
+  - npm i -g firebase-ci@next
+  - firebase-ci createConfig
 
 script:
-  # - npm run lint:fix
-  # - npm run test
-  # - npm run build:prod
+  - npm run lint:fix
+  - npm run test
+  - npm run build:prod
 
 after_success:
-   # install firebase-ci
+  # - firebase-ci mapEnv
+  - firebase-ci deploy
 
 notifications:
   email:
