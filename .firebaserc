@@ -12,19 +12,19 @@
       "TRAVIS_BRANCH": "travis.branch"
     },
     "createConfig": {
-      "v0.3.3": {
+      "int": {
         "version": "${npm_package_version}",
         "env": "prod",
         "firebase": {
-          "apiKey": "${STAGE_FIREBASE_WEBAPIKEY}",
+          "apiKey": "${INT_FIREBASE_WEBAPIKEY}",
           "authDomain": "devshare-int.firebaseapp.com",
           "databaseURL": "https://devshare-int.firebaseio.com",
           "projectId": "devshare-int",
           "storageBucket": "devshare-int.appspot.com",
           "messagingSenderId": "499842460400"
         },
-        "sentryDsn": "${SENTRY_DSN}",
-        "gaTrackingId": "${GA_TRACKINGID}"
+        "sentryDsn": "",
+        "gaTrackingId": ""
       },
       "stage": {
         "version": "${npm_package_version}",
@@ -35,6 +35,20 @@
           "databaseURL": "https://devshare-stage.firebaseio.com",
           "projectId": "devshare-stage",
           "storageBucket": "devshare-stage.appspot.com",
+          "messagingSenderId": "995180480938"
+        },
+        "sentryDsn": "${SENTRY_DSN}",
+        "gaTrackingId": "${GA_TRACKINGID}"
+      },
+      "prod": {
+        "version": "${npm_package_version}",
+        "env": "prod",
+        "firebase": {
+          "apiKey": "${STAGE_FIREBASE_WEBAPIKEY}",
+          "authDomain": "devshare-1.firebaseapp.com",
+          "databaseURL": "https://devshare-1.firebaseio.com",
+          "projectId": "devshare-1",
+          "storageBucket": "devshare-1.appspot.com",
           "messagingSenderId": "995180480938"
         },
         "sentryDsn": "${SENTRY_DSN}",
