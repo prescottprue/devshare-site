@@ -21,7 +21,8 @@
     "build:dev": "better-npm-run build:dev",
     "build:prod": "better-npm-run build:prod",
     "codecov": "cat coverage/*/lcov.info | codecov",
-    "config": "better-npm-run config"
+    "config": "better-npm-run config",
+    "postinstall": "npm i --prefix functions"
   },
   "betterScripts": {
     "compile": {
