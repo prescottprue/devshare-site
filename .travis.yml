@@ -1,3 +1,5 @@
+dist: trusty
+
 sudo: false
 
 language: node_js
@@ -16,7 +18,7 @@ install:
   - npm set progress=false
   - npm install
   - npm i -g firebase-ci@next
-  - firebase-ci createConfig
+  # - firebase-ci createConfig
 
 script:
   - npm run lint:fix
