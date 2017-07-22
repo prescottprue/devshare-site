@@ -19,13 +19,13 @@ install:
   - npm set progress=false
   - npm install
   - npm i -g firebase-ci@next
-  # - firebase-ci -V
-  # - firebase-ci createConfig
+  - firebase-ci -V
+  - firebase-ci createConfig
 
 script:
   - npm run lint:fix
   # - npm run test
-  # - npm run build:prod
+  - npm run build:prod
 
 after_success:
   # - firebase-ci mapEnv
