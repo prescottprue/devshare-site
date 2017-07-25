@@ -2,8 +2,6 @@ import LoginRoute from 'routes/Login'
 
 describe('(Route) Login', () => {
   let _route
-  let _component
-  let _childRoutes
 
   beforeEach(() => {
     _route = LoginRoute()
@@ -19,8 +17,4 @@ describe('(Route) Login', () => {
   it('Defines a getComponent function', () => {
     expect(_route.getComponent).to.be.a.function
   })
-  it('Defines a getChildRoutes function', () => {
-    expect(_route.getChildRoutes).to.be.a.function
-  })
-
 })

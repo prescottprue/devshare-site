@@ -22,5 +22,4 @@ describe('(Project:Component) TreeFolder', () => {
     const item = _component.find('li')
     expect(item).to.exist
   })
-
 })

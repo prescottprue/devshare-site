@@ -22,5 +22,4 @@ describe('(Project:Component) TreeFile', () => {
     const item = _component.find('li')
     expect(item).to.exist
   })
-
 })

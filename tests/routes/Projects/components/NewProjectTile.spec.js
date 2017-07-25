@@ -14,5 +14,4 @@ describe('(Projects:Component) NewProjectTile', () => {
     const paper = _component.find('Paper')
     expect(paper).to.exist
   })
-
 })

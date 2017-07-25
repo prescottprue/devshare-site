@@ -13,5 +13,4 @@ describe('(Login:Component) LoginForm', () => {
     const form = _component.find('form')
     expect(form).to.exist
   })
-
 })

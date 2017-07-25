@@ -10,7 +10,7 @@ describe('(Project:Component) View', () => {
     _component = shallow(
       <View
         project={exampleProject}
-        visible={true}
+        visible
         index={0}
         onRequestClose={() => console.log('request close')}
       />
@@ -21,5 +21,4 @@ describe('(Project:Component) View', () => {
     const item = _component.find('div')
     expect(item).to.exist
   })
-
 })

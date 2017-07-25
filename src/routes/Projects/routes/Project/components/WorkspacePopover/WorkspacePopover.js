@@ -8,7 +8,6 @@ const originSettings = { horizontal: 'middle', vertical: 'top' }
 const pathInputStyling = { padding: 20 }
 
 export default class WorkspacePopover extends Component {
-
   static propTypes = {
     workspaceElement: PropTypes.object,
     initialPath: PropTypes.string,

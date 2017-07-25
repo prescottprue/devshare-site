@@ -49,7 +49,7 @@ export default (initialState = {}, history) => {
           //     prompt: 'select_account'
           //   }
           // }
-        },
+        }
       ),
       applyMiddleware(...middleware),
       ...enhancers

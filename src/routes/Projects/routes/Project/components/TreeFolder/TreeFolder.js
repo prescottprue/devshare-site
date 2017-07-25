@@ -11,7 +11,6 @@ import TreeFile from '../TreeFile'
 import classes from './TreeFolder.scss'
 
 export default class TreeFolder extends Component {
-
   static propTypes = {
     data: PropTypes.object.isRequired,
     children: PropTypes.object,

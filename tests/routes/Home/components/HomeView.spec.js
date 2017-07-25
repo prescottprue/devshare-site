@@ -18,5 +18,4 @@ describe.skip('(Component) Home', () => {
     const welcome = _component.find('span')
     expect(welcome).to.exist
   })
-
 })

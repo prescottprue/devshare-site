@@ -6,7 +6,6 @@ import './ProjectSettingsDialog.scss'
 import RaisedButton from 'material-ui/RaisedButton'
 
 export default class ProjectSettingsDialog extends Component {
-
   static propTypes = {
     open: PropTypes.bool.isRequired,
     project: PropTypes.object,

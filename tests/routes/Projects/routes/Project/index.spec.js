@@ -19,5 +19,4 @@ describe('(Projects:Route) Project', () => {
   it('Defines a getChildRoutes function', () => {
     expect(_route.getChildRoutes).to.be.a.function
   })
-
 })

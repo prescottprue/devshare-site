@@ -14,5 +14,4 @@ describe('(Project:Component) ContextMenu', () => {
     const paper = _component.find('ul')
     expect(paper).to.exist
   })
-
 })

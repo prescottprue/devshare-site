@@ -19,5 +19,4 @@ describe('(Project:Component) Tabs', () => {
     const dialog = _component.find('ul')
     expect(dialog).to.exist
   })
-
 })

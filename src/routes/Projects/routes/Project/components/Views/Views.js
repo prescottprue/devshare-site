@@ -3,7 +3,6 @@ import View from '../View'
 import classes from './Views.scss'
 
 export default class Views extends Component {
-
   static propTypes = {
     views: PropTypes.array,
     currentIndex: PropTypes.number,

@@ -1,44 +1,41 @@
 {
   "projects": {
-    "prod": "devshare-1",
-    "stg": "devshare-stg",
-    "v0.3.3": "devshare-int",
-    "int": "devshare-int",
     "master": "devshare-int",
-    "default": "devshare-int"
+    "prod": "devshare-int"
   },
   "ci": {
-    "mapEnv": {
-      "TRAVIS_BRANCH": "travis.branch"
-    },
     "createConfig": {
-      "v0.3.3": {
-        "version": "${npm_package_version || ''}",
-        "env": "prod",
+      "master": {
+        "version": "${npm_package_version}",
+        "env": "development",
         "firebase": {
-          "apiKey": "${STAGE_FIREBASE_WEBAPIKEY}",
+          "apiKey": "AIzaSyDiVbMbj7nPXTBXxZlr_HiZ2AOY7yXWkYY",
           "authDomain": "devshare-int.firebaseapp.com",
           "databaseURL": "https://devshare-int.firebaseio.com",
           "projectId": "devshare-int",
-          "storageBucket": "devshare-int.appspot.com",
-          "messagingSenderId": "499842460400"
+          "storageBucket": "devshare-int.appspot.com"
         },
-        "sentryDsn": "${SENTRY_DSN}",
-        "gaTrackingId": "${GA_TRACKINGID}"
+        "reduxFirebase": {
+          "userProfile": "users",
+          "enableLogging": false,
+          "updateProfileOnLogin": false
+        }
       },
-      "stage": {
-        "version": "${npm_package_version || ''}",
-        "env": "stage",
+      "prod": {
+        "version": "${npm_package_version}",
+        "env": "production",
         "firebase": {
-          "apiKey": "${STAGE_FIREBASE_WEBAPIKEY}",
-          "authDomain": "devshare-stage.firebaseapp.com",
-          "databaseURL": "https://devshare-stage.firebaseio.com",
-          "projectId": "devshare-stage",
-          "storageBucket": "devshare-stage.appspot.com",
-          "messagingSenderId": "995180480938"
+          "apiKey": "AIzaSyDiVbMbj7nPXTBXxZlr_HiZ2AOY7yXWkYY",
+          "authDomain": "devshare-int.firebaseapp.com",
+          "databaseURL": "https://devshare-int.firebaseio.com",
+          "projectId": "devshare-int",
+          "storageBucket": "devshare-int.appspot.com"
         },
-        "sentryDsn": "${SENTRY_DSN}",
-        "gaTrackingId": "${GA_TRACKINGID}"
+        "reduxFirebase": {
+          "userProfile": "users",
+          "enableLogging": false,
+          "updateProfileOnLogin": false
+        }
       }
     }
   }

@@ -19,5 +19,4 @@ describe('(Project:Component) WorkspacePopover', () => {
     const item = _component.find('Popover')
     expect(item).to.exist
   })
-
 })

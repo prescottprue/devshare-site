@@ -2,8 +2,6 @@ import AccountRoute from 'routes/Account'
 
 describe('(Route) Account', () => {
   let _route
-  let _component
-  let _childRoutes
 
   beforeEach(() => {
     _route = AccountRoute()
@@ -13,8 +11,8 @@ describe('(Route) Account', () => {
     expect(AccountRoute).to.be.a.function
   })
 
-  it('Sets Path to :username', () => {
-    expect(_route.path).to.equal('account')
+  it('Sets Path to /account', () => {
+    expect(_route.path).to.equal('/account')
   })
   it('Defines a getComponent function', () => {
     expect(_route.getComponent).to.be.a.function
@@ -22,5 +20,4 @@ describe('(Route) Account', () => {
   it('Defines a getChildRoutes function', () => {
     expect(_route.getChildRoutes).to.be.a.function
   })
-
 })

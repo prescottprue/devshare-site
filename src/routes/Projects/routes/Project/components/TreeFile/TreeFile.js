@@ -3,7 +3,6 @@ import React, { PropTypes, Component } from 'react'
 import classes from './TreeFile.scss'
 
 export default class TreeFile extends Component {
-
   static propTypes = {
     name: PropTypes.string,
     data: PropTypes.object.isRequired,

@@ -3,7 +3,6 @@ import Editor from '../Editor'
 import classes from './View.scss'
 
 export default class View extends Component {
-
   static propTypes = {
     viewData: PropTypes.shape({
       file: PropTypes.object

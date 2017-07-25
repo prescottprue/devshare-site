@@ -18,5 +18,4 @@ describe('(Project:Component) Views', () => {
     const item = _component.find('div')
     expect(item).to.exist
   })
-
 })

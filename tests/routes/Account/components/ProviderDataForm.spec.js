@@ -16,5 +16,4 @@ describe.skip('(Account:Component) ProviderDataForm', () => {
     const form = _component.find('div')
     expect(form).to.exist
   })
-
 })

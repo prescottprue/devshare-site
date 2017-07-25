@@ -1,32 +1,6 @@
 {
   "rules": {
-    ".read": "auth !== null",
-    ".write": "auth !== null",
-    "files": {
-      "anon": {
-        ".read": true,
-        ".write": true
-      }
-    },
-    "usernames": {
-      ".read": "auth !== null",
-      ".write": "auth !== null"
-    },
-    "uids": {
-      ".read": "auth !== null",
-      ".write": "auth !== null"
-    },
-    "requests": {
-      ".read": true,
-      ".write": true
-    },
-    "projects": {
-      ".read": true,
-      ".write": true,
-      ".indexOn": ["name", "owner"]
-    },
-    "users": {
-      ".indexOn": ["uid", "username"]
-    }
+    ".read": true,
+    ".write": true
   }
 }

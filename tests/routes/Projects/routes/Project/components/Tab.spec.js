@@ -22,5 +22,4 @@ describe('(Project:Component) Tab', () => {
     const dialog = _component.find('li')
     expect(dialog).to.exist
   })
-
 })

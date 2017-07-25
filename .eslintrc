@@ -3,7 +3,7 @@ root: true
 parser: babel-eslint
 
 extends: [standard, standard-react]
-plugins: [react]
+plugins: [babel, react]
 
 env:
   browser: true
@@ -16,31 +16,11 @@ ecmaFeatures:
   modules: true
 
 globals:
-  MockFirebase: true
-  sinon: true
-  __COVERAGE__: true
-  __DEV__: true
+  __DEV__: false
+  __COVERAGE__: false
+  __TEST__: false
 
 rules:
-  # import/no-unresolved: 2
-  consistent-return: 2
-  react/no-unused-prop-types: 0
-  max-len: 0
-  no-else-return: 2
-  arrow-body-style: ['error', 'as-needed']
-  react/forbid-prop-types: 0
-  react/sort-comp: 0
-  curly: ['error', 'all']
-  no-use-before-define: 2
-  no-extra-boolean-cast: 0
-  react/jsx-filename-extension: 0
-  import/no-named-as-default: 0
-  react/prefer-stateless-function: 0
-
-settings:
-  import/resolver:
-    node:
-      moduleDirectory:
-        - node_modules
-        # this sets the path the root since we have a `test` folder that will need to be included going forward.
-        - '/'
+  semi: [2, 'never']
+  no-console: 'error'
+  jsx-quotes: ['error', 'prefer-single']

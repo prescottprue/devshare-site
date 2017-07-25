@@ -2,7 +2,6 @@ import React, { PropTypes, Component } from 'react'
 import classes from './ContextMenu.scss'
 
 export default class ContextMenu extends Component {
-
   static propTypes = {
     event: PropTypes.object,
     position: PropTypes.shape({

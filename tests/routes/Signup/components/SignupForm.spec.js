@@ -13,5 +13,4 @@ describe('(Signup:Component) SignupForm', () => {
     const form = _component.find('form')
     expect(form).to.exist
   })
-
 })

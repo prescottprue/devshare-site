@@ -356,5 +356,4 @@ export default class SideBar extends Component {
   _fileUpload = (e) => {
     this.refs.fileInput.click()
   }
-
 }

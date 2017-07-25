@@ -39,7 +39,6 @@ const populates = [
   })
 )
 export default class Projects extends Component {
-
   static contextTypes = {
     router: React.PropTypes.object.isRequired
   }
