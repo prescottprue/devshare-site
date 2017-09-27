@@ -26,7 +26,7 @@ cache:
 install:
   - npm set progress=false
   - npm i
-  - npm i -g firebase-ci
+  - npm i -g firebase-ci@next
   - firebase-ci createConfig
 
 script:
