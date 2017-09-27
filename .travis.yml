@@ -31,8 +31,6 @@ install:
   - firebase-ci createConfig
 
 script:
-  - npm run lint:fix
-  - npm run test
   - npm run build
 
 after_success:
