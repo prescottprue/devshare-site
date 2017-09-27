@@ -19,10 +19,10 @@ branches:
     - v0.3.3
     - prod
 
-cache:
-  bundler: true
-  directories:
-    - node_modules # NPM packages
+# cache:
+#   bundler: true
+#   directories:
+#     - node_modules # NPM packages
 
 install:
   - npm set progress=false
